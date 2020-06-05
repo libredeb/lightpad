@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Copyright 2020 Juan Pablo Lozano <libredeb@gmail.com> -->
+<component type="desktop">
+  <id>com.github.libredeb.lightpad</id>
+  <metadata_license>CC0</metadata_license>
+  <name>LightPad</name>
+  <summary>Lightweight Application Launcher</summary>
+  <description>
+    <p>LightPad is a lightweight, look nice and powerful application launcher.</p>
+  </description>
+  <custom>
+    <value key="x-appcenter-color-primary">#415d6b</value>
+    <value key="x-appcenter-color-primary-text">rgb(255, 255, 255)</value>
+    <value key="x-appcenter-suggested-price">1</value>
+  </custom>
+</component>
