@@ -6,6 +6,9 @@ This project was originally forked from Slingshot from the elementary team:
 
   * [https://launchpad.net/slingshot](https://launchpad.net/slingshot)
 
+## Screenshot
+![Screenshot](https://raw.githubusercontent.com/libredeb/lightpad/master/screenshot.png)
+
 ## Compilation
 
    1. Install dependencies:
