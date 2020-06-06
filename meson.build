@@ -2,7 +2,7 @@
 project(
     'com.github.libredeb.lightpad',
     'vala', 'c',
-    version: '0.0.1',
+    version: '0.0.2',
     meson_version: '>=0.46.0'
 )
 
@@ -18,14 +18,14 @@ executable(
     'src/Widgets/Indicators.vala',
     'src/Widgets/AppItem.vala',
     dependencies: [
-        dependency('gio-unix-2.0'),
-        dependency('glib-2.0'),
+        dependency('gio-unix-2.0', version: '>=2.56.0'),
+        dependency('glib-2.0', version: '>=2.56.0'),
         dependency('gtk+-3.0', version: '>=3.22'),
-        dependency('gdk-3.0'),
-        dependency('cairo'),
-        dependency('pango'),
-        dependency('gee-0.8'),
-        dependency('libgnome-menu-3.0'),
+        dependency('gdk-3.0', version: '>=3.22.0'),
+        dependency('cairo', version: '>=1.15.0'),
+        dependency('pango', version: '>=1.40.0'),
+        dependency('gee-0.8', version: '>=0.20.0'),
+        dependency('libgnome-menu-3.0', version: '>=3.13.0'),
         # Similar to add options "-X -lm" in cmake to use Math.pow()
         meson.get_compiler('c').find_library('m', required: false)
     ],

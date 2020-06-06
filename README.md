@@ -62,3 +62,7 @@ Note: Some themes don't have the 'application-default-icon'. LightPad needs to h
 * Fix bug for some applications that left their icon in /usr/share/pixmaps
 * Support for terminal apps
 
+**Version 0.0.2**
+* Add dependencies versioning
+* Fix a bug with gee assertion index
+* 

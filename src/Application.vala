@@ -198,6 +198,12 @@ public class LightPadWindow : Widgets.CompositedWindow {
     
     private void update_grid (Gee.ArrayList<Gee.HashMap<string, string>> apps) {
         int item_iter = (int)(this.pages.active * this.grid_y * this.grid_x);
+        /* Fix for bug 001 with message:
+        arraylist.c:1181:gee_array_list_real_get: assertion failed: (index >= 0) */
+        if (item_iter < 0) {
+            item_iter = 0;
+        }
+        
         for (int r = 0; r < this.grid_x; r++) {
             for (int c = 0; c < this.grid_y; c++) {
                 int table_pos = c + (r * (int)this.grid_y); // position in table right now
