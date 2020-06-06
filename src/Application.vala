@@ -110,6 +110,9 @@ public class LightPadWindow : Widgets.CompositedWindow {
         if ((monitor_dimensions.width / (double) monitor_dimensions.height) < 1.4) {
             this.grid_x = 5;
             this.grid_y = 5;
+        } else if (monitor_dimensions.height == 600) { // Netbook 1024x600px
+            this.grid_y = 5;
+            this.grid_x = 3;
         } else { // Monitor 16:9
             this.grid_y = 6;
             this.grid_x = 4;
@@ -150,7 +153,7 @@ public class LightPadWindow : Widgets.CompositedWindow {
         this.add_events (Gdk.EventMask.SCROLL_MASK);
         //this.button_release_event.connect ( () => { this.destroy(); return false; });
         this.draw.connect (this.draw_background);
-        //this.focus_out_event.connect ( () => { this.destroy(); return true; } ); // close Slingscold when the window loses focus
+        //this.focus_out_event.connect ( () => { this.destroy(); return true; } );
 
     }
     
@@ -182,7 +185,16 @@ public class LightPadWindow : Widgets.CompositedWindow {
                 item.leave_notify_event.connect ( () => { this.top_spacer.grab_focus (); return true; } );
                 item.button_release_event.connect ( () => {
                     try {
-                        new GLib.DesktopAppInfo.from_filename (this.filtered.get((int) (this.children.index (item) + (this.pages.active * this.grid_y * this.grid_x)))["desktop_file"]).launch (null, null);
+                        int child_index = this.children.index (item);
+                        int page_active = this.pages.active;
+                        /* Prevent indicators pages to get a negative one (-1)
+                           and fix with this the bug 003 where a negative result
+                           is obtained and that index does not exist */
+                        if (page_active < 0) {
+                            page_active = 0;
+                        }
+                        int app_index = (int) (child_index + (page_active * this.grid_y * this.grid_x));
+                        new GLib.DesktopAppInfo.from_filename (this.filtered.get(app_index)["desktop_file"]).launch (null, null);
                         this.destroy ();
                     } catch (GLib.Error e) {
                         warning ("Error! Load application: " + e.message);

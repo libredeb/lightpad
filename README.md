@@ -55,14 +55,20 @@ Note: Some themes don't have the 'application-default-icon'. LightPad needs to h
 ```
 
 ## Changelog
+**Version 0.0.3**
+* Fix bug 003, where obtain a negative one causing error obtaining array index for indicator pages
+* Add suport for LXQT, LXDE and XFCE environments to open terminal apps
+* Improve searchbar design, use CSS instead of cairo
+
+**Version 0.0.2**
+* Add dependencies versioning
+* Fix a bug with gee assertion index
+* Fix bug that cause that terminal apps won't open
+* Improve screen recognition for detect netbooks small display
+
 **Version 0.0.1**
 * Clean all code from the fork
 * New improved searchbar design
 * New revamped icon in different resolutions
 * Fix bug for some applications that left their icon in /usr/share/pixmaps
 * Support for terminal apps
-
-**Version 0.0.2**
-* Add dependencies versioning
-* Fix a bug with gee assertion index
-* 

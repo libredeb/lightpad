@@ -137,7 +137,9 @@ namespace LightPad.Backend {
                             app_to_add["command"] = "xfce4-terminal -e " + app.get_commandline ();
                         } else if (desktop_environment == "LXDE") {
                             app_to_add["command"] = "lxterminal -e " + app.get_commandline ();
-                        } else {
+                        } else if (desktop_environment == "LXQT") {
+                            app_to_add["command"] = "qterminal -e " + app.get_commandline ();
+                        }else {
                             warning ("Can not identify your terminal");
                             app_to_add["command"] = app.get_commandline ();    
                         }
