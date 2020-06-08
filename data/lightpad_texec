@@ -1,0 +1,23 @@
+#!/bin/bash
+
+DESKTOP_ENV=`env | grep XDG_CURRENT_DESKTOP | cut -f2 -d '='`
+DESKTOP_ENV="${DESKTOP_ENV^^}"
+
+if [ "$DESKTOP_ENV" == "GNOME" ] || [ "$DESKTOP_ENV" == "ubuntu:GNOME" ] || [ "$DESKTOP_ENV" == "UNITY" ]
+then
+    gnome-terminal -- $1
+elif [ "$DESKTOP_ENV" == "PANTHEON" ]
+then
+    io.elementary.terminal -e $1
+elif [ "$DESKTOP_ENV" == "XFCE" ]
+then
+    xfce4-terminal -e $1
+elif [ "$DESKTOP_ENV" == "LXDE" ]
+then
+    lxterminal -e $1
+elif [ "$DESKTOP_ENV" == "LXQT" ]
+then
+    qterminal -e $1
+else
+    echo "terminal emulator not found!"
+fi

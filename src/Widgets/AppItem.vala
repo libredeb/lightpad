@@ -138,7 +138,7 @@ namespace LightPad.Frontend {
             }
 
             if (this.has_focus) {
-                double dark = 0.15;
+                double dark = 0.32;
                 var gradient = new Cairo.Pattern.rgba (this.prominent.R * dark, this.prominent.G * dark, this.prominent.B * dark, 0.8);
                 context.set_source (gradient);
                 LightPad.Frontend.Utilities.draw_rounded_rectangle (context, 10, 0.5, size);

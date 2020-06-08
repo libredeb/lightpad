@@ -95,26 +95,6 @@ namespace LightPad.Backend {
             desktop_environment = GLib.Environment.get_variable ("XDG_CURRENT_DESKTOP");
             desktop_environment = desktop_environment.up(); 
             message ("Desktop environment used: %s", desktop_environment);
-            
-            File file;
-            string os = "";
-            try {
-                file = File.new_for_path ("/etc/lsb-release");
-                var dis = new GLib.DataInputStream (file.read ());
-                string line;
-
-                while ((line = dis.read_line (null)) != null) {
-                    if ("DISTRIB_ID=" in line) {
-                        os = line.replace ("DISTRIB_ID=", "");
-                        if ("\"" in os) {
-                            os = os.replace ("\"", "");
-                        }
-                        os = os.up ();
-                    }
-                }
-            } catch (Error e) {
-                warning ("Cant open /etc/lsb-release file... not a Debian based distro");
-            }
 
             list = new Gee.ArrayList<Gee.HashMap<string, string>> ();
             foreach (GMenu.TreeEntry entry in the_apps) {
@@ -125,27 +105,11 @@ namespace LightPad.Backend {
                     app_to_add["description"] = app.get_description ();
                     
                     if (app.get_string ("Terminal") == "true") {
-                        if (os == "UBUNTU" || os == "DEBIAN") {
-                            app_to_add["command"] = "x-terminal-emulator -e " + app.get_commandline ();
-                        } else if (desktop_environment == "GNOME" || 
-                            desktop_environment == "ubuntu:GNOME" ||
-                            desktop_environment == "UNITY") {
-                            app_to_add["command"] = "gnome-terminal -- " + app.get_commandline ();
-                        } else if (desktop_environment == "PANTHEON") {
-                            app_to_add["command"] = "io.elementary.terminal -e " + app.get_commandline ();
-                        } else if (desktop_environment == "XFCE") {
-                            app_to_add["command"] = "xfce4-terminal -e " + app.get_commandline ();
-                        } else if (desktop_environment == "LXDE") {
-                            app_to_add["command"] = "lxterminal -e " + app.get_commandline ();
-                        } else if (desktop_environment == "LXQT") {
-                            app_to_add["command"] = "qterminal -e " + app.get_commandline ();
-                        }else {
-                            warning ("Can not identify your terminal");
-                            app_to_add["command"] = app.get_commandline ();    
-                        }
+                        app_to_add["command"] = "/usr/bin/lightpad_texec " + app.get_commandline ();
                     } else {
                         app_to_add["command"] = app.get_commandline ();
                     }
+                    
                     app_to_add["desktop_file"] = entry.get_desktop_file_path ();
 
                     if (!icons.has_key (app_to_add["command"])) {

@@ -28,6 +28,8 @@ public class LightPadWindow : Widgets.CompositedWindow {
     
     public int icon_size;
     public int total_pages;
+    public int scroll_times = 0;
+    public int SCROLL_SENSITIVITY = 12;
     
     public Gtk.Box top_spacer;
     public GLib.List<LightPad.Frontend.AppItem> children = new GLib.List<LightPad.Frontend.AppItem> ();
@@ -113,6 +115,9 @@ public class LightPadWindow : Widgets.CompositedWindow {
         } else if (monitor_dimensions.height == 600) { // Netbook 1024x600px
             this.grid_y = 5;
             this.grid_x = 3;
+        } else if (monitor_dimensions.height == 1080) { // Full HD 1920x1080px
+            this.grid_y = 7;
+            this.grid_x = 5;
         } else { // Monitor 16:9
             this.grid_y = 6;
             this.grid_x = 4;
@@ -343,16 +348,16 @@ public class LightPadWindow : Widgets.CompositedWindow {
     
     // Scrolling left/right for pages
     public override bool scroll_event (Gdk.EventScroll event) {
-        switch (event.direction.to_string()) {
-            case "GDK_SCROLL_UP":
-            case "GDK_SCROLL_LEFT":
-                this.page_left ();
-                break;
-            case "GDK_SCROLL_DOWN":
-            case "GDK_SCROLL_RIGHT":
-                this.page_right ();
-                break;
+        scroll_times += 1;
+        var direction = event.direction.to_string ();
+        if ((direction == "GDK_SCROLL_UP" || direction == "GDK_SCROLL_LEFT") 
+                                    && (scroll_times >= SCROLL_SENSITIVITY)) {
+            this.page_left ();
+        } else if ((direction == "GDK_SCROLL_DOWN" || direction == "GDK_SCROLL_RIGHT")
+                                    && (scroll_times >= SCROLL_SENSITIVITY)) {
+            this.page_right ();
         }
+        // If the direction is GDK_SCROLL_SMOOTH skip it
 
         return false;
     }
