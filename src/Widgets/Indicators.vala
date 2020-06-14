@@ -150,9 +150,17 @@ namespace LightPad.Frontend {
             double x = size_old.x + (size_new.x - (double) size_old.x) * progress;
             double width = size_old.width + (size_new.width - (double) size_old.width) * progress;
 
-            context.set_source_rgba (0.2, 0.2, 0.2, 1.0); //gray color
             double offset = 7.0;
             double radius = 12.0;
+
+            // Draw outside black stroke
+            context.set_source_rgba (0.1, 0.1, 0.1, 1.0);
+            context.move_to (x + radius + 1, size.y + offset + 1);
+            context.arc (x + width - radius - offset, size.y + size.height - radius - (offset / 2), radius, 0, Math.PI * 2);
+            context.set_line_width (1.0);
+            context.stroke ();
+
+            context.set_source_rgba (0.16, 0.16, 0.16, 1.0); //gray color
             context.move_to (x + radius, size.y + offset);
             context.arc (x + width - radius - offset, size.y + size.height - radius - (offset / 2), radius, 0, Math.PI * 2);
             context.fill ();
