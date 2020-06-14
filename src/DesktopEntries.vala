@@ -104,12 +104,11 @@ namespace LightPad.Backend {
                     app_to_add["name"] = app.get_display_name ();
                     app_to_add["description"] = app.get_description ();
                     
+                    // Needed to check further later if terminal is open in terminal (like VIM, HTop, etc.)
                     if (app.get_string ("Terminal") == "true") {
-                        app_to_add["command"] = "/usr/bin/lightpad_texec " + app.get_commandline ();
-                    } else {
-                        app_to_add["command"] = app.get_commandline ();
+                        app_to_add["terminal"] = "true";
                     }
-                    
+                    app_to_add["command"] = app.get_commandline ();
                     app_to_add["desktop_file"] = entry.get_desktop_file_path ();
 
                     if (!icons.has_key (app_to_add["command"])) {

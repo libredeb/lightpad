@@ -14,11 +14,11 @@ This project was originally forked from Slingshot from the elementary team:
    1. Install dependencies:
    * For Ubuntu:
    ```
-      $ sudo apt-get install meson ninja-build libgee-0.8-dev libgnome-menu-3-dev cdbs valac libvala-*-dev libglib2.0-dev libwnck-3-dev libgtk-3-dev python3 python3-wheel python3-setuptools
+      $ sudo apt-get install meson ninja-build libgee-0.8-dev libgnome-menu-3-dev cdbs valac libvala-*-dev libglib2.0-dev libwnck-3-dev libgtk-3-dev xterm python3 python3-wheel python3-setuptools
    ```
    * For Fedora:
    ```
-      $ sudo dnf install meson ninja-build libgee-devel gnome-menus-devel cdbs vala libvala-devel glib-devel libwnck-devel gtk3-devel python3 python3-wheel python3-setuptools
+      $ sudo dnf install meson ninja-build libgee-devel gnome-menus-devel cdbs vala libvala-devel glib-devel libwnck-devel gtk3-devel xterm python3 python3-wheel python3-setuptools
    ```
    2. Create a build folder:
    ```
@@ -55,6 +55,12 @@ Note: Some themes don't have the 'application-default-icon'. LightPad needs to h
 ```
 
 ## Changelog
+**Version 0.0.5**
+* Implemented the exact and standard way to open terminal apps
+* Improved meson postinstall script
+* Removed desktop environments detection to use the appropiate terminal
+* Added xterm as dependency for opening terminal apps
+
 **Version 0.0.4**
 * Fix an important bug in the page indicators causing the wrong size obtained
 * Background color brightness of page indicators increased
