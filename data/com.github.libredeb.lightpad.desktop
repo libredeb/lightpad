@@ -7,4 +7,5 @@ Exec=com.github.libredeb.lightpad
 Icon=lightpad
 Terminal=false
 Type=Application
+NoDisplay=true
 StartupNotify=false
