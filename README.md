@@ -55,6 +55,12 @@ Note: Some themes don't have the 'application-default-icon'. LightPad needs to h
 ```
 
 ## Changelog
+**Version 0.0.4**
+* Fix an important bug in the page indicators causing the wrong size obtained
+* Background color brightness of page indicators increased
+* Improved the visual appearance of the searchbar
+* Increased space between top edge of display and searchbar
+
 **Version 0.0.3**
 * Fix bug 003, where obtain a negative one causing error obtaining array index for indicator pages
 * Add suport for LXQT, LXDE and XFCE environments to open terminal apps

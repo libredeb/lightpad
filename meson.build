@@ -2,8 +2,8 @@
 project(
     'com.github.libredeb.lightpad',
     'vala', 'c',
-    version: '0.0.3',
-    meson_version: '>=0.46.0'
+    version: '0.0.4',
+    meson_version: '>=0.45.0'
 )
 
 # Create a new executable, list the files we want to compile, list the dependencies we need, and install

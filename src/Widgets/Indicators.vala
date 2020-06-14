@@ -72,8 +72,9 @@ namespace LightPad.Frontend {
         }
         
         public void set_active_no_signal (int index) {
+            int pages_length = (int) this.children.length ();
             // make sure the requested active item is in the children list
-            if (index <= ((int) this.children.length - 1)) {
+            if (index <= (pages_length - 1)) {
                 this.old_active = this.active;
                 this.active = index;
                 this.change_focus ();
@@ -149,7 +150,7 @@ namespace LightPad.Frontend {
             double x = size_old.x + (size_new.x - (double) size_old.x) * progress;
             double width = size_old.width + (size_new.width - (double) size_old.width) * progress;
 
-            context.set_source_rgba (0.1, 0.1, 0.1, 0.9); //gray color
+            context.set_source_rgba (0.2, 0.2, 0.2, 1.0); //gray color
             double offset = 7.0;
             double radius = 12.0;
             context.move_to (x + radius, size.y + offset);

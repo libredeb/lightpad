@@ -100,7 +100,7 @@ public class LightPadWindow : Widgets.CompositedWindow {
         bottom.pack_start (this.searchbar, false, true, screen_half);
         
         // Upstairs
-        container.pack_start (bottom, false, true, 20);
+        container.pack_start (bottom, false, true, 32);
         
         this.grid = new Gtk.Grid();
         this.grid.set_row_spacing (70);
