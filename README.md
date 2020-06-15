@@ -10,7 +10,7 @@ This project was originally forked from Slingshot from the elementary team:
 ![Screenshot](https://raw.githubusercontent.com/libredeb/lightpad/master/screenshot.png)
 
 ## Installation via PPA
-Only for Ubuntu based distros, open terminal run the next commands:
+Only for Ubuntu based distros, open a terminal and run the next commands:
 ```
 $ sudo add-apt-repository ppa:libredeb/lightpad
 $ sudo apt-get update
