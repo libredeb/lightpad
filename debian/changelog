@@ -1,0 +1,9 @@
+com.github.libredeb.lightpad (0.0.5) bionic; urgency=medium
+
+  * Forked from slingshot-launcher 0.0.1~pre-0~48~oneiric1
+  * Rewriten all app in GTK+ 3.0
+  * Clean all code and fix several bugs
+  * New improved searchbar and indicator pages design
+  * Implemented the correct and standard way to open terminal based apps
+
+ -- Juan Lozano <libredeb@gmail.com>  Sun, 15 Jun 2020 00:14:03 -0300
