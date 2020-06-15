@@ -21,6 +21,7 @@ Depends: ${misc:Depends}, ${shlibs:Depends},
          libglib2.0-0 (>= 2.50.0),
          libgtk-3-0 (>= 3.22.0), 
          libgnome-menu-3-0 (>= 3.13.0),
+         gnome-menus (>= 3.13.0),
          libwnck-3-0 (>= 3.20.0),
          xterm
 Description: LightPad is a lightweight, simple and powerful application launcher.
