@@ -31,6 +31,7 @@ public class LightPadWindow : Widgets.CompositedWindow {
     public int scroll_times = 0;
     public int SCROLL_SENSITIVITY = 12;
     
+    public Gdk.Rectangle monitor_dimensions;
     public Gtk.Box top_spacer;
     public GLib.List<LightPad.Frontend.AppItem> children = new GLib.List<LightPad.Frontend.AppItem> ();
     public LightPad.Frontend.Searchbar searchbar;
@@ -38,9 +39,14 @@ public class LightPadWindow : Widgets.CompositedWindow {
     
     private int grid_x;
     private int grid_y;
+    
+    public bool dynamic_background = false;
+    public string file_png = "/usr/share/lightpad/background.png";
+    public string file_jpg = "/usr/share/lightpad/background.jpg";
+    public Cairo.ImageSurface image_sf;
+    public Gdk.Pixbuf image_pf;
 
     public LightPadWindow () {
-        Gdk.Rectangle monitor_dimensions;
         Gdk.Screen default_screen = Gdk.Screen.get_default ();
         monitor_dimensions = default_screen.get_display ().get_primary_monitor ().get_geometry ();
 
@@ -149,7 +155,9 @@ public class LightPadWindow : Widgets.CompositedWindow {
         if (this.total_pages > 1) {
             pages_wrapper.pack_start (this.pages, true, false, 0);
             for (int p = 1; p <= this.total_pages; p++) {
-                this.pages.append (p.to_string ());
+                // Add the number of pages as text
+                //this.pages.append (p.to_string ());
+                this.pages.append ("⬤");
             }
         }
         this.pages.set_active (0);
@@ -157,6 +165,21 @@ public class LightPadWindow : Widgets.CompositedWindow {
         // Signals and callbacks
         this.add_events (Gdk.EventMask.SCROLL_MASK);
         //this.button_release_event.connect ( () => { this.destroy(); return false; });
+        // Dynamic Background
+        if (GLib.File.new_for_path (file_png).query_exists ()) {
+            this.dynamic_background = true;
+            image_sf = new Cairo.ImageSurface.from_png (file_png);
+        }
+        
+        if (GLib.File.new_for_path (file_jpg).query_exists ()) {
+            this.dynamic_background = true;
+            try {
+                image_pf = new Gdk.Pixbuf.from_file (file_jpg);
+            } catch (GLib.Error e) {
+                warning ("Cant create Pixbuf background!");
+            }
+        }
+        
         this.draw.connect (this.draw_background);
         //this.focus_out_event.connect ( () => { this.destroy(); return true; } );
 
@@ -291,18 +314,42 @@ public class LightPadWindow : Widgets.CompositedWindow {
     }
 
     private bool draw_background (Gtk.Widget widget, Cairo.Context ctx) {
-        Gtk.Allocation size;
-        widget.get_allocation (out size);
         var context = Gdk.cairo_create (widget.get_window ());
+        
+        if (this.dynamic_background) {
+            if (image_pf != null) { // If JPG exist, prefer this
+                // Factor scaling
+	            int w = image_pf.get_width ();
+	            double factor_scaling = (double) ((double) ((monitor_dimensions.width * 100) / w) / 100);
+	        
+	            context.scale (factor_scaling, factor_scaling);
+                Gdk.cairo_set_source_pixbuf (context, image_pf, 0, 0);
+            } else { // Is PNG image
+	            Cairo.Pattern pattern = new Cairo.Pattern.for_surface (image_sf);
+	            pattern.set_extend (Cairo.Extend.PAD);
+	        
+	            // Factor scaling
+	            int w = image_sf.get_width ();
+	            double factor_scaling = (double) ((double) ((monitor_dimensions.width * 100) / w) / 100);
+	        
+	            context.scale (factor_scaling, factor_scaling);
+	            context.set_source (pattern);
+            }
+            
+            context.paint ();
+        } else {
+            // Semi-dark background
+            Gtk.Allocation size;
+            widget.get_allocation (out size);
 
-        // Semi-dark background
-        var linear_gradient = new Cairo.Pattern.linear (size.x, size.y, size.x, size.y + size.height);
-        linear_gradient.add_color_stop_rgba (0.0, 0.0, 0.0, 0.0, 1);
-        linear_gradient.add_color_stop_rgba (0.50, 0.0, 0.0, 0.0, 0.90);
-        linear_gradient.add_color_stop_rgba (0.99, 0.0, 0.0, 0.0, 0.80);
+            var linear_gradient = new Cairo.Pattern.linear (size.x, size.y, size.x, size.y + size.height);
+            linear_gradient.add_color_stop_rgba (0.0, 0.0, 0.0, 0.0, 1);
+            linear_gradient.add_color_stop_rgba (0.50, 0.0, 0.0, 0.0, 0.90);
+            linear_gradient.add_color_stop_rgba (0.99, 0.0, 0.0, 0.0, 0.80);
 
-        context.set_source (linear_gradient);
-        context.paint ();
+            context.set_source (linear_gradient);
+            context.paint ();
+        }
 
         return false;
     }

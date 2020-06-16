@@ -102,7 +102,8 @@ namespace LightPad.Frontend {
             this.animation_duration = 240;
             int difference = (this.old_active - this.active).abs ();
             this.animation_duration += (int) (Math.pow (difference, 0.5) * 80);
-            this.animation_frames = (int)((double) animation_duration / 1000 * FPS);
+            //this.animation_frames = (int)((double) animation_duration / 1000 * FPS);
+            this.animation_frames = 2;
 
             // initial conditions for animation.
             this.current_frame = 0;
@@ -148,21 +149,25 @@ namespace LightPad.Frontend {
 
             // Move and make a new rectangle, according to progress
             double x = size_old.x + (size_new.x - (double) size_old.x) * progress;
+            double y = size_old.y + (size_new.y - (double) size_old.y);
             double width = size_old.width + (size_new.width - (double) size_old.width) * progress;
+            double height = size_old.height + (size_new.height - (double) size_old.height);
 
-            double offset = 7.0;
-            double radius = 12.0;
+            double offset = 2.0; //  old: 7.0
+            double radius = 6.0; // old: 12.0
 
-            // Draw outside black stroke
+            context.set_source_rgba (1.0, 1.0, 1.0, 1.0); // white background color
+            context.move_to (x + radius, size.y + offset);
+            // old code 
+            /* // Draw outside black stroke
             context.set_source_rgba (0.1, 0.1, 0.1, 1.0);
             context.move_to (x + radius + 1, size.y + offset + 1);
             context.arc (x + width - radius - offset, size.y + size.height - radius - (offset / 2), radius, 0, Math.PI * 2);
             context.set_line_width (1.0);
             context.stroke ();
-
-            context.set_source_rgba (0.16, 0.16, 0.16, 1.0); //gray color
-            context.move_to (x + radius, size.y + offset);
-            context.arc (x + width - radius - offset, size.y + size.height - radius - (offset / 2), radius, 0, Math.PI * 2);
+                context.arc (x + width - radius - offset, size.y + size.height - radius - (offset / 2), radius, 0, Math.PI * 2);
+                */
+            context.arc (x + width/2, y + height/2, radius, 0, Math.PI * 2);
             context.fill ();
 
             return false;

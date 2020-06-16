@@ -62,6 +62,13 @@ Note: Some themes don't have the 'application-default-icon'. LightPad needs to h
 # gtk-update-icon-cache /usr/share/icons/hicolor
 ```
 
+## Dynamic Background (optional feature)
+
+LighPad added a new feature, now you can use a custom background of your choice. You can add any wallpaper or image strictly under some of the following path/files and lightpad will use them, prioritizing the JPG format):
+`/usr/share/lightpad/background.jpg`
+`/usr/share/lightpad/background.png`
+
+
 ## Changelog
 **Version 0.0.5**
 * Implemented the exact and standard way to open terminal apps
