@@ -65,11 +65,18 @@ Note: Some themes don't have the 'application-default-icon'. LightPad needs to h
 ## Dynamic Background (optional feature)
 
 LighPad added a new feature, now you can use a custom background of your choice. You can add any wallpaper or image strictly under some of the following path/files and lightpad will use them, prioritizing the JPG format):
-`/usr/share/lightpad/background.jpg`
-`/usr/share/lightpad/background.png`
+> `/usr/share/lightpad/background.jpg`
+
+> `/usr/share/lightpad/background.png`
 
 
 ## Changelog
+**Version 0.0.7**
+* Change indicator pages text for dots without animations
+* Fixed the CSS design of the searchbar that made it look cut on some screens
+* Implemented a new feature, now the black background is dynamic using an image if there exists
+* Some bug fixing
+
 **Version 0.0.5**
 * Implemented the exact and standard way to open terminal apps
 * Improved meson postinstall script
