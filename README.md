@@ -56,7 +56,7 @@ Once installed set shortcut key to access LightPad.
 
 Now assign it a shortcut key, such as CTRL+SPACE.
 
-Note: Some themes don't have the 'application-default-icon'. LightPad needs to have this icon, so please download it from the [FlatWoken](https://github.com/alecive/FlatWoken) icon pack and execute the following commands:
+**Note:** Some themes don't have the 'application-default-icon'. LightPad needs to have this icon, so please download it from the [elementary_os/icons](https://github.com/elementary/icons/blob/master/apps/128/application-default-icon.svg) pack and execute the following commands:
 ```
 # cp application-default-icon.svg /usr/share/icons/hicolor/scalable/apps/
 # gtk-update-icon-cache /usr/share/icons/hicolor
@@ -75,6 +75,7 @@ LighPad added a new feature, now you can use a custom background of your choice.
 * Change indicator pages text for dots without animations
 * Fixed the CSS design of the searchbar that made it look cut on some screens
 * Implemented a new feature, now the black background is dynamic using an image if there exists
+* Added a new feature, now the apps are ordered alphabetically
 * Some bug fixing
 
 **Version 0.0.5**
