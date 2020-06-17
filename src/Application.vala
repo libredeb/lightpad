@@ -322,9 +322,9 @@ public class LightPadWindow : Widgets.CompositedWindow {
             if (image_pf != null) { // If JPG exist, prefer this
                 // Factor scaling
 	            int w = image_pf.get_width ();
-	            double factor_scaling = (double) ((double) ((monitor_dimensions.width * 100) / w) / 100);
-	        
-	            context.scale (factor_scaling, factor_scaling);
+	            int h = image_pf.get_height ();
+	            
+	            context.scale ((double) monitor_dimensions.width / w, (double) monitor_dimensions.height / h);
                 Gdk.cairo_set_source_pixbuf (context, image_pf, 0, 0);
             } else { // Is PNG image
 	            Cairo.Pattern pattern = new Cairo.Pattern.for_surface (image_sf);
@@ -332,9 +332,9 @@ public class LightPadWindow : Widgets.CompositedWindow {
 	        
 	            // Factor scaling
 	            int w = image_sf.get_width ();
-	            double factor_scaling = (double) ((double) ((monitor_dimensions.width * 100) / w) / 100);
+	            int h = image_pf.get_height ();
 	        
-	            context.scale (factor_scaling, factor_scaling);
+	            context.scale ((double) monitor_dimensions.width / w, (double) monitor_dimensions.height / h);
 	            context.set_source (pattern);
             }
             
