@@ -69,7 +69,7 @@ public class LightPadWindow : Widgets.CompositedWindow {
             this.icon_size = 24;
         } else if (suggested_size >= 27 && suggested_size < 40) {
             this.icon_size = 32;
-        } else if (suggested_size >= 40 && suggested_size < 56) {
+        } else if ((suggested_size >= 40 && suggested_size < 56) || (monitor_dimensions.height == 720)) {
             this.icon_size = 48;
         } else if (suggested_size >= 56) {
             this.icon_size = 64;
