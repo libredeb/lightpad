@@ -76,6 +76,7 @@ LighPad added a new feature, now you can use a custom background of your choice.
 * Fixed the CSS design of the searchbar that made it look cut on some screens
 * Implemented a new feature, now the black background is dynamic using an image if there exists
 * Added a new feature, now the apps are ordered alphabetically
+* Add SPEC and PKGBUILD files to make packages for Fedora and Arch Linux
 * Some bug fixing
 
 **Version 0.0.5**
