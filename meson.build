@@ -11,11 +11,27 @@ prefix = get_option('prefix')
 libdir = join_paths(prefix, get_option('libdir'))
 datadir = join_paths(prefix, get_option('datadir'))
 
+VAPI_DIR = join_paths(meson.source_root(),
+                      'vapi')
+vala = meson.get_compiler('vala')
+
 # Global configuration data - matches vapi/config.vapi strings
 conf = configuration_data()
-conf.set('PROJECT_NAME', PROJECT_NAME)
+conf.set_quoted('PROJECT_NAME', PROJECT_NAME)
 conf.set_quoted('PACKAGE_LIBDIR', libdir)
 conf.set_quoted('PACKAGE_SHAREDIR', datadir)
+
+config_h = configure_file(
+	output: 'config.h',
+	configuration: conf
+)
+
+config_dep = declare_dependency(
+	dependencies: vala.find_library('config', dirs: VAPI_DIR),
+	sources: config_h
+)
+
+config_inc_dir = include_directories('.')
 
 LightpadValaArgs = [
     '--pkg=config',
@@ -50,13 +66,14 @@ executable(
         '-DGMENU_I_KNOW_THIS_IS_UNSTABLE',
     ],
     vala_args: LightpadValaArgs,
+    include_directories: config_inc_dir,
     install: true
 )
 
 # Install CSS file
 install_data(
     join_paths('data', 'application.css'),
-    install_dir: datadir, PROJECT_NAME)
+    install_dir: join_paths(datadir, PROJECT_NAME)
 )
 
 # Install app icons
@@ -64,20 +81,20 @@ icon_sizes = ['24', '32', '48', '64', '128']
 foreach i : icon_sizes
     install_data(
         join_paths('data', 'icons', i, 'lightpad.svg'),
-        install_dir: datadir, 'icons', 'hicolor', i + 'x' + i, 'apps')
+        install_dir: join_paths(datadir, 'icons', 'hicolor', i + 'x' + i, 'apps')
     )
 endforeach
 
 # Install our .desktop file so the Applications Menu will see it
 install_data(
     join_paths('data', meson.project_name() + '.desktop'),
-    install_dir: datadir, 'applications')
+    install_dir: join_paths(datadir, 'applications')
 )
 
 # Install our .appdata.xml file so AppCenter will see it
 install_data(
     join_paths('data', meson.project_name() + '.appdata.xml'),
-    install_dir: datadir, 'metainfo')
+    install_dir: join_paths(datadir, 'metainfo')
 )
 
 meson.add_install_script('post_install.py')

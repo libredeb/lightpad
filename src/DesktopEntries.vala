@@ -113,7 +113,8 @@ namespace LightPad.Backend {
 
                     if (!icons.has_key (app_to_add["command"])) {
                         var app_icon = app.get_icon ().to_string ();
-                        var icon_prefix = "/usr/share/pixmaps/";
+                        var icon_prefix = Config.PACKAGE_SHAREDIR +
+                            "/" + "pixmaps/";
                         try {
                             if (icon_theme.has_icon (app_icon)) {
                                 /* Attention: the icons inside the icon_theme can tell lies about
