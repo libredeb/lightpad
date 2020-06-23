@@ -25,24 +25,28 @@ public class LightPadWindow : Widgets.CompositedWindow {
     public Gee.HashMap<string, Gdk.Pixbuf> icons = new Gee.HashMap<string, Gdk.Pixbuf>();
     public Gee.ArrayList<Gee.HashMap<string, string>> filtered = new Gee.ArrayList<Gee.HashMap<string, string>> ();
     public LightPad.Frontend.Indicators pages;
-    
+
     public int icon_size;
     public int total_pages;
     public int scroll_times = 0;
     public int SCROLL_SENSITIVITY = 12;
-    
+
     public Gdk.Rectangle monitor_dimensions;
     public Gtk.Box top_spacer;
     public GLib.List<LightPad.Frontend.AppItem> children = new GLib.List<LightPad.Frontend.AppItem> ();
     public LightPad.Frontend.Searchbar searchbar;
     public Gtk.Grid grid;
-    
+
     private int grid_x;
     private int grid_y;
-    
+
     public bool dynamic_background = false;
-    public string file_png = "/usr/share/lightpad/background.png";
-    public string file_jpg = "/usr/share/lightpad/background.jpg";
+    public string file_png = Config.PACKAGE_SHAREDIR +
+        "/" + Config.PROJECT_NAME +
+        "/" + "background.png";
+    public string file_jpg = Config.PACKAGE_SHAREDIR +
+        "/" + Config.PROJECT_NAME +
+        "/" + "background.jpg";
     public Cairo.ImageSurface image_sf;
     public Gdk.Pixbuf image_pf;
 
@@ -52,7 +56,7 @@ public class LightPadWindow : Widgets.CompositedWindow {
 
         // Window properties
         this.set_title ("LightPad");
-        /* Skip that a workspace switcher and taskbars displays a 
+        /* Skip that a workspace switcher and taskbars displays a
            thumbnail representation of the window in the screen */
         this.set_skip_pager_hint (true);
         this.set_skip_taskbar_hint (true);
@@ -60,7 +64,7 @@ public class LightPadWindow : Widgets.CompositedWindow {
         this.fullscreen ();
         message ("The monitor dimensions are: %dx%d", monitor_dimensions.width,  monitor_dimensions.height);
         this.set_default_size (monitor_dimensions.width,  monitor_dimensions.height);
-        
+
         // Set apps icon size
         double scale_factor = (1.0/3.0);
         double suggested_size = Math.pow (monitor_dimensions.width * monitor_dimensions.height, scale_factor);
@@ -75,10 +79,10 @@ public class LightPadWindow : Widgets.CompositedWindow {
             this.icon_size = 64;
         }
         message ("The apps icon size is: %d", this.icon_size);
-        
+
         // Get all apps
         LightPad.Backend.DesktopEntries.enumerate_apps (this.icons, this.icon_size, out this.apps);
-        
+
         // Add container wrapper
         var wrapper = new Gtk.EventBox (); // Used for the scrolling and button press events
         wrapper.set_visible_window (false);
@@ -104,10 +108,10 @@ public class LightPadWindow : Widgets.CompositedWindow {
         // Lateral distance (120 are the pixels of the searchbar width)
         int screen_half = (monitor_dimensions.width / 2) - 120;
         bottom.pack_start (this.searchbar, false, true, screen_half);
-        
+
         // Upstairs
         container.pack_start (bottom, false, true, 32);
-        
+
         this.grid = new Gtk.Grid();
         this.grid.set_row_spacing (70);
         this.grid.set_column_spacing (30);
@@ -172,7 +176,7 @@ public class LightPadWindow : Widgets.CompositedWindow {
             this.dynamic_background = true;
             image_sf = new Cairo.ImageSurface.from_png (file_png);
         }
-        
+
         if (GLib.File.new_for_path (file_jpg).query_exists ()) {
             this.dynamic_background = true;
             try {
@@ -181,12 +185,12 @@ public class LightPadWindow : Widgets.CompositedWindow {
                 warning ("Cant create Pixbuf background!");
             }
         }
-        
+
         this.draw.connect (this.draw_background);
         //this.focus_out_event.connect ( () => { this.destroy(); return true; } );
 
     }
-    
+
     private void search() {
         var current_text = this.searchbar.text.down ();
         this.filtered.clear ();
@@ -203,7 +207,7 @@ public class LightPadWindow : Widgets.CompositedWindow {
 
         this.queue_draw ();
     }
-    
+
     private void populate_grid () {
         for (int r = 0; r < this.grid_x; r++) {
             for (int c = 0; c < this.grid_y; c++) {
@@ -224,7 +228,7 @@ public class LightPadWindow : Widgets.CompositedWindow {
                             page_active = 0;
                         }
                         int app_index = (int) (child_index + (page_active * this.grid_y * this.grid_x));
-                        
+
                         /* GTK+ implements open apps in terminal in this way:
                          * https://github.com/GNOME/glib/blob/cd1eba043c90da3aee8f5cd51b205b2e2c16f08e/gio/gdesktopappinfo.c#L2467-L2494
                          * So, if the desktop environment is not GNOME we need xterm as dependency
@@ -247,7 +251,7 @@ public class LightPadWindow : Widgets.CompositedWindow {
             }
         }
     }
-    
+
     private void update_grid (Gee.ArrayList<Gee.HashMap<string, string>> apps) {
         int item_iter = (int)(this.pages.active * this.grid_y * this.grid_x);
         /* Fix for bug 001 with message:
@@ -255,7 +259,7 @@ public class LightPadWindow : Widgets.CompositedWindow {
         if (item_iter < 0) {
             item_iter = 0;
         }
-        
+
         for (int r = 0; r < this.grid_x; r++) {
             for (int c = 0; c < this.grid_y; c++) {
                 int table_pos = c + (r * (int)this.grid_y); // position in table right now
@@ -279,7 +283,7 @@ public class LightPadWindow : Widgets.CompositedWindow {
 
             }
         }
-        
+
         // Update number of pages
         this.update_pages (apps);
 
@@ -302,7 +306,7 @@ public class LightPadWindow : Widgets.CompositedWindow {
             this.pages.visible = false;
         }
     }
-    
+
     private void page_left () {
         if (this.pages.active >= 1) {
             this.pages.set_active (this.pages.active - 1);
@@ -317,19 +321,19 @@ public class LightPadWindow : Widgets.CompositedWindow {
 
     private bool draw_background (Gtk.Widget widget, Cairo.Context ctx) {
         var context = Gdk.cairo_create (widget.get_window ());
-        
+
         if (this.dynamic_background) {
             if (image_pf != null) { // If JPG exist, prefer this
                     // Factor scaling
 	            int w = image_pf.get_width ();
 	            double factor_scaling = (double) ((double) ((monitor_dimensions.width * 100) / w) / 100);
-	            
+
 	            context.scale (factor_scaling, factor_scaling);
                 Gdk.cairo_set_source_pixbuf (context, image_pf, 0, 0);
             } else { // Is PNG image
 	            Cairo.Pattern pattern = new Cairo.Pattern.for_surface (image_sf);
 	            pattern.set_extend (Cairo.Extend.PAD);
-	        
+
 	            // Factor scaling
 	            int w = image_sf.get_width ();
 	            double factor_scaling = (double) ((double) ((monitor_dimensions.width * 100) / w) / 100);
@@ -337,7 +341,7 @@ public class LightPadWindow : Widgets.CompositedWindow {
                     context.scale (factor_scaling, factor_scaling);
 	            context.set_source (pattern);
             }
-            
+
             context.paint ();
         } else {
             // Semi-dark background
@@ -404,12 +408,12 @@ public class LightPadWindow : Widgets.CompositedWindow {
         base.key_press_event (event);
         return false;
     }
-    
+
     // Scrolling left/right for pages
     public override bool scroll_event (Gdk.EventScroll event) {
         scroll_times += 1;
         var direction = event.direction.to_string ();
-        if ((direction == "GDK_SCROLL_UP" || direction == "GDK_SCROLL_LEFT") 
+        if ((direction == "GDK_SCROLL_UP" || direction == "GDK_SCROLL_LEFT")
                                     && (scroll_times >= SCROLL_SENSITIVITY)) {
             this.page_left ();
         } else if ((direction == "GDK_SCROLL_DOWN" || direction == "GDK_SCROLL_RIGHT")
@@ -420,7 +424,7 @@ public class LightPadWindow : Widgets.CompositedWindow {
 
         return false;
     }
-    
+
     // Override destroy for fade out and stuff
     public new void destroy () {
         base.destroy();
@@ -433,20 +437,22 @@ static int main (string[] args) {
 
     Gtk.init (ref args);
     Gtk.Application app = new Gtk.Application ("org.libredeb.lightpad", GLib.ApplicationFlags.FLAGS_NONE);
-    
+
     // CSS Style Provider
     // Path where takes the CSS file
-    string css_file = "/usr/share/lightpad/application.css";
+    string css_file = Config.PACKAGE_SHAREDIR +
+        "/" + Config.PROJECT_NAME +
+        "/" + "application.css";
     var css_provider = new Gtk.CssProvider ();
 
     try {
         css_provider.load_from_path (css_file);
-        Gtk.StyleContext.add_provider_for_screen (Gdk.Screen.get_default(), css_provider,   
+        Gtk.StyleContext.add_provider_for_screen (Gdk.Screen.get_default(), css_provider,
                                                         Gtk.STYLE_PROVIDER_PRIORITY_USER);
     } catch (GLib.Error e) {
         warning ("Could not load CSS file: %s",css_file);
     }
-    
+
     app.activate.connect( () => {
         if (app.get_windows ().length () == 0) {
             var main_window = new LightPadWindow ();
