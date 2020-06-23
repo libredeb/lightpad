@@ -2,6 +2,8 @@
 
 LightPad is a lightweight, simple and powerful application launcher. It is also Wayland compatible.
 
+It is being developed for [Twister OS](https://raspbian-x.com/)
+
 This project was originally forked from Slingshot from the elementary team:
 
   * [https://launchpad.net/slingshot](https://launchpad.net/slingshot)
