@@ -115,19 +115,12 @@ namespace LightPad.Frontend {
         public void hint () {
             this.buffer.text = "";
             this.label.label = this.hint_string;
-            this.grey_out ();
             this.clear_icon.visible = false;
         }
 
         public void unhint () {
             this.text = "";
             this.reset_font ();
-        }
-
-        private void grey_out () {
-            this.label.get_style_context ().remove_class ("search_normal");
-            this.label.get_style_context ().add_class ("search_greyout");
-            this.is_hinted = true;
         }
         
         private void reset_font () {

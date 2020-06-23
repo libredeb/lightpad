@@ -88,13 +88,6 @@ namespace LightPad.Backend {
             message ("Amount of apps: %d", the_apps.size);
             
             var icon_theme = Gtk.IconTheme.get_default();
-            
-            /* Checking Desktop Environment to use the correct terminal.
-               This code fix the bug 002 (doesn't open apps than runs on terminal) */
-            string desktop_environment = "";
-            desktop_environment = GLib.Environment.get_variable ("XDG_CURRENT_DESKTOP");
-            desktop_environment = desktop_environment.up(); 
-            message ("Desktop environment used: %s", desktop_environment);
 
             list = new Gee.ArrayList<Gee.HashMap<string, string>> ();
             foreach (GMenu.TreeEntry entry in the_apps) {
@@ -113,8 +106,8 @@ namespace LightPad.Backend {
 
                     if (!icons.has_key (app_to_add["command"])) {
                         var app_icon = app.get_icon ().to_string ();
-                        var icon_prefix = Config.PACKAGE_SHAREDIR +
-                            "/" + "pixmaps/";
+                        // This is not related to snap package... is related to the system itself
+                        var icon_prefix = "/usr/share/pixmaps/";
                         try {
                             if (icon_theme.has_icon (app_icon)) {
                                 /* Attention: the icons inside the icon_theme can tell lies about

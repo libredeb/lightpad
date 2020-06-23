@@ -41,12 +41,14 @@ public class LightPadWindow : Widgets.CompositedWindow {
     private int grid_y;
 
     public bool dynamic_background = false;
+    public double factor_scaling;
     public string file_png = Config.PACKAGE_SHAREDIR +
         "/" + Config.PROJECT_NAME +
         "/" + "background.png";
     public string file_jpg = Config.PACKAGE_SHAREDIR +
         "/" + Config.PROJECT_NAME +
         "/" + "background.jpg";
+    public Cairo.Pattern pattern;
     public Cairo.ImageSurface image_sf;
     public Gdk.Pixbuf image_pf;
 
@@ -175,12 +177,18 @@ public class LightPadWindow : Widgets.CompositedWindow {
         if (GLib.File.new_for_path (file_png).query_exists ()) {
             this.dynamic_background = true;
             image_sf = new Cairo.ImageSurface.from_png (file_png);
+            pattern = new Cairo.Pattern.for_surface (image_sf);
+	        pattern.set_extend (Cairo.Extend.PAD);
+	        int w = image_sf.get_width ();
+	        factor_scaling = (double) ((double) ((monitor_dimensions.width * 100) / w) / 100);
         }
 
         if (GLib.File.new_for_path (file_jpg).query_exists ()) {
             this.dynamic_background = true;
             try {
                 image_pf = new Gdk.Pixbuf.from_file (file_jpg);
+                int w = image_pf.get_width ();
+	            factor_scaling = (double) ((double) ((monitor_dimensions.width * 100) / w) / 100);
             } catch (GLib.Error e) {
                 warning ("Cant create Pixbuf background!");
             }
@@ -324,21 +332,10 @@ public class LightPadWindow : Widgets.CompositedWindow {
 
         if (this.dynamic_background) {
             if (image_pf != null) { // If JPG exist, prefer this
-                    // Factor scaling
-	            int w = image_pf.get_width ();
-	            double factor_scaling = (double) ((double) ((monitor_dimensions.width * 100) / w) / 100);
-
 	            context.scale (factor_scaling, factor_scaling);
                 Gdk.cairo_set_source_pixbuf (context, image_pf, 0, 0);
             } else { // Is PNG image
-	            Cairo.Pattern pattern = new Cairo.Pattern.for_surface (image_sf);
-	            pattern.set_extend (Cairo.Extend.PAD);
-
-	            // Factor scaling
-	            int w = image_sf.get_width ();
-	            double factor_scaling = (double) ((double) ((monitor_dimensions.width * 100) / w) / 100);
-
-                    context.scale (factor_scaling, factor_scaling);
+	            context.scale (factor_scaling, factor_scaling);
 	            context.set_source (pattern);
             }
 
