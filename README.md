@@ -92,6 +92,13 @@ These lines appear in the **.desktop** files located in `/usr/share/applications
 
 
 ## Changelog
+**Version 0.0.8**
+* Templates added to make packages for Arch Linux (PKG) and Fedora (RPM)
+* Config files are introduced for project constants, replacing the hardcoded paths
+* Clean CSS code, some vars and unused functionality
+* New feature added: hide apps using a blacklist file.
+* The paths of background files are moved to `$HOME/.lightpad/`
+
 **Version 0.0.7**
 * Change indicator pages text for dots without animations
 * Fixed the CSS design of the searchbar that made it look cut on some screens
