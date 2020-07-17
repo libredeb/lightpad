@@ -66,7 +66,7 @@ Now assign it a shortcut key, such as CTRL+SPACE.
 
 ## Dynamic Background (optional feature)
 
-LighPad added a new feature, now you can use a custom background of your choice. You can add any wallpaper or image strictly under some of the following path/files and lightpad will use them, prioritizing the JPG format):
+LighPad added a new feature, now you can use a custom background of your choice. You can add any wallpaper or image strictly under some of the following path/files and lightpad will use them (prioritizing the JPG format):
 > `$HOME/.lightpad/background.jpg`
 
 > `$HOME/.lightpad/background.png`
