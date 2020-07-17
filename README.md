@@ -73,7 +73,7 @@ LighPad added a new feature, now you can use a custom background of your choice.
 
 ## Blacklist File (optional feature)
 
-Another new added functionality, is the ability to hide applications using a blacklist file. In which, the full name of the binaries of those applications that you want to hide in LightPad must be added line by line. For example:
+Another new added functionality, is the ability to hide applications using a blacklist file. In the file `$HOME/.lightpad/blacklist` you must add line by line the full name of the binaries of the applications you want to hide in LightPad. For example:
 ```
 nautilus
 rhythmbox
