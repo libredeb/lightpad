@@ -19,28 +19,10 @@
 * Authored by: Juan Pablo Lozano <libredeb@gmail.com>
 */
 
-.search_normal {
-    color: #FFFFFF;
-    font-style: normal;
-}
-
-.search_greyout {
-    color: #a0a0a0;
-    font-style: italic;
-}
-
-.indicator_label {
-    color: rgba(170,170,170,0.5);
-    font-style: normal;
-    font-size: smaller;
-    font-weight: 900;
-}
-
-.search_bg {
-    color: rgba(255, 255, 255, 0.82);
-    border: 1px solid rgba(255, 255, 255, 0.24);
-    border-radius: 6px;
-    background: rgba(255, 255, 255, 0.18);
-/*  font-size: 16px;
-    padding: 2px;    */
+/*
+ * Here are declared constants and others resources
+ */
+namespace Resources {
+     public const string LIGHTPAD_CONFIG_DIR = "/." + Config.PROJECT_NAME;
+     public const string BLACKLIST_FILE = LIGHTPAD_CONFIG_DIR + "/blacklist";
 }

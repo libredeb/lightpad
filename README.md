@@ -67,9 +67,25 @@ Now assign it a shortcut key, such as CTRL+SPACE.
 ## Dynamic Background (optional feature)
 
 LighPad added a new feature, now you can use a custom background of your choice. You can add any wallpaper or image strictly under some of the following path/files and lightpad will use them, prioritizing the JPG format):
-> `/usr/share/lightpad/background.jpg`
+> `$HOME/.lightpad/background.jpg`
 
-> `/usr/share/lightpad/background.png`
+> `$HOME/.lightpad/background.png`
+
+## Blacklist File (optional feature)
+
+Another new added functionality, is the ability to hide applications using a blacklist file. In which, the full name of the binaries of those applications that you want to hide in LightPad must be added line by line. For example:
+```
+nautilus
+rhythmbox
+gnome-screenshot
+gnome-terminal
+firefox
+htop
+/usr/bin/gparted
+/usr/bin/vlc
+```
+
+These lines appear in the **.desktop** files located in `/usr/share/applications` as the value of the **Exec=** tag.
 
 
 ## Changelog

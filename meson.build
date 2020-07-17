@@ -46,6 +46,7 @@ executable(
     'src/DesktopEntries.vala',
     'src/Utilities.vala',
     'src/Color.vala',
+    'src/Resources.vala',
     'src/Widgets/CompositedWindow.vala',
     'src/Widgets/Searchbar.vala',
     'src/Widgets/Indicators.vala',

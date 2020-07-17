@@ -71,6 +71,7 @@ namespace LightPad.Backend {
         
         public static void enumerate_apps (Gee.HashMap<string, Gdk.Pixbuf> icons, 
                 int icon_size,
+                string user_home,
                 out Gee.ArrayList<Gee.HashMap<string, string>> list) {
             
             var the_apps = new Gee.HashSet<GMenu.TreeEntry> (
@@ -86,13 +87,34 @@ namespace LightPad.Backend {
             }
             
             message ("Amount of apps: %d", the_apps.size);
-            
             var icon_theme = Gtk.IconTheme.get_default();
-
             list = new Gee.ArrayList<Gee.HashMap<string, string>> ();
+            
+            var blacklist_file = GLib.File.new_for_path (user_home + Resources.BLACKLIST_FILE);
+            var apps_hidden = new Gee.ArrayList<string> ();
+            
+            if (blacklist_file.query_exists ()) {
+                try {
+                    var dis = new DataInputStream (blacklist_file.read ());
+                    string line;
+            
+                    while ((line = dis.read_line (null)) != null) {
+                        apps_hidden.add (line);
+                    }
+                } catch (GLib.Error e) {
+                    warning ("Blacklist file could not be found, no hidden apps");
+                }
+            } else {
+                apps_hidden.add ("");
+            }
+            
             foreach (GMenu.TreeEntry entry in the_apps) {
                 var app = entry.get_app_info ();
-                if (app.get_nodisplay () == false && app.get_is_hidden() == false && app.get_icon() != null) {
+                if (app.get_nodisplay () == false && 
+                    app.get_is_hidden() == false && 
+                    app.get_icon() != null &&
+                    !(app.get_commandline ().split (" ")[0] in apps_hidden))
+                {
                     var app_to_add = new Gee.HashMap<string, string> ();
                     app_to_add["name"] = app.get_display_name ();
                     app_to_add["description"] = app.get_description ();

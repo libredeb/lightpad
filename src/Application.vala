@@ -21,6 +21,7 @@
 
 public class LightPadWindow : Widgets.CompositedWindow {
 
+    public static string user_home = GLib.Environment.get_variable ("HOME");
     public Gee.ArrayList<Gee.HashMap<string, string>> apps = new Gee.ArrayList<Gee.HashMap<string, string>> ();
     public Gee.HashMap<string, Gdk.Pixbuf> icons = new Gee.HashMap<string, Gdk.Pixbuf>();
     public Gee.ArrayList<Gee.HashMap<string, string>> filtered = new Gee.ArrayList<Gee.HashMap<string, string>> ();
@@ -42,11 +43,9 @@ public class LightPadWindow : Widgets.CompositedWindow {
 
     public bool dynamic_background = false;
     public double factor_scaling;
-    public string file_png = Config.PACKAGE_SHAREDIR +
-        "/" + Config.PROJECT_NAME +
+    public string file_png = user_home + Resources.LIGHTPAD_CONFIG_DIR +
         "/" + "background.png";
-    public string file_jpg = Config.PACKAGE_SHAREDIR +
-        "/" + Config.PROJECT_NAME +
+    public string file_jpg = user_home + Resources.LIGHTPAD_CONFIG_DIR +
         "/" + "background.jpg";
     public Cairo.Pattern pattern;
     public Cairo.ImageSurface image_sf;
@@ -83,7 +82,7 @@ public class LightPadWindow : Widgets.CompositedWindow {
         message ("The apps icon size is: %d", this.icon_size);
 
         // Get all apps
-        LightPad.Backend.DesktopEntries.enumerate_apps (this.icons, this.icon_size, out this.apps);
+        LightPad.Backend.DesktopEntries.enumerate_apps (this.icons, this.icon_size, user_home, out this.apps);
 
         // Add container wrapper
         var wrapper = new Gtk.EventBox (); // Used for the scrolling and button press events
@@ -174,15 +173,6 @@ public class LightPadWindow : Widgets.CompositedWindow {
         this.add_events (Gdk.EventMask.SCROLL_MASK);
         //this.button_release_event.connect ( () => { this.destroy(); return false; });
         // Dynamic Background
-        if (GLib.File.new_for_path (file_png).query_exists ()) {
-            this.dynamic_background = true;
-            image_sf = new Cairo.ImageSurface.from_png (file_png);
-            pattern = new Cairo.Pattern.for_surface (image_sf);
-	        pattern.set_extend (Cairo.Extend.PAD);
-	        int w = image_sf.get_width ();
-	        factor_scaling = (double) ((double) ((monitor_dimensions.width * 100) / w) / 100);
-        }
-
         if (GLib.File.new_for_path (file_jpg).query_exists ()) {
             this.dynamic_background = true;
             try {
@@ -192,6 +182,13 @@ public class LightPadWindow : Widgets.CompositedWindow {
             } catch (GLib.Error e) {
                 warning ("Cant create Pixbuf background!");
             }
+        } else if (GLib.File.new_for_path (file_png).query_exists ()) {
+            this.dynamic_background = true;
+            image_sf = new Cairo.ImageSurface.from_png (file_png);
+            pattern = new Cairo.Pattern.for_surface (image_sf);
+	        pattern.set_extend (Cairo.Extend.PAD);
+	        int w = image_sf.get_width ();
+	        factor_scaling = (double) ((double) ((monitor_dimensions.width * 100) / w) / 100);
         }
 
         this.draw.connect (this.draw_background);
