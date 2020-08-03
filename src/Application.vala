@@ -96,13 +96,8 @@ public class LightPadWindow : Widgets.CompositedWindow {
         // Add top bar
         var bottom = new Gtk.Box (Gtk.Orientation.HORIZONTAL, 0);
 
-        this.top_spacer = new Gtk.Box (Gtk.Orientation.HORIZONTAL, 20);
-        this.top_spacer.realize.connect ( () => { this.top_spacer.visible = true; } );
-        this.top_spacer.can_focus = true;
-        bottom.pack_start (this.top_spacer, false, false, 0);
-
         // Searchbar
-        this.searchbar = new LightPad.Frontend.Searchbar ("...");
+        this.searchbar = new LightPad.Frontend.Searchbar ("Search");
         message ("Searchbar created!");
         this.searchbar.changed.connect (this.search);
 
@@ -114,8 +109,8 @@ public class LightPadWindow : Widgets.CompositedWindow {
         container.pack_start (bottom, false, true, 32);
 
         this.grid = new Gtk.Grid();
-        this.grid.set_row_spacing (70);
-        this.grid.set_column_spacing (30);
+        this.grid.set_row_spacing (30);
+        this.grid.set_column_spacing (0);
         this.grid.set_halign (Gtk.Align.CENTER);
 
         // Make icon grid and populate
@@ -124,14 +119,17 @@ public class LightPadWindow : Widgets.CompositedWindow {
             this.grid_x = 5;
             this.grid_y = 5;
         } else if (monitor_dimensions.height == 600) { // Netbook 1024x600px
-            this.grid_y = 5;
-            this.grid_x = 3;
-        } else if (monitor_dimensions.height == 1080) { // Full HD 1920x1080px
-            this.grid_y = 7;
-            this.grid_x = 5;
-        } else { // Monitor 16:9
             this.grid_y = 6;
             this.grid_x = 4;
+        } else if (monitor_dimensions.height == 720) { // HD 1280x720px
+            this.grid_y = 7;
+            this.grid_x = 5;
+        } else if (monitor_dimensions.height == 1080) { // Full HD 1920x1080px
+            this.grid_y = 9;
+            this.grid_x = 7;
+        } else { // Monitor 16:9
+            this.grid_y = 6;
+            this.grid_x = 5;
         }
 
         // Initialize the grid
@@ -221,7 +219,6 @@ public class LightPadWindow : Widgets.CompositedWindow {
 
                 item.button_press_event.connect ( () => { item.grab_focus (); return true; } );
                 item.enter_notify_event.connect ( () => { item.grab_focus (); return true; } );
-                item.leave_notify_event.connect ( () => { this.top_spacer.grab_focus (); return true; } );
                 item.button_release_event.connect ( () => {
                     try {
                         int child_index = this.children.index (item);
@@ -343,9 +340,7 @@ public class LightPadWindow : Widgets.CompositedWindow {
             widget.get_allocation (out size);
 
             var linear_gradient = new Cairo.Pattern.linear (size.x, size.y, size.x, size.y + size.height);
-            linear_gradient.add_color_stop_rgba (0.0, 0.0, 0.0, 0.0, 1);
-            linear_gradient.add_color_stop_rgba (0.50, 0.0, 0.0, 0.0, 0.90);
-            linear_gradient.add_color_stop_rgba (0.99, 0.0, 0.0, 0.0, 0.80);
+            linear_gradient.add_color_stop_rgba (0.0, 0.30, 0.30, 0.30, 1);
 
             context.set_source (linear_gradient);
             context.paint ();
