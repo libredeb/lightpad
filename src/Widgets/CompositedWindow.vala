@@ -25,7 +25,12 @@ namespace Widgets {
 
         construct {
             // Window properties
-            this.set_skip_taskbar_hint (true); // Not display the window in the task bar
+            /* For PiBoy the next sentence is skiped to allow the main window
+               widget to grab the focus when the application opens:
+
+               * // Not display the window in the task bar
+               * this.set_skip_taskbar_hint (true); 
+            */
             this.set_decorated (false); // No window decoration
             this.set_app_paintable (true); // Suppress default themed drawing of the widget's background
             this.set_name ("mainwindow");

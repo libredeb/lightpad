@@ -58,10 +58,18 @@ public class LightPadWindow : Widgets.CompositedWindow {
         // Window properties
         this.set_title ("LightPad");
         /* Skip that a workspace switcher and taskbars displays a
-           thumbnail representation of the window in the screen */
-        this.set_skip_pager_hint (true);
-        this.set_skip_taskbar_hint (true);
-        this.set_type_hint (Gdk.WindowTypeHint.NORMAL);
+           thumbnail representation of the window in the screen 
+           
+           NOTE:
+           The next properties may be should be reviewd for certain
+           Desktop Environments because it causes the focus not 
+           grabebd to the wrapper box:
+            
+           * this.set_skip_pager_hint (true);
+           * this.set_skip_taskbar_hint (true);
+           * this.set_type_hint (Gdk.WindowTypeHint.NORMAL);
+        */
+        
         this.fullscreen ();
         message ("The monitor dimensions are: %dx%d", monitor_dimensions.width,  monitor_dimensions.height);
         this.set_default_size (monitor_dimensions.width,  monitor_dimensions.height);
@@ -98,7 +106,7 @@ public class LightPadWindow : Widgets.CompositedWindow {
 
         // Searchbar
         this.searchbar = new LightPad.Frontend.Searchbar ("Search");
-        message ("Searchbar created!");
+        //message ("Searchbar created!");
         this.searchbar.changed.connect (this.search);
 
         // Lateral distance (120 are the pixels of the searchbar width)
@@ -115,7 +123,10 @@ public class LightPadWindow : Widgets.CompositedWindow {
 
         // Make icon grid and populate
         // For Monitor 5:4 and 4:3
-        if ((monitor_dimensions.width / (double) monitor_dimensions.height) < 1.4) {
+        if (monitor_dimensions.height == 480) { // For PiBoy screen or 640x480 screns
+            this.grid_y = 5;
+            this.grid_x = 4;
+        } else if ((monitor_dimensions.width / (double) monitor_dimensions.height) < 1.4) {
             this.grid_x = 5;
             this.grid_y = 5;
         } else if (monitor_dimensions.height == 600) { // Netbook 1024x600px
@@ -144,6 +155,8 @@ public class LightPadWindow : Widgets.CompositedWindow {
         container.pack_start (this.grid, true, true, 0);
 
         this.populate_grid ();
+        wrapper.grab_focus ();
+        
 
         // Add pages
         this.pages = new LightPad.Frontend.Indicators ();
@@ -209,6 +222,13 @@ public class LightPadWindow : Widgets.CompositedWindow {
         this.pages.set_active (0);
 
         this.queue_draw ();
+    }
+
+    public void initial_show () {
+        this.show_all ();
+        this.searchbar.hide ();
+        // Grab first one's focus
+        
     }
 
     private void populate_grid () {
@@ -373,6 +393,7 @@ public class LightPadWindow : Widgets.CompositedWindow {
                 this.searchbar.text = this.searchbar.text.slice (0, (int) this.searchbar.text.length - 1);
                 return true;
             case "Left":
+            case "a":
                 var current_item = this.grid.get_children ().index (this.get_focus ());
                 if (current_item % this.grid_y == this.grid_y - 1) {
                     this.page_left ();
@@ -380,6 +401,7 @@ public class LightPadWindow : Widgets.CompositedWindow {
                 }
                 break;
             case "Right":
+            case "d":
                 var current_item = this.grid.get_children ().index (this.get_focus ());
                 if (current_item % this.grid_y == 0) {
                     this.page_right ();
@@ -388,6 +410,8 @@ public class LightPadWindow : Widgets.CompositedWindow {
                 break;
             case "Down":
             case "Up":
+            case "s":
+            case "w":
                 break; // used to stop refreshing the grid on arrow key press
             default:
                 this.searchbar.text = this.searchbar.text + event.str;
@@ -446,10 +470,11 @@ static int main (string[] args) {
         if (app.get_windows ().length () == 0) {
             var main_window = new LightPadWindow ();
             main_window.set_application (app);
-            main_window.show_all ();
+            main_window.initial_show ();
             Gtk.main ();
         }
     });
+    
     app.run (args);
     return 1;
 
