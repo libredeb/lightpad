@@ -371,9 +371,50 @@ public class LightPadWindow : Widgets.CompositedWindow {
 
     // Keyboard shortcuts
     public override bool key_press_event (Gdk.EventKey event) {
+        message ("Key Pressed: %s", Gdk.keyval_name (event.keyval));
         switch (Gdk.keyval_name (event.keyval)) {
             case "Escape":
                 this.destroy ();
+                return true;
+            case "a":
+                var current_item = this.grid.get_children ().index (this.get_focus ());
+                int pos_x = -((current_item % this.grid_y) - (this.grid_y - 1));
+                int pos_y = -((current_item / this.grid_y) - (this.grid_x - 1));
+        
+                if (current_item % this.grid_y == this.grid_y - 1) {
+                    this.page_left ();
+                } else {
+                    this.grid.get_child_at (pos_x + -1, pos_y).grab_focus ();
+                }
+
+                return true;
+            case "s":
+                var current_item = this.grid.get_children ().index (this.get_focus ());
+                int pos_x = -((current_item % this.grid_y) - (this.grid_y - 1));
+                int pos_y = -((current_item / this.grid_y) - (this.grid_x - 1));
+        
+                this.grid.get_child_at (pos_x, pos_y + 1).grab_focus ();
+
+                return true;
+            case "w":
+                var current_item = this.grid.get_children ().index (this.get_focus ());
+                int pos_x = -((current_item % this.grid_y) - (this.grid_y - 1));
+                int pos_y = -((current_item / this.grid_y) - (this.grid_x - 1));
+        
+                this.grid.get_child_at (pos_x, pos_y - 1).grab_focus ();
+
+                return true; 
+            case "d":
+                var current_item = this.grid.get_children ().index (this.get_focus ());
+                int pos_x = -((current_item % this.grid_y) - (this.grid_y - 1));
+                int pos_y = -((current_item / this.grid_y) - (this.grid_x - 1));
+        
+                if (current_item % this.grid_y == 0) {
+                    this.page_right ();
+                } else {
+                    this.grid.get_child_at (pos_x + 1, pos_y).grab_focus ();
+                }
+
                 return true;
             case "ISO_Left_Tab":
                 this.page_left ();
@@ -393,7 +434,6 @@ public class LightPadWindow : Widgets.CompositedWindow {
                 this.searchbar.text = this.searchbar.text.slice (0, (int) this.searchbar.text.length - 1);
                 return true;
             case "Left":
-            case "a":
                 var current_item = this.grid.get_children ().index (this.get_focus ());
                 if (current_item % this.grid_y == this.grid_y - 1) {
                     this.page_left ();
@@ -401,7 +441,6 @@ public class LightPadWindow : Widgets.CompositedWindow {
                 }
                 break;
             case "Right":
-            case "d":
                 var current_item = this.grid.get_children ().index (this.get_focus ());
                 if (current_item % this.grid_y == 0) {
                     this.page_right ();
@@ -410,8 +449,6 @@ public class LightPadWindow : Widgets.CompositedWindow {
                 break;
             case "Down":
             case "Up":
-            case "s":
-            case "w":
                 break; // used to stop refreshing the grid on arrow key press
             default:
                 this.searchbar.text = this.searchbar.text + event.str;
