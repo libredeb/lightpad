@@ -52,8 +52,12 @@ public class LightPadWindow : Widgets.CompositedWindow {
     public Gdk.Pixbuf image_pf;
 
     public LightPadWindow () {
-        Gdk.Screen default_screen = Gdk.Screen.get_default ();
-        monitor_dimensions = default_screen.get_display ().get_primary_monitor ().get_geometry ();
+        // There isn't always a primary monitor.
+        Gdk.Monitor monitor = get_display ().get_primary_monitor () ?? get_display ().get_monitor (0);
+        Gdk.Rectangle pixel_geo = monitor.get_geometry ();
+        // get_geometry() returns "device pixels", but we need "application pixels".
+        monitor_dimensions.width = pixel_geo.width / monitor.get_scale_factor ();
+        monitor_dimensions.height = pixel_geo.height / monitor.get_scale_factor ();
 
         // Window properties
         this.set_title ("LightPad");
