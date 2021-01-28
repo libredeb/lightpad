@@ -35,7 +35,7 @@ Requires:   	xterm
 
 %description
 LightPad is a lightweight, simple and powerful application launcher.
-Writen in GTK+ 3.0. It is also Wayland compatible.
+Written in GTK+ 3.0. It is also Wayland compatible.
 
 %prep
 %setup -q
