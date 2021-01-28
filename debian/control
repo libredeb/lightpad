@@ -25,4 +25,4 @@ Depends: ${misc:Depends}, ${shlibs:Depends},
          gnome-menus (>= 3.13.0),
          libwnck-3-0 (>= 3.20.0),
          xterm
-Description: LightPad is a lightweight, simple and powerful application launcher. Writen in GTK+ 3.0. It is also Wayland compatible.
+Description: LightPad is a lightweight, simple and powerful application launcher. Written in GTK+ 3.0. It is also Wayland compatible.
