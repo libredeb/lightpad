@@ -37,10 +37,11 @@ namespace LightPad.Frontend {
         public AppItem (int size) {
             this.icon_size = size;
 
-            // EventBox Properties
+            // EventBox Properties, a box that show up on hover
             this.set_visible_window (false);
             this.can_focus = true;
             // 30 is the padding between icon and label's height
+            // phineas
             this.set_size_request (icon_size * 3, icon_size + 30);
 
             // VBox properties
@@ -110,6 +111,8 @@ namespace LightPad.Frontend {
             Cairo.TextExtents extents;
             context.select_font_face ("Sans", Cairo.FontSlant.NORMAL, Cairo.FontWeight.NORMAL);
             context.set_font_size (11.5);
+            // phineas
+            //  context.set_font_size(32);
             LightPad.Frontend.Utilities.truncate_text (context, size, 10, this.label, out this.label, out extents);
 
             // Draw text shadow

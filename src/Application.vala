@@ -83,6 +83,8 @@ public class LightPadWindow : Widgets.CompositedWindow {
         } else if (suggested_size >= 56) {
             this.icon_size = 64;
         }
+        // phineas
+        //  this.icon_size = 24;
         message ("The apps icon size is: %d", this.icon_size);
 
         // Get all apps
@@ -135,7 +137,10 @@ public class LightPadWindow : Widgets.CompositedWindow {
             this.grid_y = 6;
             this.grid_x = 5;
         }
-
+        // phineas
+        //  this.grid_y = 8;
+        //  this.grid_x = 4;
+        message ("Grid size: x=%d, y=%d", this.grid_x, this.grid_y);
         // Initialize the grid
         for (int c = 0; c < this.grid_y; c++) {
             this.grid.insert_column (c);
