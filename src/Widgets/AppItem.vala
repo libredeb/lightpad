@@ -27,6 +27,7 @@ namespace LightPad.Frontend {
         private LightPad.Frontend.Color prominent;
         private string label;
         private Gtk.Box wrapper;
+        private double font_size;
         private int icon_size;
 
         const int FPS = 24;
@@ -34,14 +35,15 @@ namespace LightPad.Frontend {
         const int RUN_LENGTH = (int)(DURATION/FPS); // Total number of frames
         private int current_frame = 1; // Run length, in frames
 
-        public AppItem (int size) {
+        public AppItem (int size, double font_size, int box_width, int box_height) {
             this.icon_size = size;
+            this.font_size = font_size;
 
-            // EventBox Properties
+            // EventBox Properties, a box that show up on hover
             this.set_visible_window (false);
             this.can_focus = true;
-            // 30 is the padding between icon and label's height
-            this.set_size_request (icon_size * 3, icon_size + 30);
+            // Height is also the padding between icon and label's height
+            this.set_size_request (box_width, box_height);
 
             // VBox properties
             this.wrapper = new Gtk.Box (Gtk.Orientation.VERTICAL, 0);
@@ -109,7 +111,7 @@ namespace LightPad.Frontend {
             // Truncate text
             Cairo.TextExtents extents;
             context.select_font_face ("Sans", Cairo.FontSlant.NORMAL, Cairo.FontWeight.NORMAL);
-            context.set_font_size (11.5);
+            context.set_font_size (this.font_size);
             LightPad.Frontend.Utilities.truncate_text (context, size, 10, this.label, out this.label, out extents);
 
             // Draw text shadow

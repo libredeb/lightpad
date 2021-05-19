@@ -7,4 +7,8 @@ hicolor = os.path.join(os.environ['MESON_INSTALL_PREFIX'], 'share', 'icons', 'hi
 
 if not os.environ.get('DESTDIR'):
     print('Updating icon cache...')
-    subprocess.call(['gtk-update-icon-cache', '-q', '-t' ,'-f', hicolor])
+    if subprocess.call(['gtk-update-icon-cache', '-q', '-t' ,'-f', hicolor]) == 0:
+        print('Done')
+    else: 
+        print('Error')
+
