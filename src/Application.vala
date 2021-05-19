@@ -59,10 +59,18 @@ public class LightPadWindow : Widgets.CompositedWindow {
         monitor_dimensions.width = pixel_geo.width / monitor.get_scale_factor ();
         monitor_dimensions.height = pixel_geo.height / monitor.get_scale_factor ();
 
-        // phineas
-        FileConfig config = new FileConfig(monitor_dimensions.width, monitor_dimensions.height, user_home + Resources.CONFIG_FILE);
+        FileConfig config = new FileConfig(
+            monitor_dimensions.width, 
+            monitor_dimensions.height, 
+            user_home + Resources.CONFIG_FILE
+        );
+        // For compatibility, maybe add FileConfig to LightPadWindow someday
+        this.icon_size = config.item_icon_size;
+        this.grid_y = config.grid_y;
+        this.grid_x = config.grid_x;
 
-        message("Icon size config: %d", config.item_icon_size);
+        message ("The apps icon size is: %d", this.icon_size);
+        message ("The grid size are: %dx%d", this.grid_y, this.grid_x);
 
         // Window properties
         this.set_title ("LightPad");
@@ -75,22 +83,6 @@ public class LightPadWindow : Widgets.CompositedWindow {
         message ("The monitor dimensions are: %dx%d", monitor_dimensions.width,  monitor_dimensions.height);
         this.set_default_size (monitor_dimensions.width,  monitor_dimensions.height);
 
-        // Set apps icon size
-        double scale_factor = (1.0/3.0);
-        double suggested_size = Math.pow (monitor_dimensions.width * monitor_dimensions.height, scale_factor);
-        suggested_size = suggested_size / 1.7;
-        if (suggested_size < 27) {
-            this.icon_size = 24;
-        } else if (suggested_size >= 27 && suggested_size < 40) {
-            this.icon_size = 32;
-        } else if ((suggested_size >= 40 && suggested_size < 56) || (monitor_dimensions.height == 720)) {
-            this.icon_size = 48;
-        } else if (suggested_size >= 56) {
-            this.icon_size = 64;
-        }
-        // phineas
-        //  this.icon_size = 24;
-        message ("The apps icon size is: %d", this.icon_size);
 
         // Get all apps
         LightPad.Backend.DesktopEntries.enumerate_apps (this.icons, this.icon_size, user_home, out this.apps);
@@ -124,28 +116,6 @@ public class LightPadWindow : Widgets.CompositedWindow {
         this.grid.set_column_spacing (0);
         this.grid.set_halign (Gtk.Align.CENTER);
 
-        // Make icon grid and populate
-        // For Monitor 5:4 and 4:3
-        if ((monitor_dimensions.width / (double) monitor_dimensions.height) < 1.4) {
-            this.grid_x = 5;
-            this.grid_y = 5;
-        } else if (monitor_dimensions.height == 600) { // Netbook 1024x600px
-            this.grid_y = 6;
-            this.grid_x = 4;
-        } else if (monitor_dimensions.height == 720) { // HD 1280x720px
-            this.grid_y = 7;
-            this.grid_x = 5;
-        } else if (monitor_dimensions.height == 1080) { // Full HD 1920x1080px
-            this.grid_y = 9;
-            this.grid_x = 7;
-        } else { // Monitor 16:9
-            this.grid_y = 6;
-            this.grid_x = 5;
-        }
-        // phineas
-        //  this.grid_y = 8;
-        //  this.grid_x = 4;
-        message ("Grid size: x=%d, y=%d", this.grid_x, this.grid_y);
         // Initialize the grid
         for (int c = 0; c < this.grid_y; c++) {
             this.grid.insert_column (c);
