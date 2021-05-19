@@ -2,8 +2,8 @@ class BaseConfig {
     // Grid
     public int grid_y;
     public int grid_x;
-    public int grid_cell_spacing_w;
-    public int grid_cell_spacing_h;
+    public int grid_row_spacing;
+    public int grid_col_spacing;
     // AppItem
     public double item_font_size;
     public int item_icon_size;
@@ -21,9 +21,15 @@ class BaseConfig {
         screen_h = screen_height;
         if (init_default) {
             default_icon_size();
-            default_box_size();
-            default_font_size();
             default_grid_size();
+
+            item_font_size = 11.5;
+
+            item_box_width = item_icon_size * 3;
+            item_box_height = item_icon_size + 30;
+
+            grid_row_spacing = 30;
+            grid_col_spacing = 0;
         }
     }
 
@@ -61,15 +67,6 @@ class BaseConfig {
             grid_x = 5;
         }
     }
-
-    private void default_box_size() {
-        item_box_width = item_icon_size * 3;
-        item_box_height = item_icon_size + 30;
-    }
-
-    private void default_font_size() {
-        item_font_size = 11.5;
-    }
 }
 
 void merge_int(int* ptr, int val) {
@@ -100,8 +97,8 @@ class FileConfig : BaseConfig {
         try {
             merge_int(&grid_y, config_f.get_integer(group[0], "Y"));
             merge_int(&grid_x, config_f.get_integer(group[0], "X"));
-            merge_int(&grid_cell_spacing_w, config_f.get_integer(group[0], "CellSpacingWidth"));
-            merge_int(&grid_cell_spacing_h, config_f.get_integer(group[0], "CellSpacingHeight"));
+            merge_int(&grid_row_spacing, config_f.get_integer(group[0], "RowSpacing"));
+            merge_int(&grid_col_spacing, config_f.get_integer(group[0], "ColumnSpacing"));
 
             merge_double(&item_font_size, config_f.get_double(group[1], "FontSize"));
             merge_int(&item_icon_size, config_f.get_integer(group[1], "IconSize"));
@@ -119,8 +116,8 @@ class FileConfig : BaseConfig {
 
         //  grid_y              = config_f.get_integer(group[0], "Y");
         //  grid_x              = config_f.get_integer(group[0], "X");
-        //  grid_cell_spacing_w = config_f.get_integer(group[0], "CellSpacingWidth");
-        //  grid_cell_spacing_h = config_f.get_integer(group[0], "CellSpacingHeight");
+        //  grid_row_spacing = config_f.get_integer(group[0], "RowSpacing");
+        //  grid_col_spacing = config_f.get_integer(group[0], "ColumnSpacing");
         //  item_font_size      = config_f.get_double(group[1], "FontSize");
         //  item_icon_size      = config_f.get_integer(group[1], "IconSize");
         //  item_box_width      = config_f.get_integer(group[1], "BoxWidth");

@@ -1,8 +1,8 @@
 [Grid]
 Y=-1
 X=-1
-CellSpacingWidth=-1
-CellSpacingHeight=-1
+RowSpacing=-1
+ColumnSpacing=-1
 
 [AppItem]
 FontSize=-1.0

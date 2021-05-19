@@ -69,6 +69,7 @@ public class LightPadWindow : Widgets.CompositedWindow {
         this.grid_y = config.grid_y;
         this.grid_x = config.grid_x;
 
+        message ("The monitor dimensions are: %dx%d", monitor_dimensions.width,  monitor_dimensions.height);
         message ("The apps icon size is: %d", this.icon_size);
         message ("The grid size are: %dx%d", this.grid_y, this.grid_x);
 
@@ -80,7 +81,6 @@ public class LightPadWindow : Widgets.CompositedWindow {
         this.set_skip_taskbar_hint (true);
         this.set_type_hint (Gdk.WindowTypeHint.NORMAL);
         this.fullscreen ();
-        message ("The monitor dimensions are: %dx%d", monitor_dimensions.width,  monitor_dimensions.height);
         this.set_default_size (monitor_dimensions.width,  monitor_dimensions.height);
 
 
@@ -108,12 +108,12 @@ public class LightPadWindow : Widgets.CompositedWindow {
         int screen_half = (monitor_dimensions.width / 2) - 120;
         bottom.pack_start (this.searchbar, false, true, screen_half);
 
-        // Upstairs
+        // Upstairs (padding is the space between search bar and the grid)
         container.pack_start (bottom, false, true, 32);
 
         this.grid = new Gtk.Grid();
-        this.grid.set_row_spacing (30);
-        this.grid.set_column_spacing (0);
+        this.grid.set_row_spacing (config.grid_row_spacing);
+        this.grid.set_column_spacing (config.grid_col_spacing);
         this.grid.set_halign (Gtk.Align.CENTER);
 
         // Initialize the grid
