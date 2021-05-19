@@ -27,7 +27,11 @@ public class LightPadWindow : Widgets.CompositedWindow {
     public Gee.ArrayList<Gee.HashMap<string, string>> filtered = new Gee.ArrayList<Gee.HashMap<string, string>> ();
     public LightPad.Frontend.Indicators pages;
 
+    public double font_size;
     public int icon_size;
+    public int item_box_width;
+    public int item_box_height;
+
     public int total_pages;
     public int scroll_times = 0;
     public int SCROLL_SENSITIVITY = 12;
@@ -66,6 +70,9 @@ public class LightPadWindow : Widgets.CompositedWindow {
         );
         // For compatibility, maybe add FileConfig to LightPadWindow someday
         this.icon_size = config.item_icon_size;
+        this.font_size = config.item_font_size;
+        this.item_box_width = config.item_box_width;
+        this.item_box_height = config.item_box_height;
         this.grid_y = config.grid_y;
         this.grid_x = config.grid_x;
 
@@ -198,7 +205,10 @@ public class LightPadWindow : Widgets.CompositedWindow {
     private void populate_grid () {
         for (int r = 0; r < this.grid_x; r++) {
             for (int c = 0; c < this.grid_y; c++) {
-                var item = new LightPad.Frontend.AppItem (this.icon_size);
+                var item = new LightPad.Frontend.AppItem (
+                    this.icon_size, this.font_size, 
+                    this.item_box_width, this.item_box_height
+                );
                 this.children.append (item);
 
                 item.button_press_event.connect ( () => { item.grab_focus (); return true; } );
