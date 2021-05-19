@@ -59,6 +59,11 @@ public class LightPadWindow : Widgets.CompositedWindow {
         monitor_dimensions.width = pixel_geo.width / monitor.get_scale_factor ();
         monitor_dimensions.height = pixel_geo.height / monitor.get_scale_factor ();
 
+        // phineas
+        FileConfig config = new FileConfig(monitor_dimensions.width, monitor_dimensions.height, user_home + Resources.CONFIG_FILE);
+
+        message("Icon size config: %d", config.item_icon_size);
+
         // Window properties
         this.set_title ("LightPad");
         /* Skip that a workspace switcher and taskbars displays a
