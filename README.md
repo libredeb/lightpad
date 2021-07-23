@@ -2,7 +2,7 @@
 
 LightPad is a lightweight, simple and powerful application launcher. It is also Wayland compatible.
 
-It is being developed for [Twister OS](https://raspbian-x.com/) and in collaboration with Ubuntu Budgie (and its [BudgieLightpad Applet](https://github.com/ubuntubudgie/budgie-lightpad-applet) for the system), a big thanks to [@fossfreedom](https://github.com/fossfreedom)
+It is being developed for [Twister OS](https://twisteros.com/) and in collaboration with Ubuntu Budgie (and its [BudgieLightpad Applet](https://github.com/ubuntubudgie/budgie-lightpad-applet) for the system), a big thanks to [@fossfreedom](https://github.com/fossfreedom)
 
 This project was originally forked from Slingshot from the elementary team:
 
