@@ -1,0 +1,15 @@
+[Grid]
+Y=-1
+X=-1
+RowSpacing=-1
+ColumnSpacing=-1
+
+[AppItem]
+FontSize=-1.0
+IconSize=-1
+BoxWidth=-1
+BoxHeight=-1
+
+[SearchBar]
+Width=-1
+Height=-1
