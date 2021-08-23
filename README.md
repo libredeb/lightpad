@@ -30,20 +30,25 @@ $ sudo apt-get install com.github.libredeb.lightpad
    ```
       $ sudo dnf install meson ninja-build libgee-devel gnome-menus-devel cdbs vala libvala-devel glib-devel libwnck-devel gtk3-devel xterm python3 python3-wheel python3-setuptools gnome-menus
    ```
-   2. Create a build folder:
+   2. Clone this repository into your machine
+   ```
+     $ git clone https://github.com/libredeb/lightpad.git
+     $ cd lightpad/
+   ```
+   3. Create a build folder:
    ```
       $ meson build --prefix=/usr
    ```
-   3. Compile LightPad:
+   4. Compile LightPad:
    ```
       $ cd build
       $ ninja
    ```
-   4. Install LightPad in the system:
+   5. Install LightPad in the system:
    ```
       $ sudo ninja install
    ```
-   5. (OPTIONAL) Uninstall LightPad:
+   6. (OPTIONAL) Uninstall LightPad:
    ```
       $ sudo ninja uninstall
    ```
