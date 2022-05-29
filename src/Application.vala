@@ -87,7 +87,17 @@ public class LightPadWindow : Widgets.CompositedWindow {
         this.set_skip_pager_hint (true);
         this.set_skip_taskbar_hint (true);
         this.set_type_hint (Gdk.WindowTypeHint.NORMAL);
-        this.fullscreen ();
+        //this.fullscreen (); <-- old method used
+        var display = Gdk.Display.get_default();
+        message ("Amount of Monitors: %d", display.get_n_monitors ());
+        int primary_monitor_number = 0;
+        for (int i = 0; i < display.get_n_monitors (); i++) {
+            if (get_display ().get_monitor (i).is_primary ()) {
+                primary_monitor_number = i;
+            }
+        }
+        message ("Your primary monitor is: %d", primary_monitor_number);
+        this.fullscreen_on_monitor (monitor.get_display ().get_default_screen (), primary_monitor_number);
         this.set_default_size (monitor_dimensions.width,  monitor_dimensions.height);
 
 
