@@ -97,6 +97,11 @@ These lines appear in the **.desktop** files located in `/usr/share/applications
 
 
 ## Changelog
+**Version 0.0.9**
+* Fixed [issue #26](https://github.com/libredeb/lightpad/issues/26), opens in wrong monitor
+* Fixed [issue #28](https://github.com/libredeb/lightpad/issues/28), can't run gnome apps
+* Release in progress... 
+
 **Version 0.0.8**
 * Templates added to make packages for Arch Linux (PKG) and Fedora (RPM)
 * Config files are introduced for project constants, replacing the hardcoded paths
