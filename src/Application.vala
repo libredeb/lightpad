@@ -233,9 +233,15 @@ public class LightPadWindow : Widgets.CompositedWindow {
                         if (this.filtered.get (app_index)["terminal"] == "true") {
                             GLib.AppInfo.create_from_commandline (this.filtered.get (app_index)["command"], null, GLib.AppInfoCreateFlags.NEEDS_TERMINAL).launch (null, null);
                         } else {
-                            new GLib.DesktopAppInfo.from_filename (this.filtered.get(app_index)["desktop_file"]).launch (null, null);
+                            var context = new AppLaunchContext ();
+                            new GLib.DesktopAppInfo.from_filename (this.filtered.get(app_index)["desktop_file"]).launch (null, context);
                         }
-                        this.destroy ();
+                        this.hide();
+                        GLib.Timeout.add_seconds (1, () => {
+                            // allow some time before quitting to allow dbusactivatable apps to be launched
+                            this.destroy ();
+                            return GLib.Source.REMOVE;
+                        });
                     } catch (GLib.Error e) {
                         warning ("Error! Load application: " + e.message);
                     }
