@@ -30,6 +30,10 @@ $ sudo apt-get install com.github.libredeb.lightpad
    ```
       $ sudo dnf install meson ninja-build libgee-devel gnome-menus-devel cdbs vala libvala-devel glib-devel libwnck-devel gtk3-devel xterm python3 python3-wheel python3-setuptools gnome-menus
    ```
+   * For Arch Linux:
+   ```
+      $ sudo pacman -Sy meson ninja libgee gnome-menus vala glib2 gdk-pixbuf2 libwnck3 gtk3 xterm python python-wheel python-setuptools
+   ```
    2. Clone this repository into your machine
    ```
      $ git clone https://github.com/libredeb/lightpad.git
