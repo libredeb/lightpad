@@ -104,6 +104,7 @@ These lines appear in the **.desktop** files located in `/usr/share/applications
 **Version 0.0.9**
 * Fixed [issue #26](https://github.com/libredeb/lightpad/issues/26), opens in wrong monitor
 * Fixed [issue #28](https://github.com/libredeb/lightpad/issues/28), can't run gnome apps
+* Fixed [issue #23](https://github.com/libredeb/lightpad/issues/23), can't exit clicking on an empty area
 * Release in progress... 
 
 **Version 0.0.8**
