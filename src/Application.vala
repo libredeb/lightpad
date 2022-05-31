@@ -190,8 +190,37 @@ public class LightPadWindow : Widgets.CompositedWindow {
         }
 
         this.draw.connect (this.draw_background);
-        //this.focus_out_event.connect ( () => { this.destroy(); return true; } );
-
+        // close Lightpad when the window loses focus
+        this.focus_out_event.connect ( () => {
+            this.hide();
+            GLib.Timeout.add_seconds (1, () => {
+                this.destroy ();
+                return GLib.Source.REMOVE;
+            });
+            return true;
+        } );
+        // close Lightpad when we clic on empty area
+        this.button_release_event.connect ( () => {
+            // for some reason, the searchbar widget is part of the main_window (this)
+            // widget. So we can not check if the searchbar is focused or not. So this
+            // is a workaround based on the searchbar dimmensions and clicked position
+            // based on this widget.
+            int x, y;
+            int w, h;
+            this.searchbar.get_pointer(out x, out y);
+            this.searchbar.get_size_request(out w, out h);
+            if (( (x <= w) && (x >= 0) ) && ( (y <= h) && (y >= 0) )) {
+                return false;
+            } else {
+                this.hide();
+                GLib.Timeout.add_seconds (1, () => {
+                    this.destroy ();
+                    return GLib.Source.REMOVE;
+                });
+                return true;
+            }
+        } );
+        
     }
 
     private void search() {
