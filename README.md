@@ -14,9 +14,9 @@ This project was originally forked from Slingshot from the elementary team:
 ## Installation via PPA
 Only for Ubuntu based distros, open a terminal and run the next commands:
 ```
-$ sudo add-apt-repository ppa:libredeb/lightpad
-$ sudo apt-get update
-$ sudo apt-get install com.github.libredeb.lightpad
+sudo add-apt-repository ppa:libredeb/lightpad
+sudo apt-get update
+sudo apt-get install com.github.libredeb.lightpad
 ```
 
 ## Compilation
@@ -24,37 +24,37 @@ $ sudo apt-get install com.github.libredeb.lightpad
    1. Install dependencies:
    * For Ubuntu:
    ```
-      $ sudo apt-get install meson ninja-build libgee-0.8-dev libgnome-menu-3-dev cdbs valac libvala-*-dev libglib2.0-dev libwnck-3-dev libgtk-3-dev xterm python3 python3-wheel python3-setuptools gnome-menus
+      sudo apt-get install meson ninja-build libgee-0.8-dev libgnome-menu-3-dev cdbs valac libvala-*-dev libglib2.0-dev libwnck-3-dev libgtk-3-dev xterm python3 python3-wheel python3-setuptools gnome-menus
    ```
    * For Fedora:
    ```
-      $ sudo dnf install meson ninja-build libgee-devel gnome-menus-devel cdbs vala libvala-devel glib-devel libwnck-devel gtk3-devel xterm python3 python3-wheel python3-setuptools gnome-menus
+      sudo dnf install meson ninja-build libgee-devel gnome-menus-devel cdbs vala libvala-devel glib-devel libwnck-devel gtk3-devel xterm python3 python3-wheel python3-setuptools gnome-menus
    ```
    * For Arch Linux:
    ```
-      $ sudo pacman -Sy meson ninja libgee gnome-menus vala glib2 gdk-pixbuf2 libwnck3 gtk3 xterm python python-wheel python-setuptools
+      sudo pacman -Sy meson ninja libgee gnome-menus vala glib2 gdk-pixbuf2 libwnck3 gtk3 xterm python python-wheel python-setuptools
    ```
    2. Clone this repository into your machine
    ```
-     $ git clone https://github.com/libredeb/lightpad.git
-     $ cd lightpad/
+     git clone https://github.com/libredeb/lightpad.git
+     cd lightpad/
    ```
    3. Create a build folder:
    ```
-      $ meson build --prefix=/usr
+      meson build --prefix=/usr
    ```
    4. Compile LightPad:
    ```
-      $ cd build
-      $ ninja
+      cd build
+      ninja
    ```
    5. Install LightPad in the system:
    ```
-      $ sudo ninja install
+      sudo ninja install
    ```
    6. (OPTIONAL) Uninstall LightPad:
    ```
-      $ sudo ninja uninstall
+      sudo ninja uninstall
    ```
 
 ## Post Install
@@ -69,8 +69,8 @@ Now assign it a shortcut key, such as CTRL+SPACE.
 
 **Note:** Some themes don't have the 'application-default-icon'. LightPad needs to have this icon, so please download it from the [elementary_os/icons](https://github.com/elementary/icons/blob/master/apps/128/application-default-icon.svg) pack and execute the following commands:
 ```
-# cp application-default-icon.svg /usr/share/icons/hicolor/scalable/apps/
-# gtk-update-icon-cache /usr/share/icons/hicolor
+cp application-default-icon.svg /usr/share/icons/hicolor/scalable/apps/
+gtk-update-icon-cache /usr/share/icons/hicolor
 ```
 
 ## Dynamic Background (optional feature)
