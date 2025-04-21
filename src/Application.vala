@@ -39,46 +39,26 @@ public class LightPadWindow : Widgets.CompositedWindow {
     public Gdk.Rectangle monitor_dimensions;
     public Gtk.Box top_spacer;
     public GLib.List<LightPad.Frontend.AppItem> children = new GLib.List<LightPad.Frontend.AppItem> ();
-    public LightPad.Frontend.Searchbar searchbar;
     public Gtk.Grid grid;
 
     private int grid_x;
     private int grid_y;
 
     public bool dynamic_background = false;
-    public double factor_scaling;
-    public string file_png = user_home + Resources.LIGHTPAD_CONFIG_DIR +
-        "/" + "background.png";
-    public string file_jpg = user_home + Resources.LIGHTPAD_CONFIG_DIR +
-        "/" + "background.jpg";
-    public Cairo.Pattern pattern;
-    public Cairo.ImageSurface image_sf;
-    public Gdk.Pixbuf image_pf;
 
     public LightPadWindow () {
         // There isn't always a primary monitor.
         Gdk.Monitor monitor = get_display ().get_primary_monitor () ?? get_display ().get_monitor (0);
-        Gdk.Rectangle pixel_geo = monitor.get_geometry ();
-        // get_geometry() returns "device pixels", but we need "application pixels".
-        monitor_dimensions.width = pixel_geo.width / monitor.get_scale_factor ();
-        monitor_dimensions.height = pixel_geo.height / monitor.get_scale_factor ();
+        
+        monitor_dimensions.width = 720;
+        monitor_dimensions.height = 720;
 
-        FileConfig config = new FileConfig(
-            monitor_dimensions.width, 
-            monitor_dimensions.height, 
-            user_home + Resources.CONFIG_FILE
-        );
-        // For compatibility, maybe add FileConfig to LightPadWindow someday
-        this.icon_size = config.item_icon_size;
-        this.font_size = config.item_font_size;
-        this.item_box_width = config.item_box_width;
-        this.item_box_height = config.item_box_height;
-        this.grid_y = config.grid_y;
-        this.grid_x = config.grid_x;
-
-        message ("The monitor dimensions are: %dx%d", monitor_dimensions.width,  monitor_dimensions.height);
-        message ("The apps icon size is: %d", this.icon_size);
-        message ("The grid size are: %dx%d", this.grid_y, this.grid_x);
+        this.icon_size = 128;
+        this.font_size = 0;
+        this.item_box_width = 128;
+        this.item_box_height = 128;
+        this.grid_y = 3;
+        this.grid_x = 3;
 
         // Window properties
         this.set_title ("LightPad");
@@ -89,7 +69,7 @@ public class LightPadWindow : Widgets.CompositedWindow {
         this.set_type_hint (Gdk.WindowTypeHint.NORMAL);
         //this.fullscreen (); <-- old method used
         var display = Gdk.Display.get_default();
-        message ("Amount of Monitors: %d", display.get_n_monitors ());
+        
         int primary_monitor_number = 0;
         for (int i = 0; i < display.get_n_monitors (); i++) {
             if (get_display ().get_monitor (i).is_primary ()) {
@@ -114,22 +94,16 @@ public class LightPadWindow : Widgets.CompositedWindow {
 
         // Add top bar
         var bottom = new Gtk.Box (Gtk.Orientation.HORIZONTAL, 0);
-
-        // Searchbar
-        this.searchbar = new LightPad.Frontend.Searchbar ("Search");
-        message ("Searchbar created!");
-        this.searchbar.changed.connect (this.search);
-
-        // Lateral distance (120 are the pixels of the searchbar width)
-        int screen_half = (monitor_dimensions.width / 2) - 120;
-        bottom.pack_start (this.searchbar, false, true, screen_half);
+        bottom.state_changed.connect (() => {
+            this.present_all_apps();
+        });
 
         // Upstairs (padding is the space between search bar and the grid)
-        container.pack_start (bottom, false, true, 32);
+        container.pack_start (bottom, true, true, 32);
 
         this.grid = new Gtk.Grid();
-        this.grid.set_row_spacing (config.grid_row_spacing);
-        this.grid.set_column_spacing (config.grid_col_spacing);
+        this.grid.set_row_spacing (42);
+        this.grid.set_column_spacing (42);
         this.grid.set_halign (Gtk.Align.CENTER);
 
         // Initialize the grid
@@ -151,7 +125,7 @@ public class LightPadWindow : Widgets.CompositedWindow {
 
         var pages_wrapper = new Gtk.Box (Gtk.Orientation.HORIZONTAL, 0);
         pages_wrapper.set_size_request (-1, 30);
-        container.pack_end (pages_wrapper, false, true, 15);
+        bottom.pack_start (pages_wrapper, true, true, 15);
 
         // Find number of pages and populate
         // First order the apps alphabetically
@@ -169,25 +143,6 @@ public class LightPadWindow : Widgets.CompositedWindow {
 
         // Signals and callbacks
         this.add_events (Gdk.EventMask.SCROLL_MASK);
-        //this.button_release_event.connect ( () => { this.destroy(); return false; });
-        // Dynamic Background
-        if (GLib.File.new_for_path (file_jpg).query_exists ()) {
-            this.dynamic_background = true;
-            try {
-                image_pf = new Gdk.Pixbuf.from_file (file_jpg);
-                int w = image_pf.get_width ();
-	            factor_scaling = (double) ((double) ((monitor_dimensions.width * 100) / w) / 100);
-            } catch (GLib.Error e) {
-                warning ("Cant create Pixbuf background!");
-            }
-        } else if (GLib.File.new_for_path (file_png).query_exists ()) {
-            this.dynamic_background = true;
-            image_sf = new Cairo.ImageSurface.from_png (file_png);
-            pattern = new Cairo.Pattern.for_surface (image_sf);
-	        pattern.set_extend (Cairo.Extend.PAD);
-	        int w = image_sf.get_width ();
-	        factor_scaling = (double) ((double) ((monitor_dimensions.width * 100) / w) / 100);
-        }
 
         this.draw.connect (this.draw_background);
         // close Lightpad when the window loses focus
@@ -200,43 +155,18 @@ public class LightPadWindow : Widgets.CompositedWindow {
             return true;
         } );
         // close Lightpad when we clic on empty area
-        this.button_release_event.connect ( () => {
-            // for some reason, the searchbar widget is part of the main_window (this)
-            // widget. So we can not check if the searchbar is focused or not. So this
-            // is a workaround based on the searchbar dimmensions and clicked position
-            // based on this widget.
-            int x, y;
-            int w, h;
-            this.searchbar.get_pointer(out x, out y);
-            this.searchbar.get_size_request(out w, out h);
-            if (( (x <= w) && (x >= 0) ) && ( (y <= h) && (y >= 0) )) {
-                return false;
-            } else {
-                this.hide();
-                GLib.Timeout.add_seconds (1, () => {
-                    this.destroy ();
-                    return GLib.Source.REMOVE;
-                });
-                return true;
-            }
-        } );
+        this.button_release_event.connect ( () => { this.destroy(); return false; });
         
     }
 
-    private void search() {
-        var current_text = this.searchbar.text.down ();
+    private void present_all_apps() {
         this.filtered.clear ();
 
         foreach (Gee.HashMap<string, string> app in this.apps) {
-            if ((app["name"] != null && current_text in app["name"].down ()) ||
-                (app["description"] != null && current_text in app["description"].down ()) ||
-                (app["command"] != null && current_text in app["command"].down ())) {
-                this.filtered.add (app);
-            }
+            this.filtered.add (app);
         }
 
         this.pages.set_active (0);
-
         this.queue_draw ();
     }
 
@@ -362,27 +292,15 @@ public class LightPadWindow : Widgets.CompositedWindow {
     private bool draw_background (Gtk.Widget widget, Cairo.Context ctx) {
         var context = Gdk.cairo_create (widget.get_window ());
 
-        if (this.dynamic_background) {
-            if (image_pf != null) { // If JPG exist, prefer this
-	            context.scale (factor_scaling, factor_scaling);
-                Gdk.cairo_set_source_pixbuf (context, image_pf, 0, 0);
-            } else { // Is PNG image
-	            context.scale (factor_scaling, factor_scaling);
-	            context.set_source (pattern);
-            }
+        // Semi-dark background
+        Gtk.Allocation size;
+        widget.get_allocation (out size);
+        
+        var linear_gradient = new Cairo.Pattern.linear (size.x, size.y, size.x, size.y + size.height);
+        linear_gradient.add_color_stop_rgba (0.0, 0.0, 0.0, 0.0, 1);
 
-            context.paint ();
-        } else {
-            // Semi-dark background
-            Gtk.Allocation size;
-            widget.get_allocation (out size);
-
-            var linear_gradient = new Cairo.Pattern.linear (size.x, size.y, size.x, size.y + size.height);
-            linear_gradient.add_color_stop_rgba (0.0, 0.30, 0.30, 0.30, 1);
-
-            context.set_source (linear_gradient);
-            context.paint ();
-        }
+        context.set_source (linear_gradient);
+        context.paint ();
 
         return false;
     }
@@ -407,9 +325,6 @@ public class LightPadWindow : Widgets.CompositedWindow {
                     this.get_focus ().button_release_event ((Gdk.EventButton) new Gdk.Event (Gdk.EventType.BUTTON_PRESS));
                 }
                 return true;
-            case "BackSpace":
-                this.searchbar.text = this.searchbar.text.slice (0, (int) this.searchbar.text.length - 1);
-                return true;
             case "Left":
                 var current_item = this.grid.get_children ().index (this.get_focus ());
                 if (current_item % this.grid_y == this.grid_y - 1) {
@@ -427,9 +342,6 @@ public class LightPadWindow : Widgets.CompositedWindow {
             case "Down":
             case "Up":
                 break; // used to stop refreshing the grid on arrow key press
-            default:
-                this.searchbar.text = this.searchbar.text + event.str;
-                break;
         }
 
         base.key_press_event (event);

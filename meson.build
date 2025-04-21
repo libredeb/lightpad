@@ -47,9 +47,7 @@ executable(
     'src/Utilities.vala',
     'src/Color.vala',
     'src/Resources.vala',
-    'src/Config.vala',
     'src/Widgets/CompositedWindow.vala',
-    'src/Widgets/Searchbar.vala',
     'src/Widgets/Indicators.vala',
     'src/Widgets/AppItem.vala',
     dependencies: [

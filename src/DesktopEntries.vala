@@ -41,7 +41,7 @@ namespace LightPad.Backend {
                 }
                 item = iter.next ();
             }
-            message ("Number of categories: %d", main_directory_entries.size);
+            
             return main_directory_entries;
         }
         
@@ -65,7 +65,7 @@ namespace LightPad.Backend {
                 }
                 item = iter.next ();
             }
-            message ("Category [%s] has [%d] apps", category.get_name (), entries.size);
+            
             return entries;
         }
         
@@ -90,12 +90,12 @@ namespace LightPad.Backend {
             var icon_theme = Gtk.IconTheme.get_default();
             list = new Gee.ArrayList<Gee.HashMap<string, string>> ();
             
-            var blacklist_file = GLib.File.new_for_path (user_home + Resources.BLACKLIST_FILE);
+            var blocklist_file = GLib.File.new_for_path (user_home + Resources.BLOCKLIST_FILE);
             var apps_hidden = new Gee.ArrayList<string> ();
             
-            if (blacklist_file.query_exists ()) {
+            if (blocklist_file.query_exists ()) {
                 try {
-                    var dis = new DataInputStream (blacklist_file.read ());
+                    var dis = new DataInputStream (blocklist_file.read ());
                     string line;
             
                     while ((line = dis.read_line (null)) != null) {
