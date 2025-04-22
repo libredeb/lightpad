@@ -14,6 +14,7 @@ datadir = join_paths(prefix, get_option('datadir'))
 VAPI_DIR = join_paths(meson.source_root(),
                       'vapi')
 vala = meson.get_compiler('vala')
+c = meson.get_compiler('c')
 
 # Global configuration data - matches vapi/config.vapi strings
 conf = configuration_data()
@@ -64,6 +65,7 @@ executable(
     ],
     c_args: [
         '-DGMENU_I_KNOW_THIS_IS_UNSTABLE',
+        '-w',
     ],
     vala_args: LightpadValaArgs,
     include_directories: config_inc_dir,

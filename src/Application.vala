@@ -53,10 +53,10 @@ public class LightPadWindow : Widgets.CompositedWindow {
         monitor_dimensions.width = 720;
         monitor_dimensions.height = 720;
 
-        this.icon_size = 128;
+        this.icon_size = 142;
         this.font_size = 0;
-        this.item_box_width = 128;
-        this.item_box_height = 128;
+        this.item_box_width = 142;
+        this.item_box_height = 142;
         this.grid_y = 3;
         this.grid_x = 3;
 
@@ -102,8 +102,8 @@ public class LightPadWindow : Widgets.CompositedWindow {
         container.pack_start (bottom, true, true, 32);
 
         this.grid = new Gtk.Grid();
-        this.grid.set_row_spacing (42);
-        this.grid.set_column_spacing (42);
+        this.grid.set_row_spacing (48);
+        this.grid.set_column_spacing (48);
         this.grid.set_halign (Gtk.Align.CENTER);
 
         // Initialize the grid
