@@ -48,7 +48,6 @@ namespace LightPad.Frontend {
             set {
                 this.buffer.text = value;
                 if (this.buffer.text == "") {
-                    warning ("hint");
                     this.hint ();
                 } else {
                     this.reset_font ();
