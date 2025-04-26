@@ -207,7 +207,8 @@ public class LightPadWindow : Widgets.CompositedWindow {
             // based on this widget.
             int x, y;
             int w, h;
-            this.searchbar.get_pointer(out x, out y);
+            Gdk.Window window = this.searchbar.get_window();
+            window.get_device_position(Gdk.Display.get_default().get_default_seat().get_pointer(), out x, out y, null);
             this.searchbar.get_size_request(out w, out h);
             if (( (x <= w) && (x >= 0) ) && ( (y <= h) && (y >= 0) )) {
                 return false;
@@ -408,7 +409,9 @@ public class LightPadWindow : Widgets.CompositedWindow {
                 }
                 return true;
             case "BackSpace":
-                this.searchbar.text = this.searchbar.text.slice (0, (int) this.searchbar.text.length - 1);
+                if (this.searchbar.text.length > 0) {   
+                    this.searchbar.text = this.searchbar.text.slice (0, (int) this.searchbar.text.length - 1);
+                }
                 return true;
             case "Left":
                 var current_item = this.grid.get_children ().index (this.get_focus ());
