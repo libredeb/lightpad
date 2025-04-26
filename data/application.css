@@ -51,6 +51,7 @@ entry {
     border: none;
     box-shadow: none;
     padding: 2px;
+    caret-color: #FFFFFF;
 }
 
 entry:focus {
