@@ -62,6 +62,12 @@ namespace LightPad.Backend {
                     case GMenu.TreeItemType.ENTRY:
                         entries.add ((GMenu.TreeEntry) iter.get_entry ());
                         break;
+                    case GMenu.TreeItemType.HEADER:
+                    case GMenu.TreeItemType.SEPARATOR:
+                    case GMenu.TreeItemType.ALIAS:
+                    case GMenu.TreeItemType.INVALID:
+                        // We ignore these types as they are not relevant to our application.
+                        break;
                 }
                 item = iter.next ();
             }

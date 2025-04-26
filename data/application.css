@@ -44,3 +44,19 @@
 /*  font-size: 16px;
     padding: 2px;    */
 }
+
+entry {
+    background: transparent;
+    color: #FFFFFF;
+    border: none;
+    box-shadow: none;
+    padding: 2px;
+    caret-color: #FFFFFF;
+}
+
+entry:focus {
+    background: transparent;
+    color: #FFFFFF;
+    border: none;
+    box-shadow: none;
+}

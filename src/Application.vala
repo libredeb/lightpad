@@ -408,7 +408,9 @@ public class LightPadWindow : Widgets.CompositedWindow {
                 }
                 return true;
             case "BackSpace":
-                this.searchbar.text = this.searchbar.text.slice (0, (int) this.searchbar.text.length - 1);
+                if (this.searchbar.text.length > 0) {   
+                    this.searchbar.text = this.searchbar.text.slice (0, (int) this.searchbar.text.length - 1);
+                }
                 return true;
             case "Left":
                 var current_item = this.grid.get_children ().index (this.get_focus ());

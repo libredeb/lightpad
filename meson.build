@@ -65,7 +65,7 @@ executable(
         meson.get_compiler('c').find_library('m', required: false)
     ],
     c_args: [
-        '-DGMENU_I_KNOW_THIS_IS_UNSTABLE',
+        '-DGMENU_I_KNOW_THIS_IS_UNSTABLE', '-w'
     ],
     vala_args: LightpadValaArgs,
     include_directories: config_inc_dir,
