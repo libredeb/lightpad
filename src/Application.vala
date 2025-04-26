@@ -207,8 +207,7 @@ public class LightPadWindow : Widgets.CompositedWindow {
             // based on this widget.
             int x, y;
             int w, h;
-            Gdk.Window window = this.searchbar.get_window();
-            window.get_device_position(Gdk.Display.get_default().get_default_seat().get_pointer(), out x, out y, null);
+            this.searchbar.get_pointer(out x, out y);
             this.searchbar.get_size_request(out w, out h);
             if (( (x <= w) && (x >= 0) ) && ( (y <= h) && (y >= 0) )) {
                 return false;

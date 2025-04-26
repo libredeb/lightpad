@@ -65,7 +65,8 @@ namespace LightPad.Backend {
                     case GMenu.TreeItemType.HEADER:
                     case GMenu.TreeItemType.SEPARATOR:
                     case GMenu.TreeItemType.ALIAS:
-                        // Ignoramos estos tipos ya que no son relevantes para nuestra aplicación
+                    case GMenu.TreeItemType.INVALID:
+                        // We ignore these types as they are not relevant to our application.
                         break;
                 }
                 item = iter.next ();
