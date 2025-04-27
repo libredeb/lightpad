@@ -67,14 +67,7 @@ Once installed set shortcut key to access LightPad.
 
 Now assign it a shortcut key, such as `CTRL`+`SPACE`.
 
-> **NOTE 1:** if you want to use another keyboard shortcut like the `SUPER` key to activate LightPad in Desktop Environments in which the `SUPER` key is used, maybe you want to try to disable it first. For example in GNOME Shell you can run next command `gsettings set org.gnome.mutter overlay-key ''` (and if you want to restorte the original behavior, so run next command `gsettings reset org.gnome.mutter overlay-key`).
-
-> **NOTE 2:** some icon themes don't have the 'application-default-icon'. LightPad needs to have this icon, so if you experience a problem when trying to draw this icon please download it from the [elementary_os/icons](https://github.com/elementary/icons) theme pack using the following commands:
-```
-curl -LO https://raw.githubusercontent.com/elementary/icons/refs/heads/main/apps/128/application-default-icon.svg
-sudo mv application-default-icon.svg /usr/share/icons/hicolor/scalable/apps/
-sudo gtk-update-icon-cache /usr/share/icons/hicolor
-```
+> **NOTE:** if you want to use another keyboard shortcut like the `SUPER` key to activate LightPad in Desktop Environments in which the `SUPER` key is used, maybe you want to try to disable it first. For example in GNOME Shell you can run next command `gsettings set org.gnome.mutter overlay-key ''` (and if you want to restorte the original behavior, so run next command `gsettings reset org.gnome.mutter overlay-key`).
 
 ## Dynamic Background (optional feature)
 

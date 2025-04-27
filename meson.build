@@ -86,6 +86,12 @@ foreach i : icon_sizes
     )
 endforeach
 
+# Install application-default-icon for applications without icons
+install_data(
+    join_paths('data', 'icons', 'application-default-icon.svg'),
+    install_dir: join_paths(datadir, 'icons', 'hicolor', 'scalable', 'apps')
+)
+
 # Install our .desktop file so the Applications Menu will see it
 install_data(
     join_paths('data', meson.project_name() + '.desktop'),
