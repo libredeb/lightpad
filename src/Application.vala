@@ -389,7 +389,6 @@ public class LightPadWindow : Widgets.CompositedWindow {
 
     // Keyboard shortcuts
     public override bool key_press_event (Gdk.EventKey event) {
-        message ("Key pressed: %s", Gdk.keyval_name (event.keyval));
         switch (Gdk.keyval_name (event.keyval)) {
             case "Escape":
                 this.destroy ();
