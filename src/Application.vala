@@ -393,6 +393,16 @@ public class LightPadWindow : Widgets.CompositedWindow {
             case "Escape":
                 this.destroy ();
                 return true;
+            case "space":
+                if (event.state == Gdk.ModifierType.CONTROL_MASK) {
+                    this.destroy ();
+                    return true;
+                }
+                this.searchbar.text = this.searchbar.text + event.str;
+                break;
+            case "Super_L":
+                this.destroy ();
+                return true;
             case "ISO_Left_Tab":
                 this.page_left ();
                 return true;
