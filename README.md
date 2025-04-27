@@ -2,7 +2,7 @@
 
 LightPad is a lightweight, simple and powerful application launcher. It is also Wayland compatible.
 
-It is being developed for [Twister OS](https://twisteros.com/) and in collaboration with Ubuntu Budgie (and its [BudgieLightpad Applet](https://github.com/ubuntubudgie/budgie-lightpad-applet) for the system), a big thanks to [@fossfreedom](https://github.com/fossfreedom)
+This project contributes to [Twister OS](https://twisteros.com/) and collaborates with Ubuntu Budgie (and its [BudgieLightpad Applet](https://github.com/ubuntubudgie/budgie-lightpad-applet) for the operating system) — special thanks to [@fossfreedom](https://github.com/fossfreedom)
 
 This project was originally forked from Slingshot from the elementary team:
 
@@ -23,26 +23,26 @@ sudo apt-get install com.github.libredeb.lightpad
 
    1. Install dependencies:
    * For Ubuntu:
-   ```
+      ```
       sudo apt-get install meson ninja-build libgee-0.8-dev libgnome-menu-3-dev cdbs valac libvala-*-dev libglib2.0-dev libwnck-3-dev libgtk-3-dev xterm python3 python3-wheel python3-setuptools gnome-menus
-   ```
+      ```
    * For Fedora:
-   ```
+      ```
       sudo dnf install meson ninja-build libgee-devel gnome-menus-devel cdbs vala libvala-devel glib-devel libwnck-devel gtk3-devel xterm python3 python3-wheel python3-setuptools gnome-menus
-   ```
+      ```
    * For Arch Linux:
-   ```
+      ```
       sudo pacman -Sy meson ninja libgee gnome-menus vala glib2 gdk-pixbuf2 libwnck3 gtk3 xterm python python-wheel python-setuptools
-   ```
+      ```
    2. Clone this repository into your machine
-   ```
-     git clone https://github.com/libredeb/lightpad.git
-     cd lightpad/
-   ```
+      ```
+      git clone https://github.com/libredeb/lightpad.git
+      cd lightpad/
+      ```
    3. Create a build folder:
-   ```
-      meson build --prefix=/usr
-   ```
+      ```
+      meson setup build --prefix=/usr
+      ```
    4. Compile LightPad:
    ```
       cd build
@@ -61,13 +61,15 @@ sudo apt-get install com.github.libredeb.lightpad
 
 Once installed set shortcut key to access LightPad.
 
-  * System -> Preferences -> Hardware -> Keyboard Shortcuts > click Add
-  * Name: LightPad
-  * Command: com.github.libredeb.lightpad
+  * `System -> Preferences -> Hardware -> Keyboard Shortcuts` then click on `Add` button
+  * **Name:** LightPad
+  * **Command:** com.github.libredeb.lightpad
 
-Now assign it a shortcut key, such as CTRL+SPACE.
+Now assign it a shortcut key, such as `CTRL`+`SPACE`.
 
-**Note:** Some themes don't have the 'application-default-icon'. LightPad needs to have this icon, so please download it from the [elementary_os/icons](https://github.com/elementary/icons/blob/master/apps/128/application-default-icon.svg) pack and execute the following commands:
+> **NOTE 1:** if you want to use another keyboard shortcut like the `SUPER` key to activate LightPad in Desktop Environments in which the `SUPER` key is used, maybe you want to try to disable the it first. For example in GNOME Shell you can run next command `gsettings set org.gnome.mutter overlay-key ''` (and if you want to restorte the original behavior, so run next command `gsettings reset org.gnome.mutter overlay-key`).
+
+> **NOTE 2:** some icon themes don't have the 'application-default-icon'. LightPad needs to have this icon, so if you experience a problem when trying to draw this icon please download it from the [elementary_os/icons](https://github.com/elementary/icons/blob/master/apps/128/application-default-icon.svg) theme pack using the following commands:
 ```
 cp application-default-icon.svg /usr/share/icons/hicolor/scalable/apps/
 gtk-update-icon-cache /usr/share/icons/hicolor
@@ -80,10 +82,10 @@ LighPad added a new feature, now you can use a custom background of your choice.
 
 > `$HOME/.lightpad/background.png`
 
-## Blacklist File (optional feature)
+## Blocklist File (optional feature)
 
-Another new added functionality, is the ability to hide applications using a blacklist file. In the file:
-> `$HOME/.lightpad/blacklist`
+Another new added functionality, is the ability to hide applications using a blocklist file. In the file:
+> `$HOME/.lightpad/blocklist`
 
 You must add line by line the full name of the binaries of the applications you want to hide in LightPad. For example:
 ```
@@ -105,6 +107,8 @@ These lines appear in the **.desktop** files located in `/usr/share/applications
 * Fixed [issue #26](https://github.com/libredeb/lightpad/issues/26), opens in wrong monitor
 * Fixed [issue #28](https://github.com/libredeb/lightpad/issues/28), can't run gnome apps
 * Fixed [issue #23](https://github.com/libredeb/lightpad/issues/23), can't exit clicking on an empty area
+* Fixed [issue #5](https://github.com/libredeb/lightpad/issues/5), there are no cursor blinking in the searchbar
+* Fixed [issue #9](https://github.com/libredeb/lightpad/issues/9), can't toggle lightpad via keyboard shortcut
 * Release in progress... 
 
 **Version 0.0.8**

@@ -3,7 +3,7 @@ project(
     'com.github.libredeb.lightpad',
     'vala', 'c',
     version: '0.0.8',
-    meson_version: '>=0.45.0'
+    meson_version: '>=0.56.0'
 )
 
 PROJECT_NAME = 'lightpad'
@@ -11,8 +11,7 @@ prefix = get_option('prefix')
 libdir = join_paths(prefix, get_option('libdir'))
 datadir = join_paths(prefix, get_option('datadir'))
 
-VAPI_DIR = join_paths(meson.source_root(),
-                      'vapi')
+VAPI_DIR = join_paths(meson.project_source_root(), 'vapi')
 vala = meson.get_compiler('vala')
 
 # Global configuration data - matches vapi/config.vapi strings
@@ -65,7 +64,7 @@ executable(
         meson.get_compiler('c').find_library('m', required: false)
     ],
     c_args: [
-        '-DGMENU_I_KNOW_THIS_IS_UNSTABLE',
+        '-DGMENU_I_KNOW_THIS_IS_UNSTABLE', '-w'
     ],
     vala_args: LightpadValaArgs,
     include_directories: config_inc_dir,

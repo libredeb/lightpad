@@ -393,6 +393,16 @@ public class LightPadWindow : Widgets.CompositedWindow {
             case "Escape":
                 this.destroy ();
                 return true;
+            case "space":
+                if (event.state == Gdk.ModifierType.CONTROL_MASK) {
+                    this.destroy ();
+                    return true;
+                }
+                this.searchbar.text = this.searchbar.text + event.str;
+                break;
+            case "Super_L":
+                this.destroy ();
+                return true;
             case "ISO_Left_Tab":
                 this.page_left ();
                 return true;
@@ -408,7 +418,9 @@ public class LightPadWindow : Widgets.CompositedWindow {
                 }
                 return true;
             case "BackSpace":
-                this.searchbar.text = this.searchbar.text.slice (0, (int) this.searchbar.text.length - 1);
+                if (this.searchbar.text.length > 0) {   
+                    this.searchbar.text = this.searchbar.text.slice (0, (int) this.searchbar.text.length - 1);
+                }
                 return true;
             case "Left":
                 var current_item = this.grid.get_children ().index (this.get_focus ());

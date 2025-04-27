@@ -29,7 +29,7 @@ namespace LightPad.Frontend {
         
         // Properties
         private Gtk.TextBuffer buffer;
-        public Gtk.Label label;
+        public Gtk.Entry entry;
         public Gtk.Image search_icon;
         private Gtk.Image clear_icon;
         /* protects against bug where get_text() will return ""
@@ -51,8 +51,7 @@ namespace LightPad.Frontend {
                     this.hint ();
                 } else {
                     this.reset_font ();
-                    this.label.label = this.buffer.text;
-                    this.label.select_region (-1, -1);
+                    this.entry.set_text (this.buffer.text);
                     this.clear_icon.visible = true;
                 }
             }
@@ -83,14 +82,14 @@ namespace LightPad.Frontend {
             wrapper.pack_start (search_icon_wrapper, false, true, 3);
             
             // Label properties
-            this.label = new Gtk.Label (this.buffer.text);
-            // Mode to compress the text and add "..."
-            this.label.set_ellipsize (Pango.EllipsizeMode.START);
-            this.label.set_alignment(0.0f, 0.5f);
-            this.label.selectable = true;
-            this.label.can_focus = false;
-            this.label.set_single_line_mode (true);
-            wrapper.pack_start (this.label, true, true, 0);
+            this.entry = new Gtk.Entry ();
+            this.entry.set_text (this.buffer.text);
+            this.entry.set_has_frame (false);
+            this.entry.set_alignment(0.0f);
+            this.entry.set_placeholder_text (this.hint_string);
+            this.entry.set_hexpand (true);
+            this.entry.set_halign (Gtk.Align.START);
+            wrapper.pack_start (this.entry, true, true, 0);
 
             // Clear icon
             var clear_icon_wrapper = new Gtk.EventBox ();
@@ -114,7 +113,7 @@ namespace LightPad.Frontend {
         
         public void hint () {
             this.buffer.text = "";
-            this.label.label = this.hint_string;
+            this.entry.set_text (this.hint_string);
             this.clear_icon.visible = false;
         }
 
@@ -124,8 +123,8 @@ namespace LightPad.Frontend {
         }
         
         private void reset_font () {
-            this.label.get_style_context ().remove_class ("search_greyout");
-            this.label.get_style_context ().add_class ("search_normal");
+            this.entry.get_style_context ().remove_class ("search_greyout");
+            this.entry.get_style_context ().add_class ("search_normal");
             this.is_hinted = false;
         }
 
