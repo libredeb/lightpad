@@ -2,7 +2,7 @@
 
 LightPad is a lightweight, simple and powerful application launcher. It is also Wayland compatible.
 
-It is being developed for [Twister OS](https://twisteros.com/) and in collaboration with Ubuntu Budgie (and its [BudgieLightpad Applet](https://github.com/ubuntubudgie/budgie-lightpad-applet) for the system), a big thanks to [@fossfreedom](https://github.com/fossfreedom)
+This project contributes to [Twister OS](https://twisteros.com/) and collaborates with Ubuntu Budgie (and its [BudgieLightpad Applet](https://github.com/ubuntubudgie/budgie-lightpad-applet) for the operating system) — special thanks to [@fossfreedom](https://github.com/fossfreedom)
 
 This project was originally forked from Slingshot from the elementary team:
 
@@ -14,65 +14,65 @@ This project was originally forked from Slingshot from the elementary team:
 ## Installation via PPA
 Only for Ubuntu based distros, open a terminal and run the next commands:
 ```
-$ sudo add-apt-repository ppa:libredeb/lightpad
-$ sudo apt-get update
-$ sudo apt-get install com.github.libredeb.lightpad
+sudo add-apt-repository ppa:libredeb/lightpad
+sudo apt-get update
+sudo apt-get install com.github.libredeb.lightpad
 ```
 
 ## Compilation
 
    1. Install dependencies:
    * For Ubuntu:
-   ```
-      $ sudo apt-get install meson ninja-build libgee-0.8-dev libgnome-menu-3-dev cdbs valac libvala-*-dev libglib2.0-dev libwnck-3-dev libgtk-3-dev xterm python3 python3-wheel python3-setuptools gnome-menus
-   ```
+      ```
+      sudo apt-get install meson ninja-build libgee-0.8-dev libgnome-menu-3-dev cdbs valac libvala-*-dev libglib2.0-dev libwnck-3-dev libgtk-3-dev xterm python3 python3-wheel python3-setuptools gnome-menus
+      ```
    * For Fedora:
-   ```
-      $ sudo dnf install meson ninja-build libgee-devel gnome-menus-devel cdbs vala libvala-devel glib-devel libwnck-devel gtk3-devel xterm python3 python3-wheel python3-setuptools gnome-menus
-   ```
+      ```
+      sudo dnf install meson ninja-build libgee-devel gnome-menus-devel cdbs vala libvala-devel glib-devel libwnck-devel gtk3-devel xterm python3 python3-wheel python3-setuptools gnome-menus
+      ```
    * For Arch Linux:
-   ```
-      $ sudo pacman -Sy meson ninja libgee gnome-menus vala glib2 gdk-pixbuf2 libwnck3 gtk3 xterm python python-wheel python-setuptools
-   ```
+      ```
+      sudo pacman -Sy meson ninja libgee gnome-menus vala glib2 gdk-pixbuf2 libwnck3 gtk3 xterm python python-wheel python-setuptools
+      ```
    2. Clone this repository into your machine
-   ```
-     $ git clone https://github.com/libredeb/lightpad.git
-     $ cd lightpad/
-   ```
+      ```
+      git clone https://github.com/libredeb/lightpad.git
+      cd lightpad/
+      ```
    3. Create a build folder:
-   ```
-      $ meson setup build --prefix=/usr
-   ```
+      ```
+      meson setup build --prefix=/usr
+      ```
    4. Compile LightPad:
    ```
-      $ cd build
-      $ ninja
+      cd build
+      ninja
    ```
    5. Install LightPad in the system:
    ```
-      $ sudo ninja install
+      sudo ninja install
    ```
    6. (OPTIONAL) Uninstall LightPad:
    ```
-      $ sudo ninja uninstall
+      sudo ninja uninstall
    ```
 
 ## Post Install
 
 Once installed set shortcut key to access LightPad.
 
-  * System -> Preferences -> Hardware -> Keyboard Shortcuts > click Add
-  * Name: LightPad
-  * Command: com.github.libredeb.lightpad
+  * `System -> Preferences -> Hardware -> Keyboard Shortcuts` then click on `Add` button
+  * **Name:** LightPad
+  * **Command:** com.github.libredeb.lightpad
 
 Now assign it a shortcut key, such as `CTRL`+`SPACE`.
 
-> **NOTE:** if you want to use another keyboard shortcut like the `SUPER` key to activate LightPad in Desktop Environments in which the `SUPER` key is used, maybe you want to try to disable the it first. For example in GNOME Shell you can run next command `gsettings set org.gnome.mutter overlay-key ''` (and if you want to restorte the original behavior, so run next command `gsettings reset org.gnome.mutter overlay-key`).
+> **NOTE 1:** if you want to use another keyboard shortcut like the `SUPER` key to activate LightPad in Desktop Environments in which the `SUPER` key is used, maybe you want to try to disable the it first. For example in GNOME Shell you can run next command `gsettings set org.gnome.mutter overlay-key ''` (and if you want to restorte the original behavior, so run next command `gsettings reset org.gnome.mutter overlay-key`).
 
-**Note:** Some themes don't have the 'application-default-icon'. LightPad needs to have this icon, so please download it from the [elementary_os/icons](https://github.com/elementary/icons/blob/master/apps/128/application-default-icon.svg) pack and execute the following commands:
+> **NOTE 2:** some icon themes don't have the 'application-default-icon'. LightPad needs to have this icon, so if you experience a problem when trying to draw this icon please download it from the [elementary_os/icons](https://github.com/elementary/icons/blob/master/apps/128/application-default-icon.svg) theme pack using the following commands:
 ```
-# cp application-default-icon.svg /usr/share/icons/hicolor/scalable/apps/
-# gtk-update-icon-cache /usr/share/icons/hicolor
+cp application-default-icon.svg /usr/share/icons/hicolor/scalable/apps/
+gtk-update-icon-cache /usr/share/icons/hicolor
 ```
 
 ## Dynamic Background (optional feature)
