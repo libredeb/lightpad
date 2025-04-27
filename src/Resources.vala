@@ -24,6 +24,6 @@
  */
 namespace Resources {
      public const string LIGHTPAD_CONFIG_DIR = "/." + Config.PROJECT_NAME;
-     public const string BLACKLIST_FILE = LIGHTPAD_CONFIG_DIR + "/blacklist";
+     public const string BLOCKLIST_FILE = LIGHTPAD_CONFIG_DIR + "/blocklist";
      public const string CONFIG_FILE = LIGHTPAD_CONFIG_DIR + "/config";
 }
