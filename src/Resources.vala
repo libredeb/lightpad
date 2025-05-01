@@ -26,4 +26,6 @@ namespace Resources {
      public const string LIGHTPAD_CONFIG_DIR = "/." + Config.PROJECT_NAME;
      public const string BLOCKLIST_FILE = LIGHTPAD_CONFIG_DIR + "/blocklist";
      public const string CONFIG_FILE = LIGHTPAD_CONFIG_DIR + "/config";
+     public const string XDG_MENU_DIR = "/etc/xdg/menus/";
+     public const string XDG_FALLBACK_MENU = "applications.menu";
 }
