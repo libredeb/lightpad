@@ -24,15 +24,15 @@ sudo apt-get install com.github.libredeb.lightpad
    1. Install dependencies:
    * For Ubuntu:
       ```
-      sudo apt-get install meson ninja-build libgee-0.8-dev libgnome-menu-3-dev cdbs valac libvala-*-dev libglib2.0-dev libwnck-3-dev libgtk-3-dev xterm python3 python3-wheel python3-setuptools gnome-menus
+      sudo apt-get install meson ninja-build libgee-0.8-dev libgnome-menu-3-dev cdbs valac libvala-*-dev libglib2.0-dev libwnck-3-dev libgtk-3-dev python3 python3-wheel python3-setuptools gnome-menus
       ```
    * For Fedora:
       ```
-      sudo dnf install meson ninja-build libgee-devel gnome-menus-devel cdbs vala libvala-devel glib-devel libwnck-devel gtk3-devel xterm python3 python3-wheel python3-setuptools gnome-menus
+      sudo dnf install meson ninja-build libgee-devel gnome-menus-devel cdbs vala libvala-devel glib-devel libwnck-devel gtk3-devel python3 python3-wheel python3-setuptools gnome-menus
       ```
    * For Arch Linux:
       ```
-      sudo pacman -Sy meson ninja libgee gnome-menus vala glib2 gdk-pixbuf2 libwnck3 gtk3 xterm python python-wheel python-setuptools
+      sudo pacman -Sy meson ninja libgee gnome-menus vala glib2 gdk-pixbuf2 libwnck3 gtk3 python python-wheel python-setuptools
       ```
    2. Clone this repository into your machine
       ```
@@ -103,19 +103,20 @@ These lines appear in the **.desktop** files located in `/usr/share/applications
 * Fixed [issue #23](https://github.com/libredeb/lightpad/issues/23), can't exit clicking on an empty area
 * Fixed [issue #5](https://github.com/libredeb/lightpad/issues/5), there are no cursor blinking in the searchbar
 * Fixed [issue #9](https://github.com/libredeb/lightpad/issues/9), can't toggle lightpad via keyboard shortcut
+* Fixed [issue #16](https://github.com/libredeb/lightpad/issues/16), dependency xterm is no longer required
 * Release in progress... 
 
 **Version 0.0.8**
 * Templates added to make packages for Arch Linux (PKG) and Fedora (RPM)
 * Config files are introduced for project constants, replacing the hardcoded paths
 * Clean CSS code, some vars and unused functionality
-* New feature added: hide apps using a blacklist file.
+* New feature added: hide apps using a blocklist file.
 * The paths of background files are moved to `$HOME/.lightpad/`
 
 **Version 0.0.7**
 * Change indicator pages text for dots without animations
 * Fixed the CSS design of the searchbar that made it look cut on some screens
-* Implemented a new feature, now the black background is dynamic using an image if there exists
+* Implemented a new feature, you can use a image as background (dynamically detected if it's exists)
 * Added a new feature, now the apps are ordered alphabetically
 * Add SPEC and PKGBUILD files to make packages for Fedora and Arch Linux
 * Some bug fixing
@@ -124,7 +125,7 @@ These lines appear in the **.desktop** files located in `/usr/share/applications
 * Implemented the exact and standard way to open terminal apps
 * Improved meson postinstall script
 * Removed desktop environments detection to use the appropiate terminal
-* Added xterm as dependency for opening terminal apps
+* Added xterm as dependency for opening terminal apps ([deprecated](https://github.com/GNOME/glib/blob/cd1eba043c90da3aee8f5cd51b205b2e2c16f08e/gio/gdesktopappinfo.c#L2467-L2494))
 
 **Version 0.0.4**
 * Fix an important bug in the page indicators causing the wrong size obtained

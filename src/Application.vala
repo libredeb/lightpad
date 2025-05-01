@@ -263,10 +263,11 @@ public class LightPadWindow : Widgets.CompositedWindow {
                         }
                         int app_index = (int) (child_index + (page_active * this.grid_y * this.grid_x));
 
-                        /* GTK+ implements open apps in terminal in this way:
-                         * https://github.com/GNOME/glib/blob/cd1eba043c90da3aee8f5cd51b205b2e2c16f08e/gio/gdesktopappinfo.c#L2467-L2494
-                         * So, if the desktop environment is not GNOME we need xterm as dependency
-                         * and the way to open apps in terminal is with the following code:
+                        /* GLib implements open apps in terminal in this way:
+                         * https://github.com/GNOME/glib/blob/2.76.0/gio/gdesktopappinfo.c#L2685
+                         * There's a major change in last versions of glib (from version 2.76.0 upwards)
+                         * So, xterm dependency it's no longer needed.
+                         * The way to open apps in terminal is with the following code:
                          */
                         if (this.filtered.get (app_index)["terminal"] == "true") {
                             GLib.AppInfo.create_from_commandline (this.filtered.get (app_index)["command"], null, GLib.AppInfoCreateFlags.NEEDS_TERMINAL).launch (null, null);
