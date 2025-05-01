@@ -22,9 +22,41 @@
 namespace LightPad.Backend {
 
     public class DesktopEntries : GLib.Object {
+
+        private static string resolve_menu_filename () {
+            var base_dir = Resources.XDG_MENU_DIR;
+            var desktop = GLib.Environment.get_variable ("XDG_CURRENT_DESKTOP");
+            var lower = desktop.down ();
+            string guessed_prefix;
+
+            if (desktop != null && desktop != "") {
+                switch (lower) {
+                    case "kde":
+                        guessed_prefix = "kf5";
+                        break;
+                    case "sway":
+                        guessed_prefix = "lxqt";
+                        break;
+                    default:
+                        guessed_prefix = lower;
+                        break;
+                }
+
+                var guessed_menu = guessed_prefix + "-applications.menu";
+                if (GLib.File.new_for_path (base_dir + guessed_menu).query_exists ()) {
+                    return guessed_menu;
+                }
+            } else if (GLib.File.new_for_path (base_dir + Resources.XDG_FALLBACK_MENU).query_exists ()) {
+                return Resources.XDG_FALLBACK_MENU;
+            } else {
+                error ("No %s XDG menu file found, verify the file", base_dir + lower + "-applications.menu exists");
+            }
+
+            return "not-found";
+        }
     
         private static Gee.ArrayList<GMenu.TreeDirectory> get_categories () {
-            var tree = new GMenu.Tree ("applications.menu", GMenu.TreeFlags.INCLUDE_EXCLUDED);
+            var tree = new GMenu.Tree (resolve_menu_filename (), GMenu.TreeFlags.INCLUDE_EXCLUDED);
             try {
                 // Initialize the tree
                 tree.load_sync ();
