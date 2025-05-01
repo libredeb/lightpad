@@ -47,7 +47,7 @@ namespace LightPad.Backend {
                     return guessed_menu;
                 }
             } else if (GLib.File.new_for_path (base_dir + Resources.XDG_FALLBACK_MENU).query_exists ()) {
-                return "applications.menu";
+                return Resources.XDG_FALLBACK_MENU;
             } else {
                 error ("No %s XDG menu file found, verify the file", base_dir + lower + "-applications.menu exists");
             }
