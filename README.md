@@ -104,6 +104,7 @@ These lines appear in the **.desktop** files located in `/usr/share/applications
 * Fixed [issue #5](https://github.com/libredeb/lightpad/issues/5), there are no cursor blinking in the searchbar
 * Fixed [issue #9](https://github.com/libredeb/lightpad/issues/9), can't toggle lightpad via keyboard shortcut
 * Fixed [issue #16](https://github.com/libredeb/lightpad/issues/16), dependency xterm is no longer required
+* Fixed [issue #29](https://github.com/libredeb/lightpad/issues/16), improve xdg application menu files detection
 * Release in progress... 
 
 **Version 0.0.8**
