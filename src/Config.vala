@@ -113,14 +113,3 @@ class FileConfig : BaseConfig {
         }
     }
 }
-
-        //  grid_y              = config_f.get_integer(group[0], "Y");
-        //  grid_x              = config_f.get_integer(group[0], "X");
-        //  grid_row_spacing = config_f.get_integer(group[0], "RowSpacing");
-        //  grid_col_spacing = config_f.get_integer(group[0], "ColumnSpacing");
-        //  item_font_size      = config_f.get_double(group[1], "FontSize");
-        //  item_icon_size      = config_f.get_integer(group[1], "IconSize");
-        //  item_box_width      = config_f.get_integer(group[1], "BoxWidth");
-        //  item_box_height     = config_f.get_integer(group[1], "BoxHeight");
-        //  sb_width            = config_f.get_integer(group[2], "Width");
-        //  sb_height           = config_f.get_integer(group[2], "Height");

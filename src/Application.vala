@@ -494,11 +494,14 @@ static int main (string[] args) {
     }
 
     app.activate.connect( () => {
-        if (app.get_windows ().length () == 0) {
-            var main_window = new LightPadWindow ();
+        var main_window = app.active_window;
+
+        if (main_window == null) {
+            main_window = new LightPadWindow ();
             main_window.set_application (app);
             main_window.show_all ();
-            Gtk.main ();
+        } else {
+            main_window.destroy ();
         }
     });
     app.run (args);

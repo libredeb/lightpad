@@ -13,7 +13,7 @@ This project was originally forked from Slingshot from the elementary team:
 
 ## Installation via PPA
 Only for Ubuntu based distros, open a terminal and run the next commands:
-```
+```sh
 sudo add-apt-repository ppa:libredeb/lightpad
 sudo apt-get update
 sudo apt-get install com.github.libredeb.lightpad
@@ -23,37 +23,37 @@ sudo apt-get install com.github.libredeb.lightpad
 
    1. Install dependencies:
    * For Ubuntu:
-      ```
+      ```sh
       sudo apt-get install meson ninja-build libgee-0.8-dev libgnome-menu-3-dev cdbs valac libvala-*-dev libglib2.0-dev libwnck-3-dev libgtk-3-dev python3 python3-wheel python3-setuptools gnome-menus
       ```
    * For Fedora:
-      ```
+      ```sh
       sudo dnf install meson ninja-build libgee-devel gnome-menus-devel cdbs vala libvala-devel glib-devel libwnck-devel gtk3-devel python3 python3-wheel python3-setuptools gnome-menus
       ```
    * For Arch Linux:
-      ```
+      ```sh
       sudo pacman -Sy meson ninja libgee gnome-menus vala glib2 gdk-pixbuf2 libwnck3 gtk3 python python-wheel python-setuptools
       ```
    2. Clone this repository into your machine
-      ```
+      ```sh
       git clone https://github.com/libredeb/lightpad.git
       cd lightpad/
       ```
    3. Create a build folder:
-      ```
+      ```sh
       meson setup build --prefix=/usr
       ```
    4. Compile LightPad:
-      ```
+      ```sh
       cd build
       ninja
       ```
    5. Install LightPad in the system:
-      ```
+      ```sh
       sudo ninja install
       ```
    6. (OPTIONAL) Uninstall LightPad:
-      ```
+      ```sh
       sudo ninja uninstall
       ```
 
@@ -69,14 +69,29 @@ Now assign it a shortcut key, such as `CTRL`+`SPACE`.
 
 > **NOTE:** if you want to use another keyboard shortcut like the `SUPER` key to activate LightPad in Desktop Environments in which the `SUPER` key is used, maybe you want to try to disable it first. For example in GNOME Shell you can run next command `gsettings set org.gnome.mutter overlay-key ''` (and if you want to restorte the original behavior, so run next command `gsettings reset org.gnome.mutter overlay-key`).
 
-## Dynamic Background (optional feature)
+## Optional Features
+
+To use any of the optional features, make sure to create the directory `~/.lightpad` first.
+
+### Custom Configuration Support
+
+Lightpad supports customization through a simple configuration file.  
+You can adjust visual aspects such as font size, icon size, and the application grid layout.
+
+To get started, copy the example config file to destination path:
+
+```sh
+cp example-config ~/.lightpad/config
+```
+
+### Dynamic Background
 
 LighPad added a new feature, now you can use a custom background of your choice. You can add any wallpaper or image strictly under some of the following path/files and lightpad will use them (prioritizing the JPG format):
 > `$HOME/.lightpad/background.jpg`
 
 > `$HOME/.lightpad/background.png`
 
-## Blocklist File (optional feature)
+### Blocklist File
 
 Another new added functionality, is the ability to hide applications using a blocklist file. In the file:
 > `$HOME/.lightpad/blocklist`
