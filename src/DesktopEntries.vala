@@ -23,39 +23,52 @@ namespace LightPad.Backend {
 
     public class DesktopEntries : GLib.Object {
 
-        private static string resolve_menu_filename () {
-            var base_dir = Resources.XDG_MENU_DIR;
-            var desktop = GLib.Environment.get_variable ("XDG_SESSION_DESKTOP");
-            var lower = desktop.down ();
-            string guessed_prefix;
-
-            if (desktop != null && desktop != "") {
-                switch (lower) {
-                    case "kde":
-                        guessed_prefix = "kf5";
-                        break;
-                    case "sway":
-                        guessed_prefix = "lxqt";
-                        break;
-                    case "budgie-desktop":
-                        guessed_prefix = "gnome";
-                        break;
-                    default:
-                        guessed_prefix = lower;
-                        break;
-                }
-
-                var guessed_menu = guessed_prefix + "-applications.menu";
-                if (GLib.File.new_for_path (base_dir + guessed_menu).query_exists ()) {
-                    return guessed_menu;
-                }
-            } else if (GLib.File.new_for_path (base_dir + Resources.XDG_FALLBACK_MENU).query_exists ()) {
-                return Resources.XDG_FALLBACK_MENU;
-            } else {
-                error ("No %s XDG menu file found, verify the file", base_dir + lower + "-applications.menu exists");
+        public static string? try_resolve(string? value, Gee.HashMap<string, string> map) {
+            if (value == null) {
+                return null;
             }
 
-            return "not-found";
+            foreach (var part in value.down ().split (":")) {
+                var trimmed = part.strip ();
+                if (map.has_key (trimmed)) {
+                    return map.get (trimmed);
+                }
+            }
+
+            return null;
+        }
+
+        private static string resolve_menu_filename () {
+            var desktop_menus_map = new Gee.HashMap<string, string> ();
+
+            desktop_menus_map.set ("gnome", "gnome-applications.menu");
+            desktop_menus_map.set ("unity", "gnome-applications.menu");
+            desktop_menus_map.set ("kde", "kf5-applications.menu");
+            desktop_menus_map.set ("plasma", "plasma-applications.menu");
+            desktop_menus_map.set ("xfce", "xfce-applications.menu");
+            desktop_menus_map.set ("x-cinnamon", "cinnamon-applications.menu");
+            desktop_menus_map.set ("cinnamon", "cinnamon-applications.menu");
+            desktop_menus_map.set ("mate", "mate-applications.menu");
+            desktop_menus_map.set ("lxde", "lxde-applications.menu");
+            desktop_menus_map.set ("lxqt", "lxqt-applications.menu");
+            desktop_menus_map.set ("sway", "lxqt-applications.menu");
+            desktop_menus_map.set ("budgie", "gnome-applications.menu");
+            desktop_menus_map.set ("budgie-desktop", "gnome-applications.menu");
+            desktop_menus_map.set ("pantheon", "pantheon-applications.menu");
+
+            string? current_desktop = GLib.Environment.get_variable ("XDG_CURRENT_DESKTOP");
+            string? resolved = try_resolve (current_desktop, desktop_menus_map);
+            if (resolved != null) {
+                return resolved;
+            }
+
+            string? session_desktop = GLib.Environment.get_variable ("XDG_SESSION_DESKTOP");
+            resolved = try_resolve (session_desktop, desktop_menus_map);
+            if (resolved != null) {
+                return resolved;
+            }
+
+            return Resources.XDG_FALLBACK_MENU;
         }
 
         private static Gee.ArrayList<GMenu.TreeDirectory> get_categories () {
