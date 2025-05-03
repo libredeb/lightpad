@@ -25,7 +25,7 @@ namespace LightPad.Backend {
 
         private static string resolve_menu_filename () {
             var base_dir = Resources.XDG_MENU_DIR;
-            var desktop = GLib.Environment.get_variable ("XDG_CURRENT_DESKTOP");
+            var desktop = GLib.Environment.get_variable ("XDG_SESSION_DESKTOP");
             var lower = desktop.down ();
             string guessed_prefix;
 
