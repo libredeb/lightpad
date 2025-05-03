@@ -23,7 +23,7 @@ public class LightPadWindow : Widgets.CompositedWindow {
 
     public static string user_home = GLib.Environment.get_variable ("HOME");
     public Gee.ArrayList<Gee.HashMap<string, string>> apps = new Gee.ArrayList<Gee.HashMap<string, string>> ();
-    public Gee.HashMap<string, Gdk.Pixbuf> icons = new Gee.HashMap<string, Gdk.Pixbuf>();
+    public Gee.HashMap<string, Gdk.Pixbuf> icons = new Gee.HashMap<string, Gdk.Pixbuf> ();
     public Gee.ArrayList<Gee.HashMap<string, string>> filtered = new Gee.ArrayList<Gee.HashMap<string, string>> ();
     public LightPad.Frontend.Indicators pages;
 
@@ -500,6 +500,7 @@ static int main (string[] args) {
             main_window = new LightPadWindow ();
             main_window.set_application (app);
             main_window.show_all ();
+            Gtk.main ();
         } else {
             main_window.destroy ();
         }
