@@ -37,6 +37,9 @@ namespace LightPad.Backend {
                     case "sway":
                         guessed_prefix = "lxqt";
                         break;
+                    case "budgie-desktop":
+                        guessed_prefix = "gnome";
+                        break;
                     default:
                         guessed_prefix = lower;
                         break;
@@ -54,7 +57,7 @@ namespace LightPad.Backend {
 
             return "not-found";
         }
-    
+
         private static Gee.ArrayList<GMenu.TreeDirectory> get_categories () {
             var tree = new GMenu.Tree (resolve_menu_filename (), GMenu.TreeFlags.INCLUDE_EXCLUDED);
             try {
@@ -73,13 +76,13 @@ namespace LightPad.Backend {
                 }
                 item = iter.next ();
             }
-            message ("Number of categories: %d", main_directory_entries.size);
+            debug ("Number of categories: %d", main_directory_entries.size);
             return main_directory_entries;
         }
-        
+
         private static Gee.HashSet<GMenu.TreeEntry> get_applications_for_category (
             GMenu.TreeDirectory category) {
-            
+
             var entries = new Gee.HashSet<GMenu.TreeEntry>  (
                 (x) => ((GMenu.TreeEntry)x).get_desktop_file_path ().hash (),
                 (x,y) => ((GMenu.TreeEntry)x).get_desktop_file_path ().hash () == ((GMenu.TreeEntry)y).get_desktop_file_path ().hash ());
@@ -103,15 +106,15 @@ namespace LightPad.Backend {
                 }
                 item = iter.next ();
             }
-            message ("Category [%s] has [%d] apps", category.get_name (), entries.size);
+            debug ("Category [%s] has [%d] apps", category.get_name (), entries.size);
             return entries;
         }
-        
-        public static void enumerate_apps (Gee.HashMap<string, Gdk.Pixbuf> icons, 
+
+        public static void enumerate_apps (Gee.HashMap<string, Gdk.Pixbuf> icons,
                 int icon_size,
                 string user_home,
                 out Gee.ArrayList<Gee.HashMap<string, string>> list) {
-            
+
             var the_apps = new Gee.HashSet<GMenu.TreeEntry> (
                 (x) => ((GMenu.TreeEntry)x).get_desktop_file_path ().hash (),
                 (x,y) => ((GMenu.TreeEntry)x).get_desktop_file_path ().hash () == ((GMenu.TreeEntry)y).get_desktop_file_path ().hash ());
@@ -123,19 +126,19 @@ namespace LightPad.Backend {
                     the_apps.add(this_app);
                 }
             }
-            
-            message ("Amount of apps: %d", the_apps.size);
+
+            debug ("Amount of apps: %d", the_apps.size);
             var icon_theme = Gtk.IconTheme.get_default();
             list = new Gee.ArrayList<Gee.HashMap<string, string>> ();
-            
+
             var blocklist_file = GLib.File.new_for_path (user_home + Resources.BLOCKLIST_FILE);
             var apps_hidden = new Gee.ArrayList<string> ();
-            
+
             if (blocklist_file.query_exists ()) {
                 try {
                     var dis = new DataInputStream (blocklist_file.read ());
                     string line;
-            
+
                     while ((line = dis.read_line (null)) != null) {
                         apps_hidden.add (line);
                     }
@@ -145,18 +148,18 @@ namespace LightPad.Backend {
             } else {
                 apps_hidden.add ("");
             }
-            
+
             foreach (GMenu.TreeEntry entry in the_apps) {
                 var app = entry.get_app_info ();
-                if (app.get_nodisplay () == false && 
-                    app.get_is_hidden() == false && 
+                if (app.get_nodisplay () == false &&
+                    app.get_is_hidden() == false &&
                     app.get_icon() != null &&
                     !(app.get_commandline ().split (" ")[0] in apps_hidden))
                 {
                     var app_to_add = new Gee.HashMap<string, string> ();
                     app_to_add["name"] = app.get_display_name ();
                     app_to_add["description"] = app.get_description ();
-                    
+
                     // Needed to check further later if terminal is open in terminal (like VIM, HTop, etc.)
                     if (app.get_string ("Terminal") == "true") {
                         app_to_add["terminal"] = "true";
@@ -195,7 +198,7 @@ namespace LightPad.Backend {
             }
 
         }
-    
+
     }
 
 }

@@ -89,10 +89,10 @@ class FileConfig : BaseConfig {
         try {
             config_f.load_from_file(file, KeyFileFlags.KEEP_COMMENTS);
         } catch {
-            message ("Config file not found. Using default values");
+            debug ("Config file not found. Using default values");
             return;
         }
-        
+
         const string[] group = {"Grid", "AppItem", "SearchBar"};
         try {
             merge_int(&grid_y, config_f.get_integer(group[0], "Y"));
