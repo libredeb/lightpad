@@ -64,8 +64,8 @@ public class LightPadWindow : Widgets.CompositedWindow {
         monitor_dimensions.height = pixel_geo.height / monitor.get_scale_factor ();
 
         FileConfig config = new FileConfig(
-            monitor_dimensions.width, 
-            monitor_dimensions.height, 
+            monitor_dimensions.width,
+            monitor_dimensions.height,
             user_home + Resources.CONFIG_FILE
         );
         // For compatibility, maybe add FileConfig to LightPadWindow someday
@@ -76,9 +76,9 @@ public class LightPadWindow : Widgets.CompositedWindow {
         this.grid_y = config.grid_y;
         this.grid_x = config.grid_x;
 
-        message ("The monitor dimensions are: %dx%d", monitor_dimensions.width,  monitor_dimensions.height);
-        message ("The apps icon size is: %d", this.icon_size);
-        message ("The grid size are: %dx%d", this.grid_y, this.grid_x);
+        debug ("The monitor dimensions are: %dx%d", monitor_dimensions.width,  monitor_dimensions.height);
+        debug ("The apps icon size is: %d", this.icon_size);
+        debug ("The grid size are: %dx%d", this.grid_y, this.grid_x);
 
         // Window properties
         this.set_title ("LightPad");
@@ -89,7 +89,7 @@ public class LightPadWindow : Widgets.CompositedWindow {
         this.set_type_hint (Gdk.WindowTypeHint.NORMAL);
         //this.fullscreen (); <-- old method used
         var display = Gdk.Display.get_default();
-        message ("Amount of Monitors: %d", display.get_n_monitors ());
+        debug ("Amount of Monitors: %d", display.get_n_monitors ());
         int primary_monitor_number = 0;
         for (int i = 0; i < display.get_n_monitors (); i++) {
             if (get_display ().get_monitor (i).is_primary ()) {
@@ -117,7 +117,7 @@ public class LightPadWindow : Widgets.CompositedWindow {
 
         // Searchbar
         this.searchbar = new LightPad.Frontend.Searchbar ("Search");
-        message ("Searchbar created!");
+        debug ("Searchbar created!");
         this.searchbar.changed.connect (this.search);
 
         // Lateral distance (120 are the pixels of the searchbar width)
@@ -220,7 +220,7 @@ public class LightPadWindow : Widgets.CompositedWindow {
                 return true;
             }
         } );
-        
+
     }
 
     private void search() {
@@ -244,7 +244,7 @@ public class LightPadWindow : Widgets.CompositedWindow {
         for (int r = 0; r < this.grid_x; r++) {
             for (int c = 0; c < this.grid_y; c++) {
                 var item = new LightPad.Frontend.AppItem (
-                    this.icon_size, this.font_size, 
+                    this.icon_size, this.font_size,
                     this.item_box_width, this.item_box_height
                 );
                 this.children.append (item);
@@ -419,7 +419,7 @@ public class LightPadWindow : Widgets.CompositedWindow {
                 }
                 return true;
             case "BackSpace":
-                if (this.searchbar.text.length > 0) {   
+                if (this.searchbar.text.length > 0) {
                     this.searchbar.text = this.searchbar.text.slice (0, (int) this.searchbar.text.length - 1);
                 }
                 return true;
