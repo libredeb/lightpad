@@ -26,7 +26,7 @@ namespace LightPad.Frontend {
         // Constants
         const int WIDTH = 240;
         const int HEIGHT = 26;
-        
+
         // Properties
         private Gtk.TextBuffer buffer;
         public Gtk.Entry entry;
@@ -39,7 +39,7 @@ namespace LightPad.Frontend {
 
         // Signals
         public signal void changed ();
-        
+
         public string text {
             owned get {
                 string current_text = this.buffer.text;
@@ -80,12 +80,12 @@ namespace LightPad.Frontend {
             search_icon_wrapper.border_width = 4;
             search_icon_wrapper.button_release_event.connect ( () => { return true; } );
             wrapper.pack_start (search_icon_wrapper, false, true, 3);
-            
+
             // Label properties
             this.entry = new Gtk.Entry ();
             this.entry.set_text (this.buffer.text);
             this.entry.set_has_frame (false);
-            this.entry.set_alignment(0.0f);
+            this.entry.set_alignment (0.0f);
             this.entry.set_placeholder_text (this.hint_string);
             this.entry.set_hexpand (true);
             this.entry.set_halign (Gtk.Align.START);
@@ -95,14 +95,14 @@ namespace LightPad.Frontend {
             var clear_icon_wrapper = new Gtk.EventBox ();
             clear_icon_wrapper.set_visible_window (false);
             clear_icon_wrapper.border_width = 4;
-            this.clear_icon = new Gtk.Image.from_icon_name("edit-clear-symbolic", Gtk.IconSize.MENU);
+            this.clear_icon = new Gtk.Image.from_icon_name ("edit-clear-symbolic", Gtk.IconSize.MENU);
 
             clear_icon_wrapper.add (this.clear_icon);
             clear_icon_wrapper.button_release_event.connect ( () => { this.hint (); return true; });
             clear_icon_wrapper.set_hexpand (true);
             clear_icon_wrapper.set_halign (Gtk.Align.END);
             wrapper.pack_end (clear_icon_wrapper, false, true, 3);
-            
+
             // Connect signals and callbacks
             this.buffer.changed.connect (on_changed);
             this.draw.connect (this.draw_background);
@@ -110,7 +110,7 @@ namespace LightPad.Frontend {
                 this.hint (); // hint it
             });
         }
-        
+
         public void hint () {
             this.buffer.text = "";
             this.entry.set_text (this.hint_string);
@@ -121,7 +121,7 @@ namespace LightPad.Frontend {
             this.text = "";
             this.reset_font ();
         }
-        
+
         private void reset_font () {
             this.entry.get_style_context ().remove_class ("search_greyout");
             this.entry.get_style_context ().add_class ("search_normal");

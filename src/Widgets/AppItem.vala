@@ -22,7 +22,7 @@
 namespace LightPad.Frontend {
 
     public class AppItem : Gtk.EventBox {
-    
+
         private Gdk.Pixbuf icon;
         private LightPad.Frontend.Color prominent;
         private string label;
@@ -32,7 +32,7 @@ namespace LightPad.Frontend {
 
         const int FPS = 24;
         const int DURATION = 200;
-        const int RUN_LENGTH = (int)(DURATION/FPS); // Total number of frames
+        const int RUN_LENGTH = (int)(DURATION / FPS); // Total number of frames
         private int current_frame = 1; // Run length, in frames
 
         public AppItem (int size, double font_size, int box_width, int box_height) {
@@ -55,7 +55,7 @@ namespace LightPad.Frontend {
             this.focus_in_event.connect ( () => { this.focus_in (); return true; } );
             this.focus_out_event.connect ( () => { this.focus_out (); return true; } );
         }
-        
+
         public void change_app (Gdk.Pixbuf new_icon, string new_name, string new_tooltip) {
             this.current_frame = 1;
 
@@ -72,9 +72,9 @@ namespace LightPad.Frontend {
             // Redraw
             this.wrapper.queue_draw ();
         }
-        
+
         public new void focus_in () {
-            GLib.Timeout.add (((int)(1000/FPS)), () => {
+            GLib.Timeout.add (((int)(1000 / FPS)), () => {
                 if (this.current_frame >= RUN_LENGTH || !this.has_focus) {
                     current_frame = 1;
                     return false; // Stop animation
@@ -85,9 +85,9 @@ namespace LightPad.Frontend {
                 return true;
             });
         }
-        
+
         public new void focus_out () {
-            GLib.Timeout.add (((int)(1000/FPS)), () => {
+            GLib.Timeout.add (((int)(1000 / FPS)), () => {
                 if (this.current_frame >= RUN_LENGTH || this.has_focus) {
                     current_frame = 1;
                     return false; // Stop animation
@@ -98,7 +98,7 @@ namespace LightPad.Frontend {
                 return true;
             });
         }
-        
+
         private bool draw_icon (Gtk.Widget widget, Cairo.Context ctx) {
             Gtk.Allocation size;
             widget.get_allocation (out size);
@@ -115,13 +115,13 @@ namespace LightPad.Frontend {
             LightPad.Frontend.Utilities.truncate_text (context, size, 10, this.label, out this.label, out extents);
 
             // Draw text shadow
-            context.move_to ((size.x + size.width/2 - extents.width/2) + 1, (size.y + size.height - 10) + 1);
+            context.move_to ((size.x + size.width / 2 - extents.width / 2) + 1, (size.y + size.height - 10) + 1);
             context.set_source_rgba (0.0, 0.0, 0.0, 0.8);
             context.show_text (this.label);
 
             // Draw normal text
             context.set_source_rgba (1.0, 1.0, 1.0, 1.0);
-            context.move_to (size.x + size.width/2 - extents.width/2, size.y + size.height - 10);
+            context.move_to (size.x + size.width / 2 - extents.width / 2, size.y + size.height - 10);
             context.show_text (this.label);
 
             return false;
@@ -134,18 +134,20 @@ namespace LightPad.Frontend {
 
             double progress;
             if (this.current_frame > 1) {
-                progress = (double)RUN_LENGTH/(double)this.current_frame;
+                progress = (double)RUN_LENGTH / (double)this.current_frame;
             } else {
                 progress = 1;
             }
 
             if (this.has_focus) {
                 double dark = 0.32;
-                var gradient = new Cairo.Pattern.rgba (this.prominent.R * dark, this.prominent.G * dark, this.prominent.B * dark, 0.8);
+                var gradient = new Cairo.Pattern.rgba (
+                    this.prominent.r * dark, this.prominent.g * dark, this.prominent.b * dark, 0.8
+                );
                 context.set_source (gradient);
                 LightPad.Frontend.Utilities.draw_rounded_rectangle (context, 10, 0.5, size);
                 context.fill ();
-            }  else  {
+            } else {
                 if (this.current_frame > 1) {
                     var gradient = new Cairo.Pattern.rgba (0.0, 0.0, 0.0, 0.0);
 
@@ -154,7 +156,7 @@ namespace LightPad.Frontend {
                     context.fill ();
                 }
             }
-            
+
             return false;
         }
 

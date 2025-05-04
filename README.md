@@ -110,17 +110,24 @@ htop
 
 These lines appear in the **.desktop** files located in `/usr/share/applications` as the value of the **Exec=** tag.
 
+## Debug LightPad
+
+To show debug messages to see what's happening when LightPad run, you can execute next command:
+
+```sh
+pkill -f com.github.libredeb.lightpad; G_MESSAGES_DEBUG=all com.github.libredeb.lightpad
+```
 
 ## Changelog
 **Version 0.0.9**
 * Fixed [issue #26](https://github.com/libredeb/lightpad/issues/26), opens in wrong monitor
 * Fixed [issue #28](https://github.com/libredeb/lightpad/issues/28), can't run gnome apps
 * Fixed [issue #23](https://github.com/libredeb/lightpad/issues/23), can't exit clicking on an empty area
+* Fixed [issue #21](https://github.com/libredeb/lightpad/issues/21), items overflow when doubling pixels
 * Fixed [issue #5](https://github.com/libredeb/lightpad/issues/5), there are no cursor blinking in the searchbar
 * Fixed [issue #9](https://github.com/libredeb/lightpad/issues/9), can't toggle lightpad via keyboard shortcut
 * Fixed [issue #16](https://github.com/libredeb/lightpad/issues/16), dependency xterm is no longer required
-* Fixed [issue #29](https://github.com/libredeb/lightpad/issues/16), improve xdg application menu files detection
-* Release in progress... 
+* Fixed [issue #29](https://github.com/libredeb/lightpad/issues/29), improve xdg application menu files detection
 
 **Version 0.0.8**
 * Templates added to make packages for Arch Linux (PKG) and Fedora (RPM)
