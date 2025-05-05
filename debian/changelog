@@ -1,3 +1,10 @@
+com.github.libredeb.lightpad (0.0.9-3) noble; urgency=medium
+ 
+  * A bunch of resolved issues (#5, #9, #16, #21, #23, #26, #28, #29)
+  * Performance improved
+ 
+ -- Juan Pablo Lozano <libredeb@gmail.com>  Sun, 04 May 2025 23:49:01 -0300
+
 com.github.libredeb.lightpad (0.0.8~rev1) bionic; urgency=medium
 
   * Clean CSS code, some vars and unused functionality.

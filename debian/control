@@ -15,7 +15,6 @@ Build-Depends: meson,
 Standards-Version: 4.1.1
 
 Package: lightpad
-Version: 0.0.8
 Architecture: any
 Depends: ${misc:Depends}, ${shlibs:Depends},
          libc6,
