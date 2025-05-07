@@ -32,9 +32,12 @@
 
   <requires>
     <display_length compare="ge">600</display_length>
+  </requires>
+
+  <supports>
     <control>keyboard</control>
     <control>pointing</control>
-  </requires>
+  </supports>
 
   <provides>
     <binary>com.github.libredeb.lightpad</binary>
