@@ -30,6 +30,12 @@
 
   <content_rating type="oars-1.1" />
 
+  <requires>
+    <display_length compare="ge">600</display_length>
+    <control>keyboard</control>
+    <control>pointing</control>
+  </requires>
+
   <provides>
     <binary>com.github.libredeb.lightpad</binary>
   </provides>
