@@ -1,16 +1,53 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Copyright 2020 Juan Pablo Lozano <libredeb@gmail.com> -->
-<component type="desktop">
+<component type="desktop-application">
+  <branding>
+    <color type="primary">#415d6b</color>
+  </branding>
+
   <id>com.github.libredeb.lightpad</id>
-  <metadata_license>CC0</metadata_license>
+  <launchable type="desktop-id">com.github.libredeb.lightpad.desktop</launchable>
+  <metadata_license>CC-BY-4.0</metadata_license>
+  <project_license>GPL-3.0-or-later</project_license>
+
   <name>LightPad</name>
   <summary>Lightweight Application Launcher</summary>
   <description>
-    <p>LightPad is a lightweight, look nice and powerful application launcher.</p>
+    <p>A lightweight, simple, look nice and powerful application launcher for GNU/Linux.</p>
+    <p>Additional features include:</p>
+    <ul>
+      <li>Wayland compatible</li>
+      <li>Dynamic Background</li>
+      <li>Blocklist File</li>
+    </ul>
   </description>
+
+  <screenshots>
+    <screenshot type="default">
+      <image>https://raw.githubusercontent.com/libredeb/lightpad/master/screenshot.png</image>
+    </screenshot>
+  </screenshots>
+
+  <content_rating type="oars-1.1" />
+
+  <provides>
+    <binary>com.github.libredeb.lightpad</binary>
+  </provides>
+
+  <url type="bugtracker">https://github.com/libredeb/lightpad/issues</url>
+  <url type="donation">https://www.paypal.com/donate/?hosted_button_id=3MUTW978NRQUC</url>
+  <url type="help">https://github.com/libredeb/lightpad/discussions</url>
+  <url type="homepage">https://lightpad.sourceforge.io/</url>
+
+  <developer id="org.elementaryos">
+    <name>Juan Pablo Lozano</name>
+  </developer>
+  <project_group>lightpad</project_group>
+  <update_contact>libredeb@gmail.com</update_contact>
+
   <custom>
     <value key="x-appcenter-color-primary">#415d6b</value>
-    <value key="x-appcenter-color-primary-text">rgb(255, 255, 255)</value>
+    <value key="x-appcenter-color-primary-text">rgb(9, 18, 25)</value>
     <value key="x-appcenter-suggested-price">1</value>
   </custom>
 </component>
