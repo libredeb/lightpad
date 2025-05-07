@@ -1,24 +1,24 @@
 Name:        	lightpad   
-Version:        0.0.8
-Release:        1
+Version:        0.0.9
+Release:        1%{?dist}
 Summary:        LightPad Launcher
 License:        GPL
-Group:		Utilities/System
+Group:		    Utilities/System
 
 URL:            https://github.com/libredeb/lightpad
-Source0:        lightpad-0.0.8.tar.gz
-BuildRoot:	%{_tmppath}/%{name}-%{version}-build
+Source0:        https://github.com/libredeb/%{name}/archive/refs/tags/%{version}.tar.gz
+BuildRoot:	    %{_tmppath}/%{name}-%{version}-build
 
 BuildRequires:  meson
 BuildRequires:  ninja-build
-BuildRequires:  libgee-devel
-BuildRequires:  gnome-menus-devel
 BuildRequires:  cdbs
-BuildRequires:  vala
-BuildRequires:  vala-devel
-BuildRequires:  glib-devel
-BuildRequires:  libwnck-devel
-BuildRequires:  gtk3-devel
+BuildRequires:  vala >= 0.56.0
+BuildRequires:  libvala-devel >= 0.56.0
+BuildRequires:  libgee-devel >= 0.18.0
+BuildRequires:  gnome-menus-devel >= 3.13.0
+BuildRequires:  glib2-devel >= 2.76.0
+BuildRequires:  libwnck3-devel
+BuildRequires:  gtk3-devel >= 3.22.0
 BuildRequires:  python3
 BuildRequires:  python3-wheel
 BuildRequires:  python3-setuptools
@@ -46,6 +46,9 @@ Written in GTK+ 3.0. It is also Wayland compatible.
 %install
 %{meson_install}
 
+%check
+file %{_bindir}/com.github.libredeb.lightpad
+
 %files
 %defattr(-,root,root)
 %{_bindir}/com.github.libredeb.lightpad
@@ -60,3 +63,6 @@ Written in GTK+ 3.0. It is also Wayland compatible.
 %{_datadir}/metainfo/com.github.libredeb.lightpad.appdata.xml
 
 %changelog
+* Sun May  04 2025 Juan Pablo Lozano <libredeb@gmail.com> - 0.0.9
+- A bunch of resolved issues (#5, #9, #16, #21, #23, #26, #28, #29)
+- Performance improved
