@@ -25,6 +25,7 @@
   <screenshots>
     <screenshot type="default">
       <image>https://raw.githubusercontent.com/libredeb/lightpad/master/screenshot.png</image>
+      <caption>LightPad in action</caption>
     </screenshot>
   </screenshots>
 
@@ -59,4 +60,22 @@
     <value key="x-appcenter-color-primary-text">rgb(9, 18, 25)</value>
     <value key="x-appcenter-suggested-price">1</value>
   </custom>
+
+  <releases>
+    <release version="0.0.9" date="2025-05-04" urgency="medium">
+      <description>
+        <p>A bunch of resolved issues (#5, #9, #16, #21, #23, #26, #28, #29)</p>
+      </description>
+      <issues>
+        <issue url="https://github.com/libredeb/lightpad/issues/5">There are no cursor blinking in the searchbar</issue>
+        <issue url="https://github.com/libredeb/lightpad/issues/9">Can't toggle LightPad via keyboard shortcut</issue>
+        <issue url="https://github.com/libredeb/lightpad/issues/16">Dependency xterm is no longer required</issue>
+        <issue url="https://github.com/libredeb/lightpad/issues/21">Items overflow when doubling pixels</issue>
+        <issue url="https://github.com/libredeb/lightpad/issues/23">Can't exit clicking on an empty area</issue>
+        <issue url="https://github.com/libredeb/lightpad/issues/26">LightPad opens in wrong monitor</issue>
+        <issue url="https://github.com/libredeb/lightpad/issues/28">LightPad can't run gnome apps</issue>
+        <issue url="https://github.com/libredeb/lightpad/issues/29">Improve xdg application menu files detection</issue>
+      </issues>
+    </release>
+  </releases>
 </component>
