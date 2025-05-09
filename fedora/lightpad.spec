@@ -61,6 +61,7 @@ file %{_bindir}/com.github.libredeb.lightpad
 %{_datadir}/icons/hicolor/scalable/apps/application-default-icon.svg
 %{_datadir}/lightpad/application.css
 %{_datadir}/metainfo/com.github.libredeb.lightpad.appdata.xml
+%{_datadir}/man/man1/com.github.libredeb.lightpad.1.gz
 
 %changelog
 * Sun May  04 2025 Juan Pablo Lozano <libredeb@gmail.com> - 0.0.9
