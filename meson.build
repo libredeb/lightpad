@@ -104,4 +104,10 @@ install_data(
     install_dir: join_paths(datadir, 'metainfo')
 )
 
+# Install manual page
+install_data(
+    join_paths('data', meson.project_name() + '.1.gz'),
+    install_dir: join_paths(datadir, 'man', 'man1')
+)
+
 meson.add_install_script('post_install.py')
