@@ -22,15 +22,15 @@ sudo apt-get install com.github.libredeb.lightpad
    1. Install dependencies:
    * For Ubuntu:
       ```sh
-      sudo apt-get install meson ninja-build libgee-0.8-dev libgnome-menu-3-dev cdbs valac libvala-*-dev libglib2.0-dev libwnck-3-dev libgtk-3-dev python3 python3-wheel python3-setuptools gnome-menus
+      sudo apt-get install meson ninja-build libgee-0.8-dev libgnome-menu-3-dev cdbs valac libvala-*-dev libglib2.0-dev libgtk-3-dev python3 python3-wheel python3-setuptools gnome-menus
       ```
    * For Fedora:
       ```sh
-      sudo dnf install meson ninja-build libgee-devel gnome-menus-devel cdbs vala libvala-devel glib-devel libwnck-devel gtk3-devel python3 python3-wheel python3-setuptools gnome-menus
+      sudo dnf install meson ninja-build libgee-devel gnome-menus-devel cdbs vala libvala-devel glib-devel gtk3-devel python3 python3-wheel python3-setuptools gnome-menus
       ```
    * For Arch Linux:
       ```sh
-      sudo pacman -Sy meson ninja libgee gnome-menus vala glib2 gdk-pixbuf2 libwnck3 gtk3 python python-wheel python-setuptools
+      sudo pacman -Sy meson ninja libgee gnome-menus vala glib2 gdk-pixbuf2 gtk3 python python-wheel python-setuptools
       ```
    2. Clone this repository into your machine
       ```sh
