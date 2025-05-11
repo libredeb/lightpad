@@ -17,7 +17,6 @@ BuildRequires:  libvala-devel >= 0.56.0
 BuildRequires:  libgee-devel >= 0.18.0
 BuildRequires:  gnome-menus-devel >= 3.13.0
 BuildRequires:  glib2-devel >= 2.76.0
-BuildRequires:  libwnck3-devel
 BuildRequires:  gtk3-devel >= 3.22.0
 BuildRequires:  python3
 BuildRequires:  python3-wheel
@@ -30,7 +29,6 @@ Requires:	libgee
 Requires:	glib2
 Requires:	gnome-menus
 Requires:	gtk3
-Requires:	libwnck3
 
 %description
 LightPad is a lightweight, simple and powerful application launcher.
