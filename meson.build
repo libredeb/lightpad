@@ -105,6 +105,8 @@ install_data(
 )
 
 # Install manual page
+run_command('gzip', '-k', join_paths('data', meson.project_name() + '.1'), check: true)
+
 install_data(
     join_paths('data', meson.project_name() + '.1.gz'),
     install_dir: join_paths(datadir, 'man', 'man1')
