@@ -19,6 +19,7 @@ conf = configuration_data()
 conf.set_quoted('PROJECT_NAME', PROJECT_NAME)
 conf.set_quoted('PACKAGE_LIBDIR', libdir)
 conf.set_quoted('PACKAGE_SHAREDIR', datadir)
+conf.set_quoted('PACKAGE_VERSION', meson.project_version())
 
 config_h = configure_file(
 	output: 'config.h',

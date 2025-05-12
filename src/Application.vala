@@ -516,7 +516,13 @@ static int main (string[] args) {
             main_window.destroy ();
         }
     });
+
+    if ((args[1] == "-v") || (args[1] == "--version")) {
+        stdout.printf ("%s v%s\n", Config.PROJECT_NAME, Config.PACKAGE_VERSION);
+        return 0;
+    }
+
     app.run (args);
-    return 1;
+    return 0;
 
 }
