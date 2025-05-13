@@ -48,6 +48,7 @@ executable(
     'src/Color.vala',
     'src/Resources.vala',
     'src/Config.vala',
+    'src/ConfigTypes.vala',
     'src/Widgets/CompositedWindow.vala',
     'src/Widgets/Searchbar.vala',
     'src/Widgets/Indicators.vala',

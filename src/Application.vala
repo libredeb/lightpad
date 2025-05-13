@@ -517,9 +517,46 @@ static int main (string[] args) {
         }
     });
 
-    if ((args[1] == "-v") || (args[1] == "--version")) {
-        stdout.printf ("%s v%s\n", Config.PROJECT_NAME, Config.PACKAGE_VERSION);
-        return 0;
+    if (args.length > 1) {
+        switch (args[1]) {
+            case "-v":
+            case "--version":
+                stdout.printf ("%s v%s\n", Config.PROJECT_NAME, Config.PACKAGE_VERSION);
+                return 0;
+            case "-s":
+            case "--save-config":
+                FileConfig configfile = new FileConfig (0, 0, Resources.CONFIG_FILE);
+                string configfile_path = GLib.Environment.get_variable ("HOME") + Resources.CONFIG_FILE;
+
+                var keyfile = configfile.get_key_file ();
+                try {
+                    FileUtils.set_contents (configfile_path, keyfile.to_data ());
+                    print ("Configuration saved in: %s\n", configfile_path);
+                } catch (Error e) {
+                    stderr.printf ("Error saving configuration: %s\n", e.message);
+                    return 1;
+                }
+
+                return 0;
+            case "-c":
+            case "--clear-config":
+                string configfile_path = GLib.Environment.get_variable ("HOME") + Resources.CONFIG_FILE;
+                try {
+                    if (FileUtils.remove (configfile_path) == 0) {
+                        stdout.printf ("Configuration successfully cleared.\n");
+                    } else {
+                        stdout.printf ("Unable to clear configuration.\n");
+                    }
+                } catch (GLib.Error e) {
+                    stderr.printf ("An error ocurred while erasing the configuration file: %s\n", e.message);
+                    return 1;
+                }
+
+                return 0;
+            default:
+                stdout.printf ("Unknown option '%s'. See 'man %s'.\n", args[1], args[0]);
+                return 1;
+        }
     }
 
     app.run (args);

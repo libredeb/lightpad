@@ -18,8 +18,8 @@ class BaseConfig {
     public int item_box_height;
 
     // SearchBar
-    public int sb_width;
-    public int sb_height;
+    public int sb_width = -1;
+    public int sb_height = -1;
 
     public int screen_w;
     public int screen_h;
@@ -77,47 +77,72 @@ class BaseConfig {
     }
 }
 
-void merge_int (int* ptr, int val) {
-    if (val > -1)
-        *ptr = val;
-}
-
-void merge_double (double* ptr, double val) {
-    if (val > -1.0)
-        *ptr = val;
-}
-
 class FileConfig : BaseConfig {
-    private KeyFile config_f;
+
+    private GLib.KeyFile config_f;
+    private ConfigField[] config_fields;
+    private const string[] groups = {"Grid", "AppItem", "SearchBar"};
 
     public FileConfig (int screen_width, int screen_height, string file) {
         base (screen_width, screen_height);
 
-        config_f = new KeyFile ();
+        config_fields = {
+            { groups[0], "Y", ConfigType.INT, &grid_y },
+            { groups[0], "X", ConfigType.INT, &grid_x },
+            { groups[0], "RowSpacing", ConfigType.INT, &grid_row_spacing },
+            { groups[0], "ColumnSpacing", ConfigType.INT, &grid_col_spacing },
+
+            { groups[1], "FontSize", ConfigType.DOUBLE, &item_font_size },
+            { groups[1], "IconSize", ConfigType.INT, &item_icon_size },
+            { groups[1], "BoxWidth", ConfigType.INT, &item_box_width },
+            { groups[1], "BoxHeight", ConfigType.INT, &item_box_height },
+
+            { groups[2], "Width", ConfigType.INT, &sb_width },
+            { groups[2], "Height", ConfigType.INT, &sb_height },
+        };
+
+        config_f = new GLib.KeyFile ();
         try {
             config_f.load_from_file (file, KeyFileFlags.KEEP_COMMENTS);
+            load_config_fields ();
         } catch {
             debug ("Config file not found. Using default values");
-            return;
         }
+    }
 
-        string[] group = {"Grid", "AppItem", "SearchBar"};
-        try {
-            merge_int (&grid_y, config_f.get_integer (group[0], "Y"));
-            merge_int (&grid_x, config_f.get_integer (group[0], "X"));
-            merge_int (&grid_row_spacing, config_f.get_integer (group[0], "RowSpacing"));
-            merge_int (&grid_col_spacing, config_f.get_integer (group[0], "ColumnSpacing"));
-
-            merge_double (&item_font_size, config_f.get_double (group[1], "FontSize"));
-            merge_int (&item_icon_size, config_f.get_integer (group[1], "IconSize"));
-            merge_int (&item_box_width, config_f.get_integer (group[1], "BoxWidth"));
-            merge_int (&item_box_height, config_f.get_integer (group[1], "BoxHeight"));
-
-            merge_int (&sb_width, config_f.get_integer (group[2], "Width"));
-            merge_int (&sb_height, config_f.get_integer (group[2], "Height"));
+    private void load_config_fields () {
+        foreach (var field in config_fields) {
+            try {
+                switch (field.type) {
+                    case ConfigType.INT:
+                        int val_i = config_f.get_integer (field.group, field.key);
+                        if (val_i > -1)
+                            *((int*) field.pointer) = val_i;
+                        break;
+                    case ConfigType.DOUBLE:
+                        double val_d = config_f.get_double (field.group, field.key);
+                        if (val_d > -1.0)
+                            *((double*) field.pointer) = val_d;
+                        break;
+                }
+            } catch (GLib.Error e) {
+                message ("Missing config key: [%s] %s".printf (field.group, field.key));
+            }
         }
-        catch {
-            message ("Key config missing");
+    }
+
+    public GLib.KeyFile get_key_file () {
+        var keyfile = new GLib.KeyFile ();
+        foreach (var field in config_fields) {
+            switch (field.type) {
+                case ConfigType.INT:
+                    keyfile.set_integer (field.group, field.key, *((int*) field.pointer));
+                    break;
+                case ConfigType.DOUBLE:
+                    keyfile.set_double (field.group, field.key, *((double*) field.pointer));
+                    break;
+            }
         }
+        return keyfile;
     }
 }
