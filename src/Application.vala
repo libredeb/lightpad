@@ -568,10 +568,16 @@ static int main (string[] args) {
             case "-c":
             case "--clear-config":
                 string configfile_path = home + Resources.CONFIG_FILE;
-                if (GLib.FileUtils.remove (configfile_path) == 0) {
-                    stdout.printf ("Configuration successfully cleared.\n");
+
+                if (GLib.File.new_for_path (configfile_path).query_exists ()) {
+                    if (GLib.FileUtils.remove (configfile_path) == 0) {
+                        stdout.printf ("Configuration successfully cleared.\n");
+                    } else {
+                        stdout.printf ("Unable to clear configuration.\n");
+                        return 1;
+                    }
                 } else {
-                    stdout.printf ("Unable to clear configuration.\n");
+                    stdout.printf ("No need to clear the configuration.\n");
                     return 1;
                 }
 
@@ -583,13 +589,7 @@ static int main (string[] args) {
                     return 1;
                 }
 
-                //string input_path = args[2];
-                string input_path;
-                if ( "=" in args[1]) {
-                    input_path = args[1].split ("=")[1];
-                } else {
-                    input_path = args[2];
-                }
+                string input_path = args[2];
                 string output_path = GLib.Environment.get_variable ("HOME") + Resources.LIGHTPAD_BACKGROUND;
 
                 try {
