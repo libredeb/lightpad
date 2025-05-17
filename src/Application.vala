@@ -31,13 +31,13 @@ public class LightPadWindow : Widgets.CompositedWindow {
 
     public bool dynamic_background = false;
     public double factor_scaling;
-    public string file_png = user_home + Resources.LIGHTPAD_CONFIG_DIR +
-        "/" + "background.png";
     public string file_jpg = user_home + Resources.LIGHTPAD_CONFIG_DIR +
         "/" + "background.jpg";
-    public Cairo.Pattern pattern;
-    public Cairo.ImageSurface image_sf;
+    public string file_png = user_home + Resources.LIGHTPAD_CONFIG_DIR +
+        "/" + "background.png";
     public Gdk.Pixbuf image_pf;
+    public Cairo.ImageSurface image_sf;
+    public Cairo.Pattern pattern;
 
     public LightPadWindow () {
         // There isn't always a primary monitor.
@@ -482,10 +482,26 @@ public class LightPadWindow : Widgets.CompositedWindow {
 
 }
 
+private bool setup_config_dir (string home) {
+    var dir = GLib.File.new_for_path (home + Resources.LIGHTPAD_CONFIG_DIR);
+
+    if (!dir.query_exists ()) {
+        try {
+            dir.make_directory_with_parents ();
+            return true;
+        } catch (GLib.Error e) {
+            warning ("Could not create configuration directory: %s", e.message);
+            return false;
+        }
+    }
+    return true;
+}
+
 static int main (string[] args) {
 
     Gtk.init (ref args);
     Gtk.Application app = new Gtk.Application ("org.libredeb.lightpad", GLib.ApplicationFlags.FLAGS_NONE);
+    app.add_main_option_entries (Resources.LIGHTPAD_OPTIONS);
 
     // CSS Style Provider
     // Path where takes the CSS file
@@ -516,7 +532,89 @@ static int main (string[] args) {
             main_window.destroy ();
         }
     });
+
+    if (args.length > 1) {
+        string home = GLib.Environment.get_variable ("HOME");
+        // Make sure the configuration directory exists
+        if (!setup_config_dir (home)) {
+            stderr.printf ("Could not create configuration directory.");
+            return 1;
+        }
+
+        switch (args[1]) {
+            case "-h":
+            case "--help":
+                app.run (args);
+                return 0;
+            case "-v":
+            case "--version":
+                stdout.printf ("%s v%s\n", Config.PROJECT_NAME, Config.PACKAGE_VERSION);
+                return 0;
+            case "-s":
+            case "--save-config":
+                FileConfig configfile = new FileConfig (0, 0, Resources.CONFIG_FILE);
+                string configfile_path = home + Resources.CONFIG_FILE;
+
+                var keyfile = configfile.get_key_file ();
+                try {
+                    FileUtils.set_contents (configfile_path, keyfile.to_data ());
+                    print ("Configuration saved in: %s\n", configfile_path);
+                } catch (Error e) {
+                    stderr.printf ("Error saving configuration: %s\n", e.message);
+                    return 1;
+                }
+
+                return 0;
+            case "-c":
+            case "--clear-config":
+                string configfile_path = home + Resources.CONFIG_FILE;
+
+                if (GLib.File.new_for_path (configfile_path).query_exists ()) {
+                    if (GLib.FileUtils.remove (configfile_path) == 0) {
+                        stdout.printf ("Configuration successfully cleared.\n");
+                    } else {
+                        stdout.printf ("Unable to clear configuration.\n");
+                        return 1;
+                    }
+                } else {
+                    stdout.printf ("No need to clear the configuration.\n");
+                    return 1;
+                }
+
+                return 0;
+            case "-b":
+            case "--background":
+                if (args.length != 3) {
+                    stderr.printf ("Usage: %s [-b, --background] <image_path>\n", args[0]);
+                    return 1;
+                }
+
+                string input_path = args[2];
+                string output_path = GLib.Environment.get_variable ("HOME") + Resources.LIGHTPAD_BACKGROUND;
+
+                try {
+                    GLib.File input_file = GLib.File.new_for_path (input_path);
+                    if (!input_file.query_exists (null)) {
+                        stderr.printf ("Error! Input file does not exist: %s\n", input_path);
+                        return 1;
+                    }
+
+                    Gdk.Pixbuf pixbuf = new Gdk.Pixbuf.from_file (input_path);
+                    pixbuf.savev (output_path, "jpeg", {"quality"}, {"90"});
+                    print ("Custom background successfully applied!\n");
+                } catch (Error e) {
+                    stderr.printf ("Error: %s\n", e.message);
+                    return 1;
+                }
+
+                return 0;
+            default:
+                stdout.printf ("Unknown option '%s'. See 'man %s'.\n", args[1], args[0]);
+                return 1;
+        }
+    }
+
     app.run (args);
-    return 1;
+    return 0;
 
 }
