@@ -156,7 +156,10 @@ namespace LightPad.Backend {
                     app.get_nodisplay () == false &&
                     app.get_is_hidden () == false &&
                     app.get_icon () != null &&
-                    !(app.get_commandline ().split (" ")[0] in apps_hidden)
+                    !(
+                        (app.get_commandline ().split (" ")[0] in apps_hidden) ||
+                        (app.get_commandline () in apps_hidden)
+                    )
                 ) {
                     var app_to_add = new Gee.HashMap<string, string> ();
                     app_to_add["name"] = app.get_display_name ();
