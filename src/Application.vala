@@ -50,6 +50,8 @@ public class LightPadWindow : Widgets.CompositedWindow {
 
         const int ICON_SIZE = 182;
         const int GRID_SPACING = 42;
+        const int GRID_X = 3;
+        const int GRID_Y = 3;
 
         monitor_dimensions.width = 720;
         monitor_dimensions.height = 720;
@@ -58,8 +60,8 @@ public class LightPadWindow : Widgets.CompositedWindow {
         this.font_size = 0;
         this.item_box_width = ICON_SIZE;
         this.item_box_height = ICON_SIZE;
-        this.grid_y = 3;
-        this.grid_x = 3;
+        this.grid_y = GRID_Y;
+        this.grid_x = GRID_X;
 
         // Window properties
         this.set_title ("LightPad");
@@ -327,9 +329,58 @@ public class LightPadWindow : Widgets.CompositedWindow {
 
     // Keyboard shortcuts
     public override bool key_press_event (Gdk.EventKey event) {
+        message ("[EVENT] Key pressed: %s", Gdk.keyval_name (event.keyval));
         switch (Gdk.keyval_name (event.keyval)) {
             case "Escape":
                 this.destroy ();
+                return true;
+            case "a":
+            case "Left":
+                var current_item = this.grid.get_children ().index (this.get_focus ());
+                int pos_x = -((current_item % this.grid_y) - (this.grid_y - 1));
+                int pos_y = -((current_item / this.grid_y) - (this.grid_x - 1));
+
+                if (current_item % this.grid_y == this.grid_y - 1) {
+                    this.page_left ();
+                } else {
+                    this.grid.get_child_at (pos_x + -1, pos_y).grab_focus ();
+                }
+
+                return true;
+            case "s":
+            case "Down":
+                var current_item = this.grid.get_children ().index (this.get_focus ());
+                int pos_x = -((current_item % this.grid_y) - (this.grid_y - 1));
+                int pos_y = -((current_item / this.grid_y) - (this.grid_x - 1));
+
+                if (pos_y + 1 < this.grid_y) {
+                    this.grid.get_child_at (pos_x, pos_y + 1).grab_focus ();
+                }
+
+                return true;
+            case "w":
+            case "Up":
+                var current_item = this.grid.get_children ().index (this.get_focus ());
+                int pos_x = -((current_item % this.grid_y) - (this.grid_y - 1));
+                int pos_y = -((current_item / this.grid_y) - (this.grid_x - 1));
+
+                if (pos_y - 1 >= 0) {
+                    this.grid.get_child_at (pos_x, pos_y - 1).grab_focus ();
+                }
+
+                return true;
+            case "d":
+            case "Right":
+                var current_item = this.grid.get_children ().index (this.get_focus ());
+                int pos_x = -((current_item % this.grid_y) - (this.grid_y - 1));
+                int pos_y = -((current_item / this.grid_y) - (this.grid_x - 1));
+
+                if (current_item % this.grid_y == 0) {
+                    this.page_right ();
+                } else {
+                    this.grid.get_child_at (pos_x + 1, pos_y).grab_focus ();
+                }
+
                 return true;
             case "ISO_Left_Tab":
                 this.page_left ();
@@ -347,23 +398,6 @@ public class LightPadWindow : Widgets.CompositedWindow {
                     );
                 }
                 return true;
-            case "Left":
-                var current_item = this.grid.get_children ().index (this.get_focus ());
-                if (current_item % this.grid_y == this.grid_y - 1) {
-                    this.page_left ();
-                    return true;
-                }
-                break;
-            case "Right":
-                var current_item = this.grid.get_children ().index (this.get_focus ());
-                if (current_item % this.grid_y == 0) {
-                    this.page_right ();
-                    return true;
-                }
-                break;
-            case "Down":
-            case "Up":
-                break; // used to stop refreshing the grid on arrow key press
         }
 
         base.key_press_event (event);
