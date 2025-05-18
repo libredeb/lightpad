@@ -22,7 +22,7 @@
 namespace LightPad.Frontend {
 
     public class Indicators : Gtk.HBox {
-    
+
         // Animation constants
         const int FPS = 60;
         private int animation_duration;
@@ -39,7 +39,7 @@ namespace LightPad.Frontend {
         public int active = -1;
         private int old_active = -1;
         private int skip_flag = 0;
-        
+
         public Indicators () {
             this.homogeneous = false;
             this.spacing = 0;
@@ -55,22 +55,22 @@ namespace LightPad.Frontend {
             // make sure the child widget is added with padding
             label.set_halign (Gtk.Align.CENTER);
             label.set_valign (Gtk.Align.CENTER);
-            label.set_margin_top (5);
-            label.set_margin_bottom (5);
+            label.set_margin_top (0);
+            label.set_margin_bottom (0);
             label.set_margin_start (15);
             label.set_margin_end (15);
             indicator.add (label);
             this.children.append (indicator);
-            
+
             this.draw.connect (draw_background);
-            indicator.button_release_event.connect( () => {
+            indicator.button_release_event.connect ( () => {
                 this.set_active (this.children.index (indicator));
                 return true;
             });
 
             this.pack_start (indicator, false, false, 0);
         }
-        
+
         public void set_active_no_signal (int index) {
             int pages_length = (int) this.children.length ();
             // make sure the requested active item is in the children list
@@ -89,7 +89,7 @@ namespace LightPad.Frontend {
                 this.child_activated (); // send signal
             }
         }
-        
+
         public void change_focus () {
             //make sure no other animation is running, if so kill it with fire
             if (animation_active) {
@@ -138,7 +138,7 @@ namespace LightPad.Frontend {
             double progress;
 
             // easeOutQuint algorithm - aka - start normal end slow
-            progress = ((t = t/d - 1) * t * t * t * t + 1);
+            progress = ((t = t / d - 1) * t * t * t * t + 1);
 
             // Get allocations of old rectangle
             Gtk.Allocation size_old, size_new;
@@ -167,7 +167,7 @@ namespace LightPad.Frontend {
             context.stroke ();
                 context.arc (x + width - radius - offset, size.y + size.height - radius - (offset / 2), radius, 0, Math.PI * 2);
                 */
-            context.arc (x + width/2, y + height/2, radius, 0, Math.PI * 2);
+            context.arc (x + width / 2, y + height / 2, radius, 0, Math.PI * 2);
             context.fill ();
 
             return false;

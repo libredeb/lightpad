@@ -22,7 +22,7 @@
 namespace LightPad.Backend {
 
     public class DesktopEntries : GLib.Object {
-    
+
         private static Gee.ArrayList<GMenu.TreeDirectory> get_categories () {
             var tree = new GMenu.Tree ("applications.menu", GMenu.TreeFlags.INCLUDE_EXCLUDED);
             try {
@@ -41,16 +41,18 @@ namespace LightPad.Backend {
                 }
                 item = iter.next ();
             }
-            
+
             return main_directory_entries;
         }
-        
+
         private static Gee.HashSet<GMenu.TreeEntry> get_applications_for_category (
             GMenu.TreeDirectory category) {
-            
-            var entries = new Gee.HashSet<GMenu.TreeEntry>  (
-                (x) => ((GMenu.TreeEntry)x).get_desktop_file_path ().hash (),
-                (x,y) => ((GMenu.TreeEntry)x).get_desktop_file_path ().hash () == ((GMenu.TreeEntry)y).get_desktop_file_path ().hash ());
+
+            var entries = new Gee.HashSet<GMenu.TreeEntry> (
+                (x) => ((GMenu.TreeEntry) x).get_desktop_file_path ().hash (),
+                (x, y) => ((GMenu.TreeEntry) x).get_desktop_file_path ().hash () ==
+                    ((GMenu.TreeEntry) y).get_desktop_file_path ().hash ()
+            );
 
             var iter = category.iter ();
             var item = iter.next ();
@@ -73,39 +75,41 @@ namespace LightPad.Backend {
                 }
                 item = iter.next ();
             }
-            
+
             return entries;
         }
-        
-        public static void enumerate_apps (Gee.HashMap<string, Gdk.Pixbuf> icons, 
+
+        public static void enumerate_apps (Gee.HashMap<string, Gdk.Pixbuf> icons,
                 int icon_size,
                 string user_home,
                 out Gee.ArrayList<Gee.HashMap<string, string>> list) {
-            
+
             var the_apps = new Gee.HashSet<GMenu.TreeEntry> (
-                (x) => ((GMenu.TreeEntry)x).get_desktop_file_path ().hash (),
-                (x,y) => ((GMenu.TreeEntry)x).get_desktop_file_path ().hash () == ((GMenu.TreeEntry)y).get_desktop_file_path ().hash ());
+                (x) => ((GMenu.TreeEntry) x).get_desktop_file_path ().hash (),
+                (x, y) => ((GMenu.TreeEntry) x).get_desktop_file_path ().hash () ==
+                    ((GMenu.TreeEntry) y).get_desktop_file_path ().hash ()
+            );
             var all_categories = get_categories ();
 
             foreach (GMenu.TreeDirectory directory in all_categories) {
                 var this_category_apps = get_applications_for_category (directory);
-                foreach(GMenu.TreeEntry this_app in this_category_apps){
-                    the_apps.add(this_app);
+                foreach (GMenu.TreeEntry this_app in this_category_apps) {
+                    the_apps.add (this_app);
                 }
             }
-            
+
             message ("Amount of apps: %d", the_apps.size);
-            var icon_theme = Gtk.IconTheme.get_default();
+            var icon_theme = Gtk.IconTheme.get_default ();
             list = new Gee.ArrayList<Gee.HashMap<string, string>> ();
-            
+
             var blocklist_file = GLib.File.new_for_path (user_home + Resources.BLOCKLIST_FILE);
             var apps_hidden = new Gee.ArrayList<string> ();
-            
+
             if (blocklist_file.query_exists ()) {
                 try {
                     var dis = new DataInputStream (blocklist_file.read ());
                     string line;
-            
+
                     while ((line = dis.read_line (null)) != null) {
                         apps_hidden.add (line);
                     }
@@ -115,18 +119,18 @@ namespace LightPad.Backend {
             } else {
                 apps_hidden.add ("");
             }
-            
+
             foreach (GMenu.TreeEntry entry in the_apps) {
                 var app = entry.get_app_info ();
-                if (app.get_nodisplay () == false && 
-                    app.get_is_hidden() == false && 
-                    app.get_icon() != null &&
-                    !(app.get_commandline ().split (" ")[0] in apps_hidden))
-                {
+                if (app.get_nodisplay () == false &&
+                    app.get_is_hidden () == false &&
+                    app.get_icon () != null &&
+                    !(app.get_commandline ().split (" ")[0] in apps_hidden)
+                ) {
                     var app_to_add = new Gee.HashMap<string, string> ();
                     app_to_add["name"] = app.get_display_name ();
                     app_to_add["description"] = app.get_description ();
-                    
+
                     // Needed to check further later if terminal is open in terminal (like VIM, HTop, etc.)
                     if (app.get_string ("Terminal") == "true") {
                         app_to_add["terminal"] = "true";
@@ -143,19 +147,29 @@ namespace LightPad.Backend {
                                 /* Attention: the icons inside the icon_theme can tell lies about
                                    their icon_size, so we need always to scale them */
                                 icons[app_to_add["command"]] = icon_theme.load_icon (app_icon, icon_size, 0)
-                                                .scale_simple(icon_size, icon_size, Gdk.InterpType.BILINEAR);
-                            } else if (GLib.File.new_for_path(app_icon).query_exists()) {
-                                icons[app_to_add["command"]] = new Gdk.Pixbuf.from_file_at_scale (app_icon.to_string (), -1, icon_size, true);
-                            } else if (GLib.File.new_for_path(icon_prefix + app_icon + ".png").query_exists()) {
-                                icons[app_to_add["command"]] = new Gdk.Pixbuf.from_file_at_scale (icon_prefix + app_icon + ".png", -1, icon_size, true);
-                            } else if (GLib.File.new_for_path(icon_prefix + app_icon + ".svg").query_exists()) {
-                                icons[app_to_add["command"]] = new Gdk.Pixbuf.from_file_at_scale (icon_prefix + app_icon + ".svg", -1, icon_size, true);
-                            } else if (GLib.File.new_for_path(icon_prefix + app_icon + ".xpm").query_exists()) {
-                                icons[app_to_add["command"]] = new Gdk.Pixbuf.from_file_at_scale (icon_prefix + app_icon + ".xpm", -1, icon_size, true);
+                                                .scale_simple (icon_size, icon_size, Gdk.InterpType.BILINEAR);
+                            } else if (GLib.File.new_for_path (app_icon).query_exists ()) {
+                                icons[app_to_add["command"]] = new Gdk.Pixbuf.from_file_at_scale (
+                                    app_icon.to_string (), -1, icon_size, true
+                                );
+                            } else if (GLib.File.new_for_path (icon_prefix + app_icon + ".png").query_exists ()) {
+                                icons[app_to_add["command"]] = new Gdk.Pixbuf.from_file_at_scale (
+                                    icon_prefix + app_icon + ".png", -1, icon_size, true
+                                );
+                            } else if (GLib.File.new_for_path (icon_prefix + app_icon + ".svg").query_exists ()) {
+                                icons[app_to_add["command"]] = new Gdk.Pixbuf.from_file_at_scale (
+                                    icon_prefix + app_icon + ".svg", -1, icon_size, true
+                                );
+                            } else if (GLib.File.new_for_path (icon_prefix + app_icon + ".xpm").query_exists ()) {
+                                icons[app_to_add["command"]] = new Gdk.Pixbuf.from_file_at_scale (
+                                    icon_prefix + app_icon + ".xpm", -1, icon_size, true
+                                );
                             } else {
-                                icons[app_to_add["command"]] = icon_theme.load_icon ("application-default-icon", icon_size, 0);
+                                icons[app_to_add["command"]] = icon_theme.load_icon (
+                                    "application-default-icon", icon_size, 0
+                                );
                             }
-                        } catch  (GLib.Error e) {
+                        } catch (GLib.Error e) {
                             warning ("No icon found for %s.\n", app_to_add["name"]);
                             continue;
                         }
@@ -165,7 +179,7 @@ namespace LightPad.Backend {
             }
 
         }
-    
+
     }
 
 }

@@ -34,14 +34,14 @@ namespace Widgets {
             // Events
             this.draw.connect (clear_background);
         }
-        
+
         public bool clear_background (Gtk.Widget widget, Cairo.Context ctx) {
             ctx.set_operator (Cairo.Operator.CLEAR);
-            ctx.paint();
+            ctx.paint ();
 
             return false;
         }
-        
+
     }
 
 }

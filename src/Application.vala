@@ -23,7 +23,7 @@ public class LightPadWindow : Widgets.CompositedWindow {
 
     public static string user_home = GLib.Environment.get_variable ("HOME");
     public Gee.ArrayList<Gee.HashMap<string, string>> apps = new Gee.ArrayList<Gee.HashMap<string, string>> ();
-    public Gee.HashMap<string, Gdk.Pixbuf> icons = new Gee.HashMap<string, Gdk.Pixbuf>();
+    public Gee.HashMap<string, Gdk.Pixbuf> icons = new Gee.HashMap<string, Gdk.Pixbuf> ();
     public Gee.ArrayList<Gee.HashMap<string, string>> filtered = new Gee.ArrayList<Gee.HashMap<string, string>> ();
     public LightPad.Frontend.Indicators pages;
 
@@ -34,7 +34,7 @@ public class LightPadWindow : Widgets.CompositedWindow {
 
     public int total_pages;
     public int scroll_times = 0;
-    public int SCROLL_SENSITIVITY = 12;
+    public const int SCROLL_SENSITIVITY = 12;
 
     public Gdk.Rectangle monitor_dimensions;
     public Gtk.Box top_spacer;
@@ -47,16 +47,17 @@ public class LightPadWindow : Widgets.CompositedWindow {
     public bool dynamic_background = false;
 
     public LightPadWindow () {
-        // There isn't always a primary monitor.
-        Gdk.Monitor monitor = get_display ().get_primary_monitor () ?? get_display ().get_monitor (0);
-        
+
+        const int ICON_SIZE = 182;
+        const int GRID_SPACING = 42;
+
         monitor_dimensions.width = 720;
         monitor_dimensions.height = 720;
 
-        this.icon_size = 142;
+        this.icon_size = ICON_SIZE;
         this.font_size = 0;
-        this.item_box_width = 142;
-        this.item_box_height = 142;
+        this.item_box_width = ICON_SIZE;
+        this.item_box_height = ICON_SIZE;
         this.grid_y = 3;
         this.grid_x = 3;
 
@@ -68,8 +69,10 @@ public class LightPadWindow : Widgets.CompositedWindow {
         this.set_skip_taskbar_hint (true);
         this.set_type_hint (Gdk.WindowTypeHint.NORMAL);
         //this.fullscreen (); <-- old method used
-        var display = Gdk.Display.get_default();
-        
+        // There isn't always a primary monitor.
+        Gdk.Monitor monitor = get_display ().get_primary_monitor () ?? get_display ().get_monitor (0);
+        var display = Gdk.Display.get_default ();
+
         int primary_monitor_number = 0;
         for (int i = 0; i < display.get_n_monitors (); i++) {
             if (get_display ().get_monitor (i).is_primary ()) {
@@ -77,8 +80,7 @@ public class LightPadWindow : Widgets.CompositedWindow {
             }
         }
         this.fullscreen_on_monitor (monitor.get_display ().get_default_screen (), primary_monitor_number);
-        this.set_default_size (monitor_dimensions.width,  monitor_dimensions.height);
-
+        this.set_default_size (monitor_dimensions.width, monitor_dimensions.height);
 
         // Get all apps
         LightPad.Backend.DesktopEntries.enumerate_apps (this.icons, this.icon_size, user_home, out this.apps);
@@ -89,21 +91,21 @@ public class LightPadWindow : Widgets.CompositedWindow {
         this.add (wrapper);
 
         // Add container
-        var container = new Gtk.Box (Gtk.Orientation.VERTICAL, 10);
+        var container = new Gtk.Box (Gtk.Orientation.VERTICAL, 0);
         wrapper.add (container);
 
-        // Add top bar
+        // Add pagess_wrapper container
         var bottom = new Gtk.Box (Gtk.Orientation.HORIZONTAL, 0);
-        bottom.state_changed.connect (() => {
-            this.present_all_apps();
+        bottom.show.connect (() => {
+            this.present_all_apps ();
         });
 
         // Upstairs (padding is the space between search bar and the grid)
-        container.pack_start (bottom, true, true, 32);
+        container.pack_start (bottom, true, true, 14);
 
-        this.grid = new Gtk.Grid();
-        this.grid.set_row_spacing (48);
-        this.grid.set_column_spacing (48);
+        this.grid = new Gtk.Grid ();
+        this.grid.set_row_spacing (GRID_SPACING);
+        this.grid.set_column_spacing (GRID_SPACING);
         this.grid.set_halign (Gtk.Align.CENTER);
 
         // Initialize the grid
@@ -124,8 +126,8 @@ public class LightPadWindow : Widgets.CompositedWindow {
         this.pages.child_activated.connect ( () => { this.update_grid (this.filtered); } );
 
         var pages_wrapper = new Gtk.Box (Gtk.Orientation.HORIZONTAL, 0);
-        pages_wrapper.set_size_request (-1, 30);
-        bottom.pack_start (pages_wrapper, true, true, 15);
+        //pages_wrapper.set_size_request (-1, 30);
+        bottom.pack_start (pages_wrapper, true, true, 0);
 
         // Find number of pages and populate
         // First order the apps alphabetically
@@ -147,7 +149,7 @@ public class LightPadWindow : Widgets.CompositedWindow {
         this.draw.connect (this.draw_background);
         // close Lightpad when the window loses focus
         this.focus_out_event.connect ( () => {
-            this.hide();
+            this.hide ();
             GLib.Timeout.add_seconds (1, () => {
                 this.destroy ();
                 return GLib.Source.REMOVE;
@@ -155,11 +157,11 @@ public class LightPadWindow : Widgets.CompositedWindow {
             return true;
         } );
         // close Lightpad when we clic on empty area
-        this.button_release_event.connect ( () => { this.destroy(); return false; });
-        
+        this.button_release_event.connect ( () => { this.destroy (); return false; });
+
     }
 
-    private void present_all_apps() {
+    private void present_all_apps () {
         this.filtered.clear ();
 
         foreach (Gee.HashMap<string, string> app in this.apps) {
@@ -174,7 +176,7 @@ public class LightPadWindow : Widgets.CompositedWindow {
         for (int r = 0; r < this.grid_x; r++) {
             for (int c = 0; c < this.grid_y; c++) {
                 var item = new LightPad.Frontend.AppItem (
-                    this.icon_size, this.font_size, 
+                    this.icon_size, this.font_size,
                     this.item_box_width, this.item_box_height
                 );
                 this.children.append (item);
@@ -199,12 +201,18 @@ public class LightPadWindow : Widgets.CompositedWindow {
                          * and the way to open apps in terminal is with the following code:
                          */
                         if (this.filtered.get (app_index)["terminal"] == "true") {
-                            GLib.AppInfo.create_from_commandline (this.filtered.get (app_index)["command"], null, GLib.AppInfoCreateFlags.NEEDS_TERMINAL).launch (null, null);
+                            GLib.AppInfo.create_from_commandline (
+                                this.filtered.get (app_index)["command"],
+                                null,
+                                GLib.AppInfoCreateFlags.NEEDS_TERMINAL
+                            ).launch (null, null);
                         } else {
                             var context = new AppLaunchContext ();
-                            new GLib.DesktopAppInfo.from_filename (this.filtered.get(app_index)["desktop_file"]).launch (null, context);
+                            new GLib.DesktopAppInfo.from_filename (
+                                this.filtered.get (app_index)["desktop_file"]
+                            ).launch (null, context);
                         }
-                        this.hide();
+                        this.hide ();
                         GLib.Timeout.add_seconds (1, () => {
                             // allow some time before quitting to allow dbusactivatable apps to be launched
                             this.destroy ();
@@ -236,13 +244,17 @@ public class LightPadWindow : Widgets.CompositedWindow {
 
                 var item = this.children.nth_data (table_pos);
                 if (item_iter < apps.size) {
-                    var current_item = apps.get(item_iter);
+                    var current_item = apps.get (item_iter);
 
                     // Update app
                     if (current_item["description"] == null || current_item["description"] == "") {
                         item.change_app (icons[current_item["command"]], current_item["name"], current_item["name"]);
                     } else {
-                        item.change_app (icons[current_item["command"]], current_item["name"], current_item["name"] + ":\n" + current_item["description"]);
+                        item.change_app (
+                            icons[current_item["command"]],
+                            current_item["name"],
+                            current_item["name"] + ":\n" + current_item["description"]
+                        );
                     }
                     item.visible = true;
                 } else { // fill with a blank one
@@ -264,13 +276,21 @@ public class LightPadWindow : Widgets.CompositedWindow {
     private void update_pages (Gee.ArrayList<Gee.HashMap<string, string>> apps) {
         // Find current number of pages and update count
         var num_pages = (int) (apps.size / (this.grid_y * this.grid_x));
-        (double) apps.size % (double) (this.grid_y * this.grid_x) > 0 ? this.total_pages = num_pages + 1 : this.total_pages = num_pages;
+        if ((double) apps.size % (double) (this.grid_y * this.grid_x) > 0) {
+            this.total_pages = num_pages + 1;
+        } else {
+            this.total_pages = num_pages;
+        }
 
         // Update pages
         if (this.total_pages > 1) {
             this.pages.visible = true;
             for (int p = 1; p <= this.pages.children.length (); p++) {
-                p > this.total_pages ? this.pages.children.nth_data (p - 1).visible = false : this.pages.children.nth_data (p - 1).visible = true;
+                if (p > this.total_pages) {
+                    this.pages.children.nth_data (p - 1).visible = false;
+                } else {
+                    this.pages.children.nth_data (p - 1).visible = true;
+                }
             }
         } else {
             this.pages.visible = false;
@@ -295,7 +315,7 @@ public class LightPadWindow : Widgets.CompositedWindow {
         // Semi-dark background
         Gtk.Allocation size;
         widget.get_allocation (out size);
-        
+
         var linear_gradient = new Cairo.Pattern.linear (size.x, size.y, size.x, size.y + size.height);
         linear_gradient.add_color_stop_rgba (0.0, 0.0, 0.0, 0.0, 1);
 
@@ -322,7 +342,9 @@ public class LightPadWindow : Widgets.CompositedWindow {
                 return true;
             case "Return":
                 if (this.filtered.size >= 1) {
-                    this.get_focus ().button_release_event ((Gdk.EventButton) new Gdk.Event (Gdk.EventType.BUTTON_PRESS));
+                    this.get_focus ().button_release_event (
+                        (Gdk.EventButton) new Gdk.Event (Gdk.EventType.BUTTON_PRESS)
+                    );
                 }
                 return true;
             case "Left":
@@ -366,8 +388,8 @@ public class LightPadWindow : Widgets.CompositedWindow {
 
     // Override destroy for fade out and stuff
     public new void destroy () {
-        base.destroy();
-        Gtk.main_quit();
+        base.destroy ();
+        Gtk.main_quit ();
     }
 
 }
@@ -386,13 +408,13 @@ static int main (string[] args) {
 
     try {
         css_provider.load_from_path (css_file);
-        Gtk.StyleContext.add_provider_for_screen (Gdk.Screen.get_default(), css_provider,
+        Gtk.StyleContext.add_provider_for_screen (Gdk.Screen.get_default (), css_provider,
                                                         Gtk.STYLE_PROVIDER_PRIORITY_USER);
     } catch (GLib.Error e) {
-        warning ("Could not load CSS file: %s",css_file);
+        warning ("Could not load CSS file: %s", css_file);
     }
 
-    app.activate.connect( () => {
+    app.activate.connect ( () => {
         if (app.get_windows ().length () == 0) {
             var main_window = new LightPadWindow ();
             main_window.set_application (app);

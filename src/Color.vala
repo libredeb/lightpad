@@ -24,41 +24,42 @@ using Gdk;
 namespace LightPad.Frontend {
 
     public struct Color {
-        public double R;
-        public double G;
-        public double B;
-        public double A;
+        public double r;
+        public double g;
+        public double b;
+        public double a;
 
-        public Color (double R, double G, double B, double A) {
-            this.R = R;
-            this.G = G;
-            this.B = B;
-            this.A = A;
+        public Color (double r, double g, double b, double a) {
+            this.r = r;
+            this.g = g;
+            this.b = b;
+            this.a = a;
         }
-        
+
         public Color set_val (double val) requires (val >= 0 && val <= 1) {
             double h, s, v;
-            rgb_to_hsv (R, G, B, out h, out s, out v);
+            rgb_to_hsv (r, g, b, out h, out s, out v);
             v = val;
-            hsv_to_rgb (h, s, v, out R, out G, out B);
+            hsv_to_rgb (h, s, v, out r, out g, out b);
 
             return this;
         }
 
         public Color multiply_sat (double amount) requires (amount >= 0) {
             double h, s, v;
-            rgb_to_hsv (R, G, B, out h, out s, out v);
+            rgb_to_hsv (r, g, b, out h, out s, out v);
             s = Math.fmin (1, s * amount);
-            hsv_to_rgb (h, s, v, out R, out G, out B);
+            hsv_to_rgb (h, s, v, out r, out g, out b);
 
             return this;
         }
 
-        void rgb_to_hsv (double r, double g, double b, out double h, out double s, out double v)
+        void rgb_to_hsv (
+            double r, double g, double b, out double h, out double s, out double v
+        )
             requires (r >= 0 && r <= 1)
             requires (g >= 0 && g <= 1)
-            requires (b >= 0 && b <= 1)
-        {
+            requires (b >= 0 && b <= 1) {
             double min = Math.fmin (r, Math.fmin (g, b));
             double max = Math.fmax (r, Math.fmax (g, b));
 
@@ -73,7 +74,7 @@ namespace LightPad.Frontend {
             r /= v;
             g /= v;
             b /= v;
-            
+
             min = Math.fmin (r, Math.fmin (g, b));
             max = Math.fmax (r, Math.fmax (g, b));
 
@@ -101,11 +102,12 @@ namespace LightPad.Frontend {
             }
         }
 
-        void hsv_to_rgb (double h, double s, double v, out double r, out double g, out double b)
+        void hsv_to_rgb (
+            double h, double s, double v, out double r, out double g, out double b
+        )
             requires (h >= 0 && h <= 360)
             requires (s >= 0 && s <= 1)
-            requires (v >= 0 && v <= 1)
-        {
+            requires (v >= 0 && v <= 1) {
             r = 0;
             g = 0;
             b = 0;
@@ -115,18 +117,18 @@ namespace LightPad.Frontend {
                 g = v;
                 b = v;
             } else {
-                int secNum;
-                double fracSec;
+                int sec_num;
+                double frac_sec;
                 double p, q, t;
 
-                secNum = (int) Math.floor (h / 60);
-                fracSec = h / 60 - secNum;
+                sec_num = (int) Math.floor (h / 60);
+                frac_sec = h / 60 - sec_num;
 
                 p = v * (1 - s);
-                q = v * (1 - s * fracSec);
-                t = v * (1 - s * (1 - fracSec));
+                q = v * (1 - s * frac_sec);
+                t = v * (1 - s * (1 - frac_sec));
 
-                switch (secNum) {
+                switch (sec_num) {
                     case 0:
                         r = v;
                         g = t;
@@ -160,7 +162,5 @@ namespace LightPad.Frontend {
                 } // End Switch
             } // End If
         }
-        
     }
-
 }
