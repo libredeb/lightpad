@@ -36,7 +36,7 @@ config_inc_dir = include_directories('.')
 LightpadValaArgs = [
     '--pkg=config',
     '--vapidir=' + VAPI_DIR,
-    '--target-glib=2.38',
+    '--target-glib=2.76',
 ]
 
 # Create a new executable, list the files we want to compile, list the dependencies we need, and install
