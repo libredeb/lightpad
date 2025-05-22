@@ -86,26 +86,43 @@ namespace LightPad.Frontend {
         private bool draw_icon (Gtk.Widget widget, Cairo.Context ctx) {
             Gtk.Allocation size;
             widget.get_allocation (out size);
-            var context = Gdk.cairo_create (widget.get_window ());
+            var context = ctx;
 
-            // Draw icon
-            Gdk.cairo_set_source_pixbuf (context, this.icon, size.x + ((this.icon.width - size.width) / -2.0), size.y);
+            /* 
+             * The context is already set so that (0,0) is the top left corner of the widget.
+             * Calculate the horizontal center for the icon.
+             * The Y position of the icon is 0 (above the widget).
+             */
+            double icon_x = (size.width - this.icon.width) / 2.0;
+            double icon_y = 0.0;
+
+            // Draw the icon
+            // The coordinates are relative to the widget origin (0,0).
+            Gdk.cairo_set_source_pixbuf (context, this.icon, icon_x, icon_y);
             context.paint ();
 
-            // Truncate text
             Cairo.TextExtents extents;
             context.select_font_face ("Sans", Cairo.FontSlant.NORMAL, Cairo.FontWeight.NORMAL);
             context.set_font_size (this.font_size);
             LightPad.Frontend.Utilities.truncate_text (context, size, 10, this.label, out this.label, out extents);
 
-            // Draw text shadow
-            context.move_to ((size.x + size.width / 2 - extents.width / 2) + 1, (size.y + size.height - 10) + 1);
+            /*
+             * Calculate the coordinates for the text.
+             * Here, (size.width / 2 - extents.width / 2) is already the horizontal center relative to the widget.
+             * For the Y position, if we want it to be 10px from the bottom edge, it would be size.height - 10.
+             */
+            double text_x_center = size.width / 2 - extents.width / 2;
+            double text_y_base = size.height - 10; // 10px desde el borde inferior
+
+            // Draw the shadow of the text
+            // Add 1 to X and Y for a slight shadow offset.
+            context.move_to (text_x_center + 1, text_y_base + 1);
             context.set_source_rgba (0.0, 0.0, 0.0, 0.8);
             context.show_text (this.label);
 
             // Draw normal text
             context.set_source_rgba (1.0, 1.0, 1.0, 1.0);
-            context.move_to (size.x + size.width / 2 - extents.width / 2, size.y + size.height - 10);
+            context.move_to (text_x_center, text_y_base);
             context.show_text (this.label);
 
             return false;
@@ -114,7 +131,7 @@ namespace LightPad.Frontend {
         private bool draw_background (Gtk.Widget widget, Cairo.Context ctx) {
             Gtk.Allocation size;
             widget.get_allocation (out size);
-            var context = Gdk.cairo_create (widget.get_window ());
+            var context = ctx;
 
             double progress;
             if (this.current_frame > 1) {
