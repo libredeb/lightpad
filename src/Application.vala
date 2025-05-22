@@ -103,6 +103,15 @@ public class LightPadWindow : Widgets.CompositedWindow {
         this.searchbar = new LightPad.Frontend.Searchbar ("Search");
         debug ("Searchbar created!");
         this.searchbar.changed.connect (this.search);
+        this.searchbar.button_release_event.connect ((sbar_widget, sbar_event) => {
+            // This event handler is for clicks directly on the searchbar itself.
+            // We want to consume this event so the parent window's handler doesn't see it.
+            // This will prevent the Lightpad from closing when clicked on the searchbar.
+            // You might want to add specific logic for the searchbar here (e.g., focus it).
+
+            // For now, just consume the event.
+            return true; // Return true to stop event propagation (consume the event)
+        });
 
         // Lateral distance (120 are the pixels of the searchbar width)
         int screen_half = (monitor_dimensions.width / 2) - 120;
@@ -159,8 +168,6 @@ public class LightPadWindow : Widgets.CompositedWindow {
             this.dynamic_background = true;
             try {
                 image_pf = new Gdk.Pixbuf.from_file (file_jpg);
-                int w = image_pf.get_width ();
-                factor_scaling = (double) ((double) ((monitor_dimensions.width * 100) / w) / 100);
             } catch (GLib.Error e) {
                 warning ("Cant create Pixbuf background!");
             }
@@ -183,25 +190,39 @@ public class LightPadWindow : Widgets.CompositedWindow {
             });
             return true;
         } );
-        // close Lightpad when we clic on empty area
-        this.button_release_event.connect ( () => {
-            // for some reason, the searchbar widget is part of the main_window (this)
-            // widget. So we can not check if the searchbar is focused or not. So this
-            // is a workaround based on the searchbar dimmensions and clicked position
-            // based on this widget.
-            int x, y;
-            int w, h;
-            this.searchbar.get_pointer (out x, out y);
-            this.searchbar.get_size_request (out w, out h);
-            if (( (x <= w) && (x >= 0) ) && ( (y <= h) && (y >= 0) )) {
+
+        // close Lightpad when we clic on empty area (original code block, slightly adjusted)
+        this.button_release_event.connect ( (widget, event) => {
+            double event_x = event.x;
+            double event_y = event.y;
+
+            Gtk.Allocation searchbar_allocation;
+            this.searchbar.get_allocation (out searchbar_allocation);
+
+            double x_relative_to_searchbar = event_x - searchbar_allocation.x;
+            double y_relative_to_searchbar = event_y - searchbar_allocation.y;
+
+            int searchbar_width = searchbar_allocation.width;
+            int searchbar_height = searchbar_allocation.height;
+
+            bool clicked_inside_searchbar =
+                (x_relative_to_searchbar >= 0 && x_relative_to_searchbar <= searchbar_width) &&
+                (y_relative_to_searchbar >= 0 && y_relative_to_searchbar <= searchbar_height);
+
+            if (clicked_inside_searchbar) {
+                // If click was inside searchbar, do nothing here. The searchbar's own handler
+                // should have already consumed the event by returning 'true'.
+                // This 'false' here allows other potential parent handlers (unlikely in this case)
+                // to still see the event, but the searchbar itself already consumed it.
                 return false;
             } else {
+                // If click was outside searchbar, hide Lightpad
                 this.hide ();
                 GLib.Timeout.add_seconds (1, () => {
                     this.destroy ();
                     return GLib.Source.REMOVE;
                 });
-                return true;
+                return true; // Consume the event here to prevent further propagation after hide
             }
         } );
 
@@ -368,18 +389,54 @@ public class LightPadWindow : Widgets.CompositedWindow {
     }
 
     private bool draw_background (Gtk.Widget widget, Cairo.Context ctx) {
-        var context = Gdk.cairo_create (widget.get_window ());
+        // Use the Cairo context provided by GTK
+        var context = ctx;
+
+        Gtk.Allocation widget_size;
+        // Get the allocation (size and position) of the widget/window being drawn
+        widget.get_allocation (out widget_size);
 
         if (this.dynamic_background) {
             if (image_pf != null) { // If JPG exist, prefer this
-                context.scale (factor_scaling, factor_scaling);
+                double image_width = (double) image_pf.width;
+                double image_height = (double) image_pf.height;
+
+                // Calculate scaling factors to fill the widget area
+                double scale_x = widget_size.width / image_width;
+                double scale_y = widget_size.height / image_height;
+
+                // Use the larger scale factor to ensure the image covers the entire widget (aspect fill)
+                // Ternary expression for Math.Max
+                double scale_factor = (scale_x > scale_y) ? scale_x : scale_y;
+
+                // Calculate the dimensions of the scaled image
+                double scaled_image_width = image_width * scale_factor;
+                double scaled_image_height = image_height * scale_factor;
+
+                // Calculate offsets to center the scaled image within the widget
+                double offset_x = (widget_size.width - scaled_image_width) / 2.0;
+                double offset_y = (widget_size.height - scaled_image_height) / 2.0;
+
+                // Save the current state of the Cairo context before transformations
+                context.save ();
+
+                // Apply translation to center the image
+                context.translate (offset_x, offset_y);
+
+                // Apply scaling
+                context.scale (scale_factor, scale_factor);
+
+                // Set the pixbuf as the source and paint it
                 Gdk.cairo_set_source_pixbuf (context, image_pf, 0, 0);
+                context.paint ();
+
+                // Restore the context to its original state (undo translate/scale)
+                context.restore ();
             } else { // Is PNG image
                 context.scale (factor_scaling, factor_scaling);
                 context.set_source (pattern);
+                context.paint (); // Paint the PNG here
             }
-
-            context.paint ();
         } else {
             // Semi-dark background
             Gtk.Allocation size;

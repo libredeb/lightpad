@@ -111,53 +111,61 @@ namespace LightPad.Frontend {
         }
 
         protected bool draw_background (Gtk.Widget widget, Cairo.Context ctx) {
-            Gtk.Allocation size;
+            Gtk.Allocation size; // Allocation of the pager widget itself (parent)
             widget.get_allocation (out size);
-            var context = Gdk.cairo_create (widget.get_window ());
-
+            var context = ctx;
 
             double d = (double) this.animation_frames;
             double t = (double) this.current_frame;
 
-            double progress;
-
             // easeOutQuint algorithm - aka - start normal end slow
-            progress = ((t = t / d - 1) * t * t * t * t + 1);
+            double progress = ((t = t / d - 1) * t * t * t * t + 1);
 
-            // Get allocations of old rectangle
             Gtk.Allocation size_old, size_new;
-            this.get_children ().nth_data (this.old_active).get_allocation (out size_old);
 
-            // Get allocations for the new rectangle
+            // Ensure indices are valid to prevent crashes
+            if (this.old_active < 0 || this.old_active >= this.get_children ().length () ||
+                this.active < 0 || this.active >= this.get_children ().length ()) {
+                // Fallback or just return if indices are out of bounds
+                // Consider drawing a default state here or logging an error.
+                return false;
+            }
+
+            // Get allocations of the old and new active child widgets (page indicators)
+            // These allocations are relative to the parent of the pager widget.
+            this.get_children ().nth_data (this.old_active).get_allocation (out size_old);
             this.get_children ().nth_data (this.active).get_allocation (out size_new);
 
-            // Move and make a new rectangle, according to progress
-            double x = size_old.x + (size_new.x - (double) size_old.x) * progress;
-            double y = size_old.y + (size_new.y - (double) size_old.y);
-            double width = size_old.width + (size_new.width - (double) size_old.width) * progress;
-            double height = size_old.height + (size_new.height - (double) size_old.height);
+            // Calculate child positions relative to the pager widget's own origin (0,0) for the Cairo context.
+            // This removes the "global" offset from size_old.x/y and size_new.x/y.
+            double x_old_relative = size_old.x - size.x;
+            double y_old_relative = size_old.y - size.y;
 
-            double offset = 2.0; //  old: 7.0
-            double radius = 6.0; // old: 12.0
+            double x_new_relative = size_new.x - size.x;
+            double y_new_relative = size_new.y - size.y;
 
-            context.set_source_rgba (1.0, 1.0, 1.0, 1.0); // white background color
-            context.move_to (x + radius, size.y + offset);
-            // old code 
-            /* // Draw outside black stroke
-            context.set_source_rgba (0.1, 0.1, 0.1, 1.0);
-            context.move_to (x + radius + 1, size.y + offset + 1);
-            context.arc (x + width - radius - offset, size.y + size.height - radius - (offset / 2), radius, 0, Math.PI * 2);
-            context.set_line_width (1.0);
-            context.stroke ();
-                context.arc (x + width - radius - offset, size.y + size.height - radius - (offset / 2), radius, 0, Math.PI * 2);
-                */
-            context.arc (x + width / 2, y + height / 2, radius, 0, Math.PI * 2);
+            // Calculate the animated position and size of the indicator,
+            // relative to the pager widget's drawing context.
+            double x_animated_relative = x_old_relative + (x_new_relative - x_old_relative) * progress;
+            double y_animated_relative = y_old_relative + (y_new_relative - y_old_relative); // Assuming Y doesn't animate or y_old_relative == y_new_relative
+            double width_animated = size_old.width + (size_new.width - (double) size_old.width) * progress;
+            double height_animated = size_old.height + (size_new.height - (double) size_old.height);
+
+            double radius = 6.0;
+
+            // Set the drawing color to white (fully opaque)
+            context.set_source_rgba (1.0, 1.0, 1.0, 1.0);
+
+            // Draw the animated circle (filled)
+            // The center of the circle is calculated based on the animated allocation.
+            context.arc (
+                x_animated_relative + width_animated / 2.0,
+                y_animated_relative + height_animated / 2.0,
+                radius, 0, Math.PI * 2
+            );
             context.fill ();
 
             return false;
         }
-
-
     }
-
 }
