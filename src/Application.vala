@@ -108,7 +108,7 @@ public class LightPadWindow : Widgets.CompositedWindow {
             // We want to consume this event so the parent window's handler doesn't see it.
             // This will prevent the Lightpad from closing when clicked on the searchbar.
             // You might want to add specific logic for the searchbar here (e.g., focus it).
-            
+
             // For now, just consume the event.
             return true; // Return true to stop event propagation (consume the event)
         });
@@ -190,7 +190,7 @@ public class LightPadWindow : Widgets.CompositedWindow {
             });
             return true;
         } );
-        
+
         // close Lightpad when we clic on empty area (original code block, slightly adjusted)
         this.button_release_event.connect ( (widget, event) => {
             double event_x = event.x;
@@ -205,21 +205,22 @@ public class LightPadWindow : Widgets.CompositedWindow {
             int searchbar_width = searchbar_allocation.width;
             int searchbar_height = searchbar_allocation.height;
 
-            bool clicked_inside_searchbar = (x_relative_to_searchbar >= 0 && x_relative_to_searchbar <= searchbar_width) && 
-                                            (y_relative_to_searchbar >= 0 && y_relative_to_searchbar <= searchbar_height);
+            bool clicked_inside_searchbar =
+                (x_relative_to_searchbar >= 0 && x_relative_to_searchbar <= searchbar_width) &&
+                (y_relative_to_searchbar >= 0 && y_relative_to_searchbar <= searchbar_height);
 
             if (clicked_inside_searchbar) {
                 // If click was inside searchbar, do nothing here. The searchbar's own handler
                 // should have already consumed the event by returning 'true'.
                 // This 'false' here allows other potential parent handlers (unlikely in this case)
                 // to still see the event, but the searchbar itself already consumed it.
-                return false; 
+                return false;
             } else {
                 // If click was outside searchbar, hide Lightpad
                 this.hide ();
                 GLib.Timeout.add_seconds (1, () => {
                     this.destroy ();
-                    return GLib.Source.REMOVE; 
+                    return GLib.Source.REMOVE;
                 });
                 return true; // Consume the event here to prevent further propagation after hide
             }
@@ -417,20 +418,20 @@ public class LightPadWindow : Widgets.CompositedWindow {
                 double offset_y = (widget_size.height - scaled_image_height) / 2.0;
 
                 // Save the current state of the Cairo context before transformations
-                context.save();
+                context.save ();
 
                 // Apply translation to center the image
-                context.translate(offset_x, offset_y);
-                
+                context.translate (offset_x, offset_y);
+
                 // Apply scaling
-                context.scale(scale_factor, scale_factor);
+                context.scale (scale_factor, scale_factor);
 
                 // Set the pixbuf as the source and paint it
                 Gdk.cairo_set_source_pixbuf (context, image_pf, 0, 0);
                 context.paint ();
 
                 // Restore the context to its original state (undo translate/scale)
-                context.restore();
+                context.restore ();
             } else { // Is PNG image
                 context.scale (factor_scaling, factor_scaling);
                 context.set_source (pattern);

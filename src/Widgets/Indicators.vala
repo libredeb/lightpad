@@ -114,53 +114,57 @@ namespace LightPad.Frontend {
             Gtk.Allocation size; // Allocation of the pager widget itself (parent)
             widget.get_allocation (out size);
             var context = ctx;
-        
+
             double d = (double) this.animation_frames;
             double t = (double) this.current_frame;
-        
+
             // easeOutQuint algorithm - aka - start normal end slow
             double progress = ((t = t / d - 1) * t * t * t * t + 1);
-        
+
             Gtk.Allocation size_old, size_new;
-            
+
             // Ensure indices are valid to prevent crashes
-            if (this.old_active < 0 || this.old_active >= this.get_children().length () ||
-                this.active < 0 || this.active >= this.get_children().length ()) {
+            if (this.old_active < 0 || this.old_active >= this.get_children ().length () ||
+                this.active < 0 || this.active >= this.get_children ().length ()) {
                 // Fallback or just return if indices are out of bounds
                 // Consider drawing a default state here or logging an error.
                 return false;
             }
-        
+
             // Get allocations of the old and new active child widgets (page indicators)
             // These allocations are relative to the parent of the pager widget.
             this.get_children ().nth_data (this.old_active).get_allocation (out size_old);
             this.get_children ().nth_data (this.active).get_allocation (out size_new);
-        
+
             // Calculate child positions relative to the pager widget's own origin (0,0) for the Cairo context.
             // This removes the "global" offset from size_old.x/y and size_new.x/y.
             double x_old_relative = size_old.x - size.x;
             double y_old_relative = size_old.y - size.y;
-        
+
             double x_new_relative = size_new.x - size.x;
             double y_new_relative = size_new.y - size.y;
-        
+
             // Calculate the animated position and size of the indicator,
             // relative to the pager widget's drawing context.
             double x_animated_relative = x_old_relative + (x_new_relative - x_old_relative) * progress;
             double y_animated_relative = y_old_relative + (y_new_relative - y_old_relative); // Assuming Y doesn't animate or y_old_relative == y_new_relative
             double width_animated = size_old.width + (size_new.width - (double) size_old.width) * progress;
             double height_animated = size_old.height + (size_new.height - (double) size_old.height);
-        
+
             double radius = 6.0;
-        
+
             // Set the drawing color to white (fully opaque)
             context.set_source_rgba (1.0, 1.0, 1.0, 1.0);
-        
+
             // Draw the animated circle (filled)
             // The center of the circle is calculated based on the animated allocation.
-            context.arc (x_animated_relative + width_animated / 2.0, y_animated_relative + height_animated / 2.0, radius, 0, Math.PI * 2);
+            context.arc (
+                x_animated_relative + width_animated / 2.0,
+                y_animated_relative + height_animated / 2.0,
+                radius, 0, Math.PI * 2
+            );
             context.fill ();
-        
+
             return false;
         }
     }

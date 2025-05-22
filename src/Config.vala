@@ -81,24 +81,24 @@ class FileConfig : BaseConfig {
 
     private GLib.KeyFile config_f;
     private ConfigField[] config_fields;
-    private const string[] groups = {"Grid", "AppItem", "SearchBar"};
+    private const string[] GROUPS = {"Grid", "AppItem", "SearchBar"};
 
     public FileConfig (int screen_width, int screen_height, string file) {
         base (screen_width, screen_height);
 
         config_fields = {
-            { groups[0], "Y", ConfigType.INT, &grid_y },
-            { groups[0], "X", ConfigType.INT, &grid_x },
-            { groups[0], "RowSpacing", ConfigType.INT, &grid_row_spacing },
-            { groups[0], "ColumnSpacing", ConfigType.INT, &grid_col_spacing },
+            { GROUPS[0], "Y", ConfigType.INT, &grid_y },
+            { GROUPS[0], "X", ConfigType.INT, &grid_x },
+            { GROUPS[0], "RowSpacing", ConfigType.INT, &grid_row_spacing },
+            { GROUPS[0], "ColumnSpacing", ConfigType.INT, &grid_col_spacing },
 
-            { groups[1], "FontSize", ConfigType.DOUBLE, &item_font_size },
-            { groups[1], "IconSize", ConfigType.INT, &item_icon_size },
-            { groups[1], "BoxWidth", ConfigType.INT, &item_box_width },
-            { groups[1], "BoxHeight", ConfigType.INT, &item_box_height },
+            { GROUPS[1], "FontSize", ConfigType.DOUBLE, &item_font_size },
+            { GROUPS[1], "IconSize", ConfigType.INT, &item_icon_size },
+            { GROUPS[1], "BoxWidth", ConfigType.INT, &item_box_width },
+            { GROUPS[1], "BoxHeight", ConfigType.INT, &item_box_height },
 
-            { groups[2], "Width", ConfigType.INT, &sb_width },
-            { groups[2], "Height", ConfigType.INT, &sb_height },
+            { GROUPS[2], "Width", ConfigType.INT, &sb_width },
+            { GROUPS[2], "Height", ConfigType.INT, &sb_height },
         };
 
         config_f = new GLib.KeyFile ();
@@ -117,12 +117,12 @@ class FileConfig : BaseConfig {
                     case ConfigType.INT:
                         int val_i = config_f.get_integer (field.group, field.key);
                         if (val_i > -1)
-                            *((int*) field.pointer) = val_i;
+                            * ((int*) field.pointer) = val_i;
                         break;
                     case ConfigType.DOUBLE:
                         double val_d = config_f.get_double (field.group, field.key);
                         if (val_d > -1.0)
-                            *((double*) field.pointer) = val_d;
+                            * ((double*) field.pointer) = val_d;
                         break;
                 }
             } catch (GLib.Error e) {
@@ -136,10 +136,10 @@ class FileConfig : BaseConfig {
         foreach (var field in config_fields) {
             switch (field.type) {
                 case ConfigType.INT:
-                    keyfile.set_integer (field.group, field.key, *((int*) field.pointer));
+                    keyfile.set_integer (field.group, field.key, * ((int*) field.pointer));
                     break;
                 case ConfigType.DOUBLE:
-                    keyfile.set_double (field.group, field.key, *((double*) field.pointer));
+                    keyfile.set_double (field.group, field.key, * ((double*) field.pointer));
                     break;
             }
         }

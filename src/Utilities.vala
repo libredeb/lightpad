@@ -23,7 +23,9 @@ namespace LightPad.Frontend {
 
             double max_possible_radius_h = width / 2.0;
             double max_possible_radius_v = height / 2.0;
-            double max_possible_radius = (max_possible_radius_h < max_possible_radius_v) ? max_possible_radius_h : max_possible_radius_v;
+            double max_possible_radius =
+                (max_possible_radius_h < max_possible_radius_v) ?
+                max_possible_radius_h : max_possible_radius_v;
 
             // Make sure the radius is no greater than half the width or height
             // to avoid irregular shapes
