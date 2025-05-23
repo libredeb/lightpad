@@ -117,6 +117,16 @@ pkill -f com.github.libredeb.lightpad; G_MESSAGES_DEBUG=all com.github.libredeb.
 ```
 
 ## Changelog
+**Version 0.0.10**
+* Added more information required in [appdata.xml](data/com.github.libredeb.lightpad.appdata.xml) needed by software stores
+* Added command line flags to make using optional features easier (see `com.github.libredeb.lightpad --help`)
+* Fixed [issue #51](https://github.com/libredeb/lightpad/issues/51), there is no man page for the binary
+* Fixed [issue #55](https://github.com/libredeb/lightpad/issues/55), improve criteria for blocklist apps
+* Fixed [issue #57](https://github.com/libredeb/lightpad/issues/57), lower case apps names are sorted at the end
+* Removed unused `libwnck3` dependency
+* Updated deprecated `cairo` code
+* Updated the license in the source code headers
+
 **Version 0.0.9**
 * Fixed [issue #26](https://github.com/libredeb/lightpad/issues/26), opens in wrong monitor
 * Fixed [issue #28](https://github.com/libredeb/lightpad/issues/28), can't run gnome apps
