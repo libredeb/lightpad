@@ -556,6 +556,12 @@ private bool setup_config_dir (string home) {
 
 static int main (string[] args) {
 
+    var current_desktop = GLib.Environment.get_variable ("XDG_CURRENT_DESKTOP");
+    if (current_desktop.up () != "GNOME") {
+        current_desktop = current_desktop + ":GNOME";
+        GLib.Environment.set_variable ("XDG_CURRENT_DESKTOP", current_desktop, true);
+    }
+
     Gtk.init (ref args);
     Gtk.Application app = new Gtk.Application ("org.libredeb.lightpad", GLib.ApplicationFlags.FLAGS_NONE);
     app.add_main_option_entries (Resources.LIGHTPAD_OPTIONS);
