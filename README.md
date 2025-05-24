@@ -21,6 +21,6 @@ git checkout origin/packaging -- debian
 
 You may then use the appropriate tools for your target distribution to build the package, for example:
 
-  - `debuild` for Debian-based systems
+  - `devscripts` for Debian-based systems
   - `rpmbuild` for RPM-based systems
   - `makepkg` for Arch Linux
