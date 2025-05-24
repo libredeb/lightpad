@@ -2,3 +2,4 @@
 build/
 *lightpad-*.pkg.*
 how_to_run.txt
+.vscode/

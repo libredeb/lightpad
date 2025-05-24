@@ -1,3 +1,11 @@
+com.github.libredeb.lightpad (0.0.10-1) noble; urgency=high
+ 
+  * This release brings significant improvements
+  * Some resolved issues (#51, #55, #57)
+  * Removal of unused dependencies
+ 
+ -- Juan Pablo Lozano <libredeb@gmail.com>  Sat, 24 May 2025 22:07:03 -0300
+
 com.github.libredeb.lightpad (0.0.9-3) noble; urgency=medium
  
   * A bunch of resolved issues (#5, #9, #16, #21, #23, #26, #28, #29)

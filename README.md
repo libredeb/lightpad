@@ -16,7 +16,7 @@ These files are not intended to be used standalone. To build packages, clone the
 ```bash
 git clone https://github.com/libredeb/lightpad.git
 cd lightpad/
-git checkout packaging
+git checkout origin/packaging -- debian
 ```
 
 You may then use the appropriate tools for your target distribution to build the package, for example:

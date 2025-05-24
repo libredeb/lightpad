@@ -1,5 +1,5 @@
 pkgname=lightpad
-pkgver=0.0.9
+pkgver=0.0.10
 pkgrel=1
 pkgdesc="Lightweight, simple and powerful application launcher"
 arch=('x86_64')

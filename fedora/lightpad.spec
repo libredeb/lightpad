@@ -1,5 +1,5 @@
 Name:        	lightpad   
-Version:        0.0.9
+Version:        0.0.10
 Release:        1%{?dist}
 Summary:        LightPad Launcher
 License:        GPL
@@ -62,6 +62,10 @@ file %{_bindir}/com.github.libredeb.lightpad
 %{_datadir}/man/man1/com.github.libredeb.lightpad.1.gz
 
 %changelog
+* Sat May  24 2025 Juan Pablo Lozano <libredeb@gmail.com> - 0.0.10
+- This release brings significant improvements
+- Some resolved issues (#51, #55, #57)
+- Removal of unused dependencies
 * Sun May  04 2025 Juan Pablo Lozano <libredeb@gmail.com> - 0.0.9
 - A bunch of resolved issues (#5, #9, #16, #21, #23, #26, #28, #29)
 - Performance improved
