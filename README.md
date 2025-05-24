@@ -69,29 +69,45 @@ Now assign it a shortcut key, such as `CTRL`+`SPACE`.
 
 ## Optional Features
 
-To use any of the optional features, make sure to create the directory `~/.lightpad` first.
+Explore LightPad's optional features to personalize your experience! For a full list of available options and their descriptions, run `com.github.libredeb.lightpad --help` in your terminal. Or refer to the binary manual page by using the following command `man com.github.libredeb.lightpad`.
 
-### Custom Configuration Support
+---
 
-Lightpad supports customization through a simple configuration file.  
-You can adjust visual aspects such as font size, icon size, and the application grid layout.
+### Custom Configuration Support 
 
-To get started, copy the example config file to destination path:
+- **Generate a template file (-s, --save-config)**
+
+   LightPad supports customization through a simple configuration file.  
+   You can adjust visual aspects such as font size, icon size, and the application grid layout.
+
+   To get started, generate a configuration template so that you can edit the parameters later:
+
+   ```sh
+   com.github.libredeb.lightpad --save-config
+   ```
+
+- **Clear the configuration file (-c, --clear-config)**
+
+   You can also clear the generated custom settings file so that LightPad uses the values that best fit your display by executing the command:
+
+   ```sh
+   com.github.libredeb.lightpad --clear-config
+   ```
+
+### Dynamic Background (-b, --background)
+
+LightPad now supports using a custom background of your choice. You can use any wallpaper of your choice and LightPad will use them (prioritizing the JPG format):
 
 ```sh
-cp example-config ~/.lightpad/config
+com.github.libredeb.lightpad --background /path/to/image[.jpg|.png|.webp]
 ```
-
-### Dynamic Background
-
-LighPad added a new feature, now you can use a custom background of your choice. You can add any wallpaper or image strictly under some of the following path/files and lightpad will use them (prioritizing the JPG format):
-> `$HOME/.lightpad/background.jpg`
-
-> `$HOME/.lightpad/background.png`
 
 ### Blocklist File
 
-Another new added functionality, is the ability to hide applications using a blocklist file. In the file:
+Another new functionality is the ability to hide applications using a blocklist file. In the file.
+
+In the file:
+
 > `$HOME/.lightpad/blocklist`
 
 You must add line by line the full name of the binaries of the applications you want to hide in LightPad. For example:

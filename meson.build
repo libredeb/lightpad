@@ -2,7 +2,7 @@
 project(
     'com.github.libredeb.lightpad',
     'vala', 'c',
-    version: '0.0.9',
+    version: '0.0.10',
     meson_version: '>=0.56.0'
 )
 
