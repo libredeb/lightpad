@@ -1,23 +1,7 @@
 /*
-* Copyright (c) 2011-2020 LightPad
-*
-* This program is free software; you can redistribute it and/or
-* modify it under the terms of the GNU General Public
-* License as published by the Free Software Foundation; either
-* version 2 of the License, or (at your option) any later version.
-*
-* This program is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-* General Public License for more details.
-*
-* You should have received a copy of the GNU General Public
-* License along with this program; if not, write to the
-* Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
-* Boston, MA 02110-1301 USA
-*
-* Authored by: Juan Pablo Lozano <libredeb@gmail.com>
-*/
+ * SPDX-License-Identifier: GPL-3.0-or-later
+ * SPDX-FileCopyrightText: 2020 Juan Pablo Lozano <libredeb@gmail.com>
+ */
 
 namespace LightPad.Backend {
 
@@ -122,10 +106,14 @@ namespace LightPad.Backend {
 
             foreach (GMenu.TreeEntry entry in the_apps) {
                 var app = entry.get_app_info ();
-                if (app.get_nodisplay () == false &&
+                if (
+                    app.get_nodisplay () == false &&
                     app.get_is_hidden () == false &&
                     app.get_icon () != null &&
-                    !(app.get_commandline ().split (" ")[0] in apps_hidden)
+                    !(
+                        (app.get_commandline ().split (" ")[0] in apps_hidden) ||
+                        (app.get_commandline () in apps_hidden)
+                    )
                 ) {
                     var app_to_add = new Gee.HashMap<string, string> ();
                     app_to_add["name"] = app.get_display_name ();

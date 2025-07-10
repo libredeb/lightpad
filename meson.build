@@ -2,8 +2,8 @@
 project(
     'com.github.libredeb.lightpad',
     'vala', 'c',
-    version: '0.0.8',
-    meson_version: '>=0.45.0'
+    version: '0.0.10',
+    meson_version: '>=0.56.0'
 )
 
 PROJECT_NAME = 'lightpad'
@@ -11,8 +11,7 @@ prefix = get_option('prefix')
 libdir = join_paths(prefix, get_option('libdir'))
 datadir = join_paths(prefix, get_option('datadir'))
 
-VAPI_DIR = join_paths(meson.source_root(),
-                      'vapi')
+VAPI_DIR = join_paths(meson.project_source_root(), 'vapi')
 vala = meson.get_compiler('vala')
 c = meson.get_compiler('c')
 
@@ -21,6 +20,7 @@ conf = configuration_data()
 conf.set_quoted('PROJECT_NAME', PROJECT_NAME)
 conf.set_quoted('PACKAGE_LIBDIR', libdir)
 conf.set_quoted('PACKAGE_SHAREDIR', datadir)
+conf.set_quoted('PACKAGE_VERSION', meson.project_version())
 
 config_h = configure_file(
 	output: 'config.h',
@@ -53,7 +53,7 @@ executable(
     'src/Widgets/AppItem.vala',
     dependencies: [
         dependency('gio-unix-2.0', version: '>=2.56.0'),
-        dependency('glib-2.0', version: '>=2.56.0'),
+        dependency('glib-2.0', version: '>=2.72.0'),
         dependency('gtk+-3.0', version: '>=3.22'),
         dependency('gdk-3.0', version: '>=3.22.0'),
         dependency('cairo', version: '>=1.15.0'),
@@ -87,6 +87,12 @@ foreach i : icon_sizes
     )
 endforeach
 
+# Install application-default-icon for applications without icons
+install_data(
+    join_paths('data', 'icons', 'application-default-icon.svg'),
+    install_dir: join_paths(datadir, 'icons', 'hicolor', 'scalable', 'apps')
+)
+
 # Install our .desktop file so the Applications Menu will see it
 install_data(
     join_paths('data', meson.project_name() + '.desktop'),
@@ -97,6 +103,14 @@ install_data(
 install_data(
     join_paths('data', meson.project_name() + '.appdata.xml'),
     install_dir: join_paths(datadir, 'metainfo')
+)
+
+# Install manual page
+run_command('gzip', '-fk', join_paths('data', meson.project_name() + '.1'), check: true)
+
+install_data(
+    join_paths('data', meson.project_name() + '.1.gz'),
+    install_dir: join_paths(datadir, 'man', 'man1')
 )
 
 meson.add_install_script('post_install.py')

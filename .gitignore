@@ -3,3 +3,4 @@ build/
 *lightpad-*.pkg.*
 how_to_run.txt
 .vscode
+data/com.github.libredeb.lightpad.1.gz

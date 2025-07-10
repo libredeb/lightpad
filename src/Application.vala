@@ -1,23 +1,7 @@
 /*
-* Copyright (c) 2011-2020 LightPad
-*
-* This program is free software; you can redistribute it and/or
-* modify it under the terms of the GNU General Public
-* License as published by the Free Software Foundation; either
-* version 2 of the License, or (at your option) any later version.
-*
-* This program is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-* General Public License for more details.
-*
-* You should have received a copy of the GNU General Public
-* License along with this program; if not, write to the
-* Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
-* Boston, MA 02110-1301 USA
-*
-* Authored by: Juan Pablo Lozano <libredeb@gmail.com>
-*/
+ * SPDX-License-Identifier: GPL-3.0-or-later
+ * SPDX-FileCopyrightText: 2020 Juan Pablo Lozano <libredeb@gmail.com>
+ */
 
 public class LightPadWindow : Widgets.CompositedWindow {
 
@@ -133,7 +117,7 @@ public class LightPadWindow : Widgets.CompositedWindow {
 
         // Find number of pages and populate
         // First order the apps alphabetically
-        this.apps.sort ((a, b) => GLib.strcmp (a["name"], b["name"]));
+        this.apps.sort ((a, b) => GLib.strcmp (a["name"].down (), b["name"].down ()));
         this.update_pages (this.apps);
         if (this.total_pages > 1) {
             pages_wrapper.pack_start (this.pages, true, false, 0);
@@ -197,10 +181,11 @@ public class LightPadWindow : Widgets.CompositedWindow {
                         }
                         int app_index = (int) (child_index + (page_active * this.grid_y * this.grid_x));
 
-                        /* GTK+ implements open apps in terminal in this way:
-                         * https://github.com/GNOME/glib/blob/cd1eba043c90da3aee8f5cd51b205b2e2c16f08e/gio/gdesktopappinfo.c#L2467-L2494
-                         * So, if the desktop environment is not GNOME we need xterm as dependency
-                         * and the way to open apps in terminal is with the following code:
+                        /* GLib implements open apps in terminal in this way:
+                         * https://github.com/GNOME/glib/blob/2.76.0/gio/gdesktopappinfo.c#L2685
+                         * There's a major change in last versions of glib (from version 2.76.0 upwards)
+                         * So, xterm dependency it's no longer needed.
+                         * The way to open apps in terminal is with the following code:
                          */
                         if (this.filtered.get (app_index)["terminal"] == "true") {
                             GLib.AppInfo.create_from_commandline (
@@ -250,7 +235,11 @@ public class LightPadWindow : Widgets.CompositedWindow {
 
                     // Update app
                     if (current_item["description"] == null || current_item["description"] == "") {
-                        item.change_app (icons[current_item["command"]], current_item["name"], current_item["name"]);
+                        item.change_app (
+                            icons[current_item["command"]],
+                            current_item["name"],
+                            current_item["name"]
+                        );
                     } else {
                         item.change_app (
                             icons[current_item["command"]],
@@ -312,7 +301,8 @@ public class LightPadWindow : Widgets.CompositedWindow {
     }
 
     private bool draw_background (Gtk.Widget widget, Cairo.Context ctx) {
-        var context = Gdk.cairo_create (widget.get_window ());
+        // Use the Cairo context provided by GTK
+        var context = ctx;
 
         // Semi-dark background
         Gtk.Allocation size;
@@ -337,21 +327,16 @@ public class LightPadWindow : Widgets.CompositedWindow {
             case "a":
             case "Left":
                 var current_item = this.grid.get_children ().index (this.get_focus ());
-                int pos_x = -((current_item % this.grid_y) - (this.grid_y - 1));
-                int pos_y = -((current_item / this.grid_y) - (this.grid_x - 1));
-
                 if (current_item % this.grid_y == this.grid_y - 1) {
                     this.page_left ();
-                } else {
-                    this.grid.get_child_at (pos_x + -1, pos_y).grab_focus ();
+                    return true;
                 }
-
-                return true;
+                break;
             case "s":
             case "Down":
                 var current_item = this.grid.get_children ().index (this.get_focus ());
-                int pos_x = -((current_item % this.grid_y) - (this.grid_y - 1));
-                int pos_y = -((current_item / this.grid_y) - (this.grid_x - 1));
+                int pos_x = - ((current_item % this.grid_y) - (this.grid_y - 1));
+                int pos_y = - ((current_item / this.grid_y) - (this.grid_x - 1));
 
                 if (pos_y + 1 < this.grid_y) {
                     this.grid.get_child_at (pos_x, pos_y + 1).grab_focus ();
@@ -361,8 +346,8 @@ public class LightPadWindow : Widgets.CompositedWindow {
             case "w":
             case "Up":
                 var current_item = this.grid.get_children ().index (this.get_focus ());
-                int pos_x = -((current_item % this.grid_y) - (this.grid_y - 1));
-                int pos_y = -((current_item / this.grid_y) - (this.grid_x - 1));
+                int pos_x = - ((current_item % this.grid_y) - (this.grid_y - 1));
+                int pos_y = - ((current_item / this.grid_y) - (this.grid_x - 1));
 
                 if (pos_y - 1 >= 0) {
                     this.grid.get_child_at (pos_x, pos_y - 1).grab_focus ();
@@ -372,16 +357,11 @@ public class LightPadWindow : Widgets.CompositedWindow {
             case "d":
             case "Right":
                 var current_item = this.grid.get_children ().index (this.get_focus ());
-                int pos_x = -((current_item % this.grid_y) - (this.grid_y - 1));
-                int pos_y = -((current_item / this.grid_y) - (this.grid_x - 1));
-
                 if (current_item % this.grid_y == 0) {
                     this.page_right ();
-                } else {
-                    this.grid.get_child_at (pos_x + 1, pos_y).grab_focus ();
+                    return true;
                 }
-
-                return true;
+                break;
             case "ISO_Left_Tab":
                 this.page_left ();
                 return true;
@@ -429,6 +409,19 @@ public class LightPadWindow : Widgets.CompositedWindow {
 }
 
 static int main (string[] args) {
+    /*
+     * This is a workaround for libgnome-menu-3.0, for now doesn't have support to include .desktop entries
+     * with the property OnlyShowIn set up. If the value of your XDG_CURRENT_DESKTOP environment variable 
+     * its not present in OnlyShowIn property array, that .desktop entry isn't listed as part of the 
+     * category tree.
+     *
+     * For more information see: https://gitlab.gnome.org/GNOME/gnome-menus/-/issues/23
+     */
+     var current_desktop = GLib.Environment.get_variable ("XDG_CURRENT_DESKTOP");
+     if (current_desktop.up () != "GNOME") {
+         current_desktop = current_desktop + ":GNOME";
+         GLib.Environment.set_variable ("XDG_CURRENT_DESKTOP", current_desktop, true);
+     }
 
     Gtk.init (ref args);
     Gtk.Application app = new Gtk.Application ("org.libredeb.lightpad", GLib.ApplicationFlags.FLAGS_NONE);
@@ -442,8 +435,10 @@ static int main (string[] args) {
 
     try {
         css_provider.load_from_path (css_file);
-        Gtk.StyleContext.add_provider_for_screen (Gdk.Screen.get_default (), css_provider,
-                                                        Gtk.STYLE_PROVIDER_PRIORITY_USER);
+        Gtk.StyleContext.add_provider_for_screen (
+            Gdk.Screen.get_default (), css_provider,
+            Gtk.STYLE_PROVIDER_PRIORITY_USER
+        );
     } catch (GLib.Error e) {
         warning ("Could not load CSS file: %s", css_file);
     }
@@ -456,7 +451,17 @@ static int main (string[] args) {
             Gtk.main ();
         }
     });
+
+    if (args.length > 1) {
+        switch (args[1]) {
+            case "-v":
+            case "--version":
+                stdout.printf ("%s v%s (handheld)\n", Config.PROJECT_NAME, Config.PACKAGE_VERSION);
+                return 0;
+        }
+    }
+
     app.run (args);
-    return 1;
+    return 0;
 
 }

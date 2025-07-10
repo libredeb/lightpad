@@ -1,23 +1,7 @@
 /*
-* Copyright (c) 2011-2020 LightPad
-*
-* This program is free software; you can redistribute it and/or
-* modify it under the terms of the GNU General Public
-* License as published by the Free Software Foundation; either
-* version 2 of the License, or (at your option) any later version.
-*
-* This program is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-* General Public License for more details.
-*
-* You should have received a copy of the GNU General Public
-* License along with this program; if not, write to the
-* Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
-* Boston, MA 02110-1301 USA
-*
-* Authored by: Juan Pablo Lozano <libredeb@gmail.com>
-*/
+ * SPDX-License-Identifier: GPL-3.0-or-later
+ * SPDX-FileCopyrightText: 2020 Juan Pablo Lozano <libredeb@gmail.com>
+ */
 
 using GLib;
 using Gtk;
@@ -27,29 +11,59 @@ namespace LightPad.Frontend {
 
     class Utilities : GLib.Object {
 
-        public static void draw_rounded_rectangle (Cairo.Context context, double radius,
-                                                  double offset, Gtk.Allocation size) {
-            context.move_to (size.x + radius, size.y + offset);
+        public static void draw_rounded_rectangle (
+            Cairo.Context context, double radius, double offset, Gtk.Allocation size
+        ) {
+            // The coordinates are now relative to the top-left corner of the widget.
+            // Defines the drawing limits adjusted by the offset
+            double x_start = offset;
+            double y_start = offset;
+            double width = size.width - (2 * offset);
+            double height = size.height - (2 * offset);
+
+            double max_possible_radius_h = width / 2.0;
+            double max_possible_radius_v = height / 2.0;
+            double max_possible_radius =
+                (max_possible_radius_h < max_possible_radius_v) ?
+                max_possible_radius_h : max_possible_radius_v;
+
+            // Make sure the radius is no greater than half the width or height
+            // to avoid irregular shapes
+            radius = (radius < max_possible_radius) ? radius : max_possible_radius;
+
+            // Move to the starting point for the first arc
+            context.move_to (x_start + radius, y_start);
+
+            // Upper right edge
             context.arc (
-                size.x + size.width - radius - offset,
-                size.y + radius + offset,
+                x_start + width - radius,
+                y_start + radius,
                 radius, Math.PI * 1.5, Math.PI * 2
             );
+
+            // Lower right corner
             context.arc (
-                size.x + size.width - radius - offset,
-                size.y + size.height - radius - offset,
+                x_start + width - radius,
+                y_start + height - radius,
                 radius, 0, Math.PI * 0.5
             );
+
+            // Lower left arc
             context.arc (
-                size.x + radius + offset,
-                size.y + size.height - radius - offset,
+                x_start + radius,
+                y_start + height - radius,
                 radius, Math.PI * 0.5, Math.PI
             );
+
+            // Upper left curve
             context.arc (
-                size.x + radius + offset,
-                size.y + radius + offset,
+                x_start + radius,
+                y_start + radius,
                 radius, Math.PI, Math.PI * 1.5
             );
+
+            // Close the path to form the complete rounded rectangle.
+            context.close_path ();
         }
 
         public static LightPad.Frontend.Color average_color (Gdk.Pixbuf source) {

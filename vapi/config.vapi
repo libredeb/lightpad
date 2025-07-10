@@ -3,4 +3,5 @@ namespace Config {
     public const string PROJECT_NAME;
     public const string PACKAGE_LIBDIR;
     public const string PACKAGE_SHAREDIR;
+    public const string PACKAGE_VERSION;
 }
