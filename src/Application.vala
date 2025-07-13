@@ -28,9 +28,11 @@ public class LightPadWindow : Widgets.CompositedWindow {
     private int grid_x;
     private int grid_y;
 
-    public bool dynamic_background = false;
+    public int64 start_time;
 
     public LightPadWindow () {
+
+        this.start_time = GLib.get_monotonic_time ();
 
         const int ICON_SIZE = 182;
         const int GRID_SPACING = 42;
@@ -65,7 +67,7 @@ public class LightPadWindow : Widgets.CompositedWindow {
                 primary_monitor_number = i;
             }
         }
-        this.fullscreen_on_monitor (monitor.get_display ().get_default_screen (), primary_monitor_number);
+        //this.fullscreen_on_monitor (monitor.get_display ().get_default_screen (), primary_monitor_number);
         this.set_default_size (monitor_dimensions.width, monitor_dimensions.height);
 
         // Get all apps
@@ -144,7 +146,6 @@ public class LightPadWindow : Widgets.CompositedWindow {
         } );
         // close Lightpad when we clic on empty area
         this.button_release_event.connect ( () => { this.destroy (); return false; });
-
     }
 
     private void present_all_apps () {
@@ -417,11 +418,11 @@ static int main (string[] args) {
      *
      * For more information see: https://gitlab.gnome.org/GNOME/gnome-menus/-/issues/23
      */
-     var current_desktop = GLib.Environment.get_variable ("XDG_CURRENT_DESKTOP");
-     if (current_desktop.up () != "GNOME") {
-         current_desktop = current_desktop + ":GNOME";
-         GLib.Environment.set_variable ("XDG_CURRENT_DESKTOP", current_desktop, true);
-     }
+    var current_desktop = GLib.Environment.get_variable ("XDG_CURRENT_DESKTOP");
+    if (current_desktop.up () != "GNOME") {
+        current_desktop = current_desktop + ":GNOME";
+        GLib.Environment.set_variable ("XDG_CURRENT_DESKTOP", current_desktop, true);
+    }
 
     Gtk.init (ref args);
     Gtk.Application app = new Gtk.Application ("org.libredeb.lightpad", GLib.ApplicationFlags.FLAGS_NONE);
@@ -448,6 +449,12 @@ static int main (string[] args) {
             var main_window = new LightPadWindow ();
             main_window.set_application (app);
             main_window.show_all ();
+
+            message (
+                "Application started in %.2f ms",
+                (GLib.get_monotonic_time () - main_window.start_time) / 1000.0
+            );
+
             Gtk.main ();
         }
     });
