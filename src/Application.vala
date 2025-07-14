@@ -29,6 +29,7 @@ public class LightPadWindow : Widgets.CompositedWindow {
     private int grid_y;
 
     public int64 start_time;
+    private GLib.Thread<int> thread;
 
     public LightPadWindow () {
 
@@ -56,7 +57,7 @@ public class LightPadWindow : Widgets.CompositedWindow {
         this.set_skip_pager_hint (true);
         this.set_skip_taskbar_hint (true);
         this.set_type_hint (Gdk.WindowTypeHint.NORMAL);
-        //this.fullscreen (); <-- old method used
+
         // There isn't always a primary monitor.
         Gdk.Monitor monitor = get_display ().get_primary_monitor () ?? get_display ().get_monitor (0);
         var display = Gdk.Display.get_default ();
@@ -67,7 +68,8 @@ public class LightPadWindow : Widgets.CompositedWindow {
                 primary_monitor_number = i;
             }
         }
-        //this.fullscreen_on_monitor (monitor.get_display ().get_default_screen (), primary_monitor_number);
+
+        this.fullscreen_on_monitor (monitor.get_display ().get_default_screen (), primary_monitor_number);
         this.set_default_size (monitor_dimensions.width, monitor_dimensions.height);
 
         // Get all apps
@@ -146,6 +148,69 @@ public class LightPadWindow : Widgets.CompositedWindow {
         } );
         // close Lightpad when we clic on empty area
         this.button_release_event.connect ( () => { this.destroy (); return false; });
+
+        thread = new GLib.Thread<int> ("JoystickThread", () => {
+            if (SDL.init (SDL.InitFlag.JOYSTICK) != 0) {
+                warning ("SDL init Error: %s", SDL.get_error ());
+                return 0;
+            }
+
+            if (SDL.Input.Joystick.count () < 1) {
+                warning ("No joysticks detected");
+                SDL.quit ();
+                return 0;
+            }
+
+            var joystick = new SDL.Input.Joystick (0); // Index 0
+            if (joystick == null) {
+                warning ("Unable to open joystick: %s", SDL.get_error ());
+                SDL.quit ();
+                return 0;
+            }
+
+            SDL.Event event;
+            while (true) {
+                while (SDL.Event.poll (out event) != 0) {
+                    switch (event.type) {
+                        case SDL.EventType.JOYBUTTONDOWN:
+                            if (event.jbutton.button == 1) {
+                                if (this.filtered.size >= 1) {
+                                    this.get_focus ().button_release_event (
+                                        (Gdk.EventButton) new Gdk.Event (Gdk.EventType.BUTTON_PRESS)
+                                    );
+                                }
+                                SDL.quit ();
+                            }
+                            break;
+                        case SDL.EventType.JOYAXISMOTION:
+                            /* 
+                             * A “dead zone” is defined to filter out minor movements.
+                             * A good starting value is around 8000 (out of a maximum of 32767).
+                             */
+                            int dead_zone = 8000;
+                            // The X-axis of the stick is checked (most controllers use 0).
+                            if (event.jaxis.axis == 0) {
+                                if (event.jaxis.value > dead_zone) {
+                                    this.do_right ();
+                                } else if (event.jaxis.value < -dead_zone) {
+                                    this.do_left ();
+                                }
+                            // The Y-axis of the stick is checked (most controllers use 1).
+                            } else if (event.jaxis.axis == 1) {
+                                if (event.jaxis.value > dead_zone) {
+                                    this.do_down ();
+                                } else if (event.jaxis.value < -dead_zone) {
+                                    this.do_up ();
+                                }
+                            }
+                            break;
+                        default:
+                            break;
+                    }
+                }
+                SDL.Timer.delay (10); // Avoid 100% CPU usage
+            }
+        });
     }
 
     private void present_all_apps () {
@@ -318,6 +383,58 @@ public class LightPadWindow : Widgets.CompositedWindow {
         return false;
     }
 
+    private void do_left () {
+        var current_item = this.grid.get_children ().index (this.get_focus ());
+
+        int pos_x = - ((current_item % this.grid_y) - (this.grid_y - 1));
+        int pos_y = - ((current_item / this.grid_y) - (this.grid_x - 1));
+
+        if (pos_x - 1 >= 0) {
+            this.grid.get_child_at (pos_x - 1, pos_y).grab_focus ();
+        }
+
+        if (current_item % this.grid_y == this.grid_y - 1) {
+            this.page_left ();
+        }
+    }
+
+    private void do_right () {
+        var current_item = this.grid.get_children ().index (this.get_focus ());
+        int pos_x = - ((current_item % this.grid_y) - (this.grid_y - 1));
+        int pos_y = - ((current_item / this.grid_y) - (this.grid_x - 1));
+
+        if (pos_x + 1 < this.grid_x) {
+            this.grid.get_child_at (pos_x + 1, pos_y).grab_focus ();
+        }
+
+        if (current_item % this.grid_y == 0) {
+            this.page_right ();
+        }
+    }
+
+    private bool do_up () {
+        var current_item = this.grid.get_children ().index (this.get_focus ());
+        int pos_x = - ((current_item % this.grid_y) - (this.grid_y - 1));
+        int pos_y = - ((current_item / this.grid_y) - (this.grid_x - 1));
+
+        if (pos_y - 1 >= 0) {
+            this.grid.get_child_at (pos_x, pos_y - 1).grab_focus ();
+        }
+        return true;
+    }
+
+    private bool do_down () {
+        var current_item = this.grid.get_children ().index (this.get_focus ());
+        int pos_x = - ((current_item % this.grid_y) - (this.grid_y - 1));
+        int pos_y = - ((current_item / this.grid_y) - (this.grid_x - 1));
+
+        if (pos_y + 1 < this.grid_y) {
+            this.grid.get_child_at (pos_x, pos_y + 1).grab_focus ();
+        }
+
+        return true;
+    }
+
     // Keyboard shortcuts
     public override bool key_press_event (Gdk.EventKey event) {
         message ("[EVENT] Key pressed: %s", Gdk.keyval_name (event.keyval));
@@ -333,28 +450,6 @@ public class LightPadWindow : Widgets.CompositedWindow {
                     return true;
                 }
                 break;
-            case "s":
-            case "Down":
-                var current_item = this.grid.get_children ().index (this.get_focus ());
-                int pos_x = - ((current_item % this.grid_y) - (this.grid_y - 1));
-                int pos_y = - ((current_item / this.grid_y) - (this.grid_x - 1));
-
-                if (pos_y + 1 < this.grid_y) {
-                    this.grid.get_child_at (pos_x, pos_y + 1).grab_focus ();
-                }
-
-                return true;
-            case "w":
-            case "Up":
-                var current_item = this.grid.get_children ().index (this.get_focus ());
-                int pos_x = - ((current_item % this.grid_y) - (this.grid_y - 1));
-                int pos_y = - ((current_item / this.grid_y) - (this.grid_x - 1));
-
-                if (pos_y - 1 >= 0) {
-                    this.grid.get_child_at (pos_x, pos_y - 1).grab_focus ();
-                }
-
-                return true;
             case "d":
             case "Right":
                 var current_item = this.grid.get_children ().index (this.get_focus ());
@@ -363,6 +458,12 @@ public class LightPadWindow : Widgets.CompositedWindow {
                     return true;
                 }
                 break;
+            case "s":
+            case "Down":
+                return this.do_down ();
+            case "w":
+            case "Up":
+                return this.do_up ();
             case "ISO_Left_Tab":
                 this.page_left ();
                 return true;
