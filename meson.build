@@ -53,6 +53,7 @@ executable(
     'src/Widgets/AppItem.vala',
     dependencies: [
         dependency('gio-unix-2.0', version: '>=2.56.0'),
+        dependency('sdl2', version: '>=2.26.0'),
         dependency('glib-2.0', version: '>=2.72.0'),
         dependency('gtk+-3.0', version: '>=3.22'),
         dependency('gdk-3.0', version: '>=3.22.0'),
