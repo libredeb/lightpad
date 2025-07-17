@@ -28,12 +28,10 @@ public class LightPadWindow : Widgets.CompositedWindow {
     private int grid_x;
     private int grid_y;
 
-    public int64 start_time;
     private GLib.Thread<int> thread;
 
     public LightPadWindow () {
-
-        this.start_time = GLib.get_monotonic_time ();
+        int64 t0 = GLib.get_monotonic_time ();
 
         const int ICON_SIZE = 182;
         const int GRID_SPACING = 42;
@@ -74,6 +72,8 @@ public class LightPadWindow : Widgets.CompositedWindow {
 
         // Get all apps
         LightPad.Backend.DesktopEntries.enumerate_apps (this.icons, this.icon_size, user_home, out this.apps);
+        int64 t1 = GLib.get_monotonic_time ();
+        message ("[PERF] Enumerate apps: %.2f ms", (t1 - t0) / 1000.0);
 
         // Add container wrapper
         var wrapper = new Gtk.EventBox (); // Used for the scrolling and button press events
@@ -511,6 +511,7 @@ public class LightPadWindow : Widgets.CompositedWindow {
 }
 
 static int main (string[] args) {
+    int64 t0 = GLib.get_monotonic_time ();
     /*
      * This is a workaround for libgnome-menu-3.0, for now doesn't have support to include .desktop entries
      * with the property OnlyShowIn set up. If the value of your XDG_CURRENT_DESKTOP environment variable 
@@ -526,6 +527,9 @@ static int main (string[] args) {
     }
 
     Gtk.init (ref args);
+    int64 t1 = GLib.get_monotonic_time ();
+    message ("[PERF] Gtk.init: %.2f ms", (t1 - t0) / 1000.0);
+
     Gtk.Application app = new Gtk.Application ("org.libredeb.lightpad", GLib.ApplicationFlags.FLAGS_NONE);
 
     // CSS Style Provider
@@ -547,14 +551,16 @@ static int main (string[] args) {
 
     app.activate.connect ( () => {
         if (app.get_windows ().length () == 0) {
+            int64 t2 = GLib.get_monotonic_time ();
             var main_window = new LightPadWindow ();
+            int64 t3 = GLib.get_monotonic_time ();
             main_window.set_application (app);
             main_window.show_all ();
+            int64 t4 = GLib.get_monotonic_time ();
 
-            message (
-                "Application started in %.2f ms",
-                (GLib.get_monotonic_time () - main_window.start_time) / 1000.0
-            );
+            message ("[PERF] LightPadWindow(): %.2f ms", (t3 - t2) / 1000.0);
+            message ("[PERF] show_all: %.2f ms", (t4 - t3) / 1000.0);
+            message ("[PERF] Total desde Gtk.init: %.2f ms", (t4 - t1) / 1000.0);
 
             Gtk.main ();
         }
