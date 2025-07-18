@@ -87,7 +87,7 @@ namespace LightPad.Backend {
             list = new Gee.ArrayList<Gee.HashMap<string, string>> ();
 
             // Crear directorio de caché si no existe
-            string cache_dir = user_home + "/.lightpad/cache";
+            string cache_dir = user_home + Resources.CACHE_DIR;
             try {
                 var cache_file = GLib.File.new_for_path(cache_dir);
                 if (!cache_file.query_exists()) {
@@ -138,7 +138,7 @@ namespace LightPad.Backend {
 
                     if (!icons.has_key (app_to_add["command"])) {
                         var app_icon = app.get_icon ().to_string ();
-                        var icon_prefix = "/usr/share/pixmaps/";
+                        var icon_prefix = Resources.PIXMAPS_DIR;
                         string cache_path = cache_dir + "/" + app_icon.replace("/", "_") + "_" + icon_size.to_string() + ".png";
                         try {
                             // Intentar cargar desde caché
