@@ -86,7 +86,7 @@ namespace LightPad.Backend {
             var icon_theme = Gtk.IconTheme.get_default ();
             list = new Gee.ArrayList<Gee.HashMap<string, string>> ();
 
-            // Crear directorio de caché si no existe
+            // Create cache directory if it doesn't exist
             string cache_dir = user_home + Resources.CACHE_DIR;
             try {
                 var cache_file = GLib.File.new_for_path(cache_dir);
