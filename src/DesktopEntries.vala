@@ -130,9 +130,11 @@ namespace LightPad.Backend {
                     app_to_add["name"] = app.get_display_name ();
                     app_to_add["description"] = app.get_description ();
 
+                    // Needed to check further later if terminal is open in terminal (like VIM, HTop, etc.)
                     if (app.get_string ("Terminal") == "true") {
                         app_to_add["terminal"] = "true";
                     }
+
                     app_to_add["command"] = app.get_commandline ();
                     app_to_add["desktop_file"] = entry.get_desktop_file_path ();
 
@@ -141,10 +143,14 @@ namespace LightPad.Backend {
                         var icon_prefix = Resources.PIXMAPS_DIR;
                         string cache_path = cache_dir + "/" + app_icon.replace("/", "_") + "_" + icon_size.to_string() + ".png";
                         try {
-                            // Intentar cargar desde caché
+                            // Trying to load from cache
                             if (GLib.File.new_for_path(cache_path).query_exists()) {
                                 icons[app_to_add["command"]] = new Gdk.Pixbuf.from_file(cache_path);
                             } else if (icon_theme.has_icon (app_icon)) {
+                                /*
+                                 * Attention: the icons inside the icon_theme can tell lies about
+                                 * their icon_size, so we need always to scale them
+                                 */
                                 var pixbuf = icon_theme.load_icon (app_icon, icon_size, 0)
                                                 .scale_simple (icon_size, icon_size, Gdk.InterpType.BILINEAR);
                                 icons[app_to_add["command"]] = pixbuf;
