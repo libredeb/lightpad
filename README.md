@@ -80,6 +80,26 @@ htop
 
 These lines appear in the **.desktop** files located in `/usr/share/applications` as the value of the **Exec=** tag.
 
+## Icon Cache
+
+To improve startup performance, LightPad now implements a persistent icon cache.
+
+- **Location:**  
+  The cache is stored in `$HOME/.lightpad/cache/`.
+
+- **How it works:**  
+  On first launch, LightPad loads and scales each application icon, saving a PNG version in the cache directory. On subsequent launches, icons are loaded directly from the cache, significantly reducing startup time.
+
+- **Cache invalidation:**  
+  If an application icon changes on the system, the cached version will not update automatically. To refresh the cache, simply delete the contents of `$HOME/.lightpad/cache/` and restart LightPad.
+
+- **Disk usage:**  
+  The cache only stores scaled PNG icons for the applications shown in LightPad. Disk usage is minimal, but you can clear the cache at any time if needed.
+
+- **Troubleshooting:**  
+  If you experience missing or outdated icons, try clearing the cache directory and relaunching LightPad.
+
+
 ## Tested Devices
 
 The handheld version of LightPad has been tested and works as expected on the following devices:
@@ -88,7 +108,6 @@ The handheld version of LightPad has been tested and works as expected on the fo
 - **Raspberry Pi 3 Model B+**
 
 Please note that performance and appearance may vary slightly depending on the device's screen resolution.
-
 
 ## Changelog
 

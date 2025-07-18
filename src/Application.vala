@@ -28,13 +28,9 @@ public class LightPadWindow : Widgets.CompositedWindow {
     private int grid_x;
     private int grid_y;
 
-    public int64 start_time;
     private GLib.Thread<int> thread;
 
     public LightPadWindow () {
-
-        this.start_time = GLib.get_monotonic_time ();
-
         const int ICON_SIZE = 182;
         const int GRID_SPACING = 42;
         const int GRID_X = 3;
@@ -550,12 +546,6 @@ static int main (string[] args) {
             var main_window = new LightPadWindow ();
             main_window.set_application (app);
             main_window.show_all ();
-
-            message (
-                "Application started in %.2f ms",
-                (GLib.get_monotonic_time () - main_window.start_time) / 1000.0
-            );
-
             Gtk.main ();
         }
     });
