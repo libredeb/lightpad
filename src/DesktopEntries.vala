@@ -94,7 +94,7 @@ namespace LightPad.Backend {
                     cache_file.make_directory_with_parents();
                 }
             } catch (GLib.Error e) {
-                warning ("No se pudo crear el directorio de caché: %s", e.message);
+                warning ("Cache directory could not be created: %s", e.message);
             }
 
             var blocklist_file = GLib.File.new_for_path (user_home + Resources.BLOCKLIST_FILE);
