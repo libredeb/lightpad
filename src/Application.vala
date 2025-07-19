@@ -459,7 +459,10 @@ public class LightPadWindow : Widgets.CompositedWindow {
                 this.destroy ();
                 return true;
             case "space":
-                if (event.state == Gdk.ModifierType.CONTROL_MASK) {
+                if (
+                    (event.state == Gdk.ModifierType.CONTROL_MASK) ||
+                    (event.state == Gdk.ModifierType.SUPER_MASK)
+                ) {
                     this.destroy ();
                     return true;
                 }
@@ -555,7 +558,6 @@ private bool setup_config_dir (string home) {
 }
 
 static int main (string[] args) {
-
     /*
      * This is a workaround for libgnome-menu-3.0, for now doesn't have support to include .desktop entries
      * with the property OnlyShowIn set up. If the value of your XDG_CURRENT_DESKTOP environment variable 
