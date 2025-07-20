@@ -41,8 +41,8 @@ namespace LightPad.Frontend {
             }
         }
 
-        public Searchbar (string hint) {
-            this.hint_string = hint;
+        public Searchbar () {
+            this.hint_string = _("Search");
             this.buffer = new Gtk.TextBuffer (null);
             this.buffer.text = this.hint_string;
 

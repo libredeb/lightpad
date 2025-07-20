@@ -12,7 +12,7 @@ Only for Ubuntu based distros, open a terminal and run the next commands:
 ```sh
 sudo add-apt-repository ppa:libredeb/lightpad
 sudo apt-get update
-sudo apt-get install com.github.libredeb.lightpad
+sudo apt-get install io.github.libredeb.lightpad
 ```
 
 ## Compilation
@@ -61,7 +61,7 @@ Once installed set shortcut key to access LightPad.
 
   * `System -> Preferences -> Hardware -> Keyboard Shortcuts` then click on `Add` button
   * **Name:** LightPad
-  * **Command:** com.github.libredeb.lightpad
+  * **Command:** io.github.libredeb.lightpad
 
 Now assign it a shortcut key, such as `CTRL`+`SPACE`.
 
@@ -69,7 +69,7 @@ Now assign it a shortcut key, such as `CTRL`+`SPACE`.
 
 ## Optional Features
 
-Explore LightPad's optional features to personalize your experience! For a full list of available options and their descriptions, run `com.github.libredeb.lightpad --help` in your terminal. Or refer to the binary manual page by using the following command `man com.github.libredeb.lightpad`.
+Explore LightPad's optional features to personalize your experience! For a full list of available options and their descriptions, run `io.github.libredeb.lightpad --help` in your terminal. Or refer to the binary manual page by using the following command `man io.github.libredeb.lightpad`.
 
 ---
 
@@ -83,7 +83,7 @@ Explore LightPad's optional features to personalize your experience! For a full 
    To get started, generate a configuration template so that you can edit the parameters later:
 
    ```sh
-   com.github.libredeb.lightpad --save-config
+   io.github.libredeb.lightpad --save-config
    ```
 
 - **Clear the configuration file (-c, --clear-config)**
@@ -91,7 +91,7 @@ Explore LightPad's optional features to personalize your experience! For a full 
    You can also clear the generated custom settings file so that LightPad uses the values that best fit your display by executing the command:
 
    ```sh
-   com.github.libredeb.lightpad --clear-config
+   io.github.libredeb.lightpad --clear-config
    ```
 
 ### Dynamic Background (-b, --background)
@@ -99,7 +99,7 @@ Explore LightPad's optional features to personalize your experience! For a full 
 LightPad now supports using a custom background of your choice. You can use any wallpaper of your choice and LightPad will use them (prioritizing the JPG format):
 
 ```sh
-com.github.libredeb.lightpad --background /path/to/image[.jpg|.png|.webp]
+io.github.libredeb.lightpad --background /path/to/image[.jpg|.png|.webp]
 ```
 
 ### Blocklist File
@@ -129,13 +129,32 @@ These lines appear in the **.desktop** files located in `/usr/share/applications
 To show debug messages to see what's happening when LightPad run, you can execute next command:
 
 ```sh
-pkill -f com.github.libredeb.lightpad; G_MESSAGES_DEBUG=all com.github.libredeb.lightpad
+pkill -f io.github.libredeb.lightpad; G_MESSAGES_DEBUG=all io.github.libredeb.lightpad
+```
+
+## Translations
+
+To add more supported languages, please, edit [LINGUAS](./po/LINGUAS) file and update the translation template file (a.k.a. `pot`) running next command:
+```sh
+cd build
+ninja io.github.libredeb.lightpad-pot
+```
+
+And for generate each LINGUA `po` file, run next command:
+```sh
+ninja io.github.libredeb.lightpad-update-po
 ```
 
 ## Changelog
+**Version 0.1.0**
+* New intermediate icon cache that improves LightPad startup speed by more than 4 times.
+* Translations into Spanish, German, French and Portuguese.
+* Fixed [issue #8](https://github.com/libredeb/lightpad/issues/8), Delay on startup
+* Changed application id in order to publish it in [flathub](https://flathub.org/).
+
 **Version 0.0.10**
-* Added more information required in [appdata.xml](data/com.github.libredeb.lightpad.appdata.xml) needed by software stores
-* Added command line flags to make using optional features easier (see `com.github.libredeb.lightpad --help`)
+* Added more information required in [metainfo.xml](data/io.github.libredeb.lightpad.metainfo.xml.in) file needed by software stores
+* Added command line flags to make using optional features easier (see `io.github.libredeb.lightpad --help`)
 * Fixed [issue #51](https://github.com/libredeb/lightpad/issues/51), there is no man page for the binary
 * Fixed [issue #55](https://github.com/libredeb/lightpad/issues/55), improve criteria for blocklist apps
 * Fixed [issue #57](https://github.com/libredeb/lightpad/issues/57), lower case apps names are sorted at the end

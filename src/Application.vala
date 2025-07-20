@@ -100,7 +100,7 @@ public class LightPadWindow : Widgets.CompositedWindow {
         var bottom = new Gtk.Box (Gtk.Orientation.HORIZONTAL, 0);
 
         // Searchbar
-        this.searchbar = new LightPad.Frontend.Searchbar ("Search");
+        this.searchbar = new LightPad.Frontend.Searchbar ();
         debug ("Searchbar created!");
         this.searchbar.changed.connect (this.search);
         this.searchbar.button_release_event.connect ((sbar_widget, sbar_event) => {
