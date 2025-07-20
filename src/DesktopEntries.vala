@@ -38,7 +38,7 @@ namespace LightPad.Backend {
             desktop_menus_map.set ("sway", "lxqt-applications.menu");
             desktop_menus_map.set ("budgie", "gnome-applications.menu");
             desktop_menus_map.set ("budgie-desktop", "gnome-applications.menu");
-            desktop_menus_map.set ("pantheon", "pantheon-applications.menu");
+            desktop_menus_map.set ("pantheon", "gnome-applications.menu");
 
             string? current_desktop = GLib.Environment.get_variable ("XDG_CURRENT_DESKTOP");
             string? resolved = try_resolve (current_desktop, desktop_menus_map);
