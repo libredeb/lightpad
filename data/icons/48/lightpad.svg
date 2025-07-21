@@ -1,31 +1,31 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <svg
-   xmlns:dc="http://purl.org/dc/elements/1.1/"
-   xmlns:cc="http://creativecommons.org/ns#"
-   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
-   xmlns:svg="http://www.w3.org/2000/svg"
-   xmlns="http://www.w3.org/2000/svg"
-   xmlns:xlink="http://www.w3.org/1999/xlink"
-   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
-   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-   inkscape:version="1.0 (4035a4fb49, 2020-05-01)"
+   inkscape:version="1.4.2 (ebf0e940d0, 2025-05-08)"
    sodipodi:docname="lightpad.svg"
    version="1.1"
    width="48"
    height="48"
-   id="svg5157">
+   id="svg5157"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:xlink="http://www.w3.org/1999/xlink"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:dc="http://purl.org/dc/elements/1.1/">
   <sodipodi:namedview
      inkscape:current-layer="g969"
      inkscape:window-maximized="1"
-     inkscape:window-y="27"
-     inkscape:window-x="69"
-     inkscape:cy="34.140423"
-     inkscape:cx="12.180601"
-     inkscape:zoom="4.1182782"
+     inkscape:window-y="0"
+     inkscape:window-x="0"
+     inkscape:cy="22.2351"
+     inkscape:cx="14.508617"
+     inkscape:zoom="11.64825"
      showgrid="false"
      id="namedview153"
-     inkscape:window-height="704"
-     inkscape:window-width="1297"
+     inkscape:window-height="1011"
+     inkscape:window-width="1854"
      inkscape:pageshadow="2"
      inkscape:pageopacity="0"
      guidetolerance="10"
@@ -34,7 +34,10 @@
      borderopacity="1"
      bordercolor="#666666"
      pagecolor="#ffffff"
-     inkscape:document-rotation="0" />
+     inkscape:document-rotation="0"
+     inkscape:showpageshadow="2"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#d1d1d1" />
   <defs
      id="defs5159">
     <radialGradient
@@ -691,7 +694,7 @@
      id="g969">
     <g
        id="g145"
-       transform="matrix(0.37499197,0,0,0.37499197,-0.18403045,-0.0249304)">
+       transform="matrix(0.4005164,0,0,0.4005164,-1.8301539,-2.3282924)">
       <path
          d="m 107.21186,108.52868 c -0.41632,4.48971 -5.31429,6.58817 -8.908609,8.20302 -14.184798,5.26294 -29.678699,5.80433 -44.633184,4.87168 -9.90135,-0.99042 -20.354797,-2.20291 -28.964427,-7.59023 -2.739353,-1.58834 -5.074456,-5.35039 -2.800953,-8.27032 4.161443,-5.10301 11.103768,-6.606882 17.177366,-8.190481 17.077551,-3.469862 34.974955,-3.435173 51.976861,0.461531 5.51641,1.601865 11.918426,3.15902 15.448486,8.08674 0.43251,0.7328 0.70817,1.57172 0.70446,2.42806 z"
          style="fill:url(#radialGradient3163);fill-opacity:1;stroke:none"

@@ -174,7 +174,8 @@ namespace LightPad.Backend {
                     !(
                         (app.get_commandline ().split (" ")[0] in apps_hidden) ||
                         (app.get_commandline () in apps_hidden)
-                    )
+                    ) &&
+                    !app.get_commandline ().contains (Config.PROJECT_NAME)
                 ) {
                     var app_to_add = new Gee.HashMap<string, string> ();
                     app_to_add["name"] = app.get_display_name ();

@@ -8,13 +8,13 @@ msgid ""
 msgstr ""
 "Project-Id-Version: io.github.libredeb.lightpad\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-07-19 23:29-0300\n"
+"POT-Creation-Date: 2025-07-20 22:19-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=CHARSET\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
 #: src/Widgets/Searchbar.vala:45
@@ -70,6 +70,28 @@ msgstr ""
 
 #: data/io.github.libredeb.lightpad.metainfo.xml.in:67
 msgid "A new version that improves the user experience."
+msgstr ""
+
+#: data/io.github.libredeb.lightpad.metainfo.xml.in:69
+msgid ""
+"🌟️ New intermediate icon cache that improves LightPad startup speed by more "
+"than 4 times."
+msgstr ""
+
+#: data/io.github.libredeb.lightpad.metainfo.xml.in:70
+msgid "🇦🇷 Spanish translation"
+msgstr ""
+
+#: data/io.github.libredeb.lightpad.metainfo.xml.in:71
+msgid "🇩🇪 German translation"
+msgstr ""
+
+#: data/io.github.libredeb.lightpad.metainfo.xml.in:72
+msgid "🇫🇷 French translation"
+msgstr ""
+
+#: data/io.github.libredeb.lightpad.metainfo.xml.in:73
+msgid "🇧🇷 Portuguese translation"
 msgstr ""
 
 #: data/io.github.libredeb.lightpad.metainfo.xml.in:82

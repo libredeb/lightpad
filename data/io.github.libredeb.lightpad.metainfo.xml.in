@@ -65,14 +65,14 @@
     <release version="0.1.0" date="2025-07-20" urgency="medium">
       <description>
         <p>A new version that improves the user experience.</p>
+        <ul>
+          <li>🌟️ New intermediate icon cache that improves LightPad startup speed by more than 4 times.</li>
+          <li>🇦🇷 Spanish translation</li>
+          <li>🇩🇪 German translation</li>
+          <li>🇫🇷 French translation</li>
+          <li>🇧🇷 Portuguese translation</li>
+        </ul>
       </description>
-      <ul>
-        <li>🌟️ New intermediate icon cache that improves LightPad startup speed by more than 4 times.</li>
-        <li>🇦🇷 Spanish translation</li>
-        <li>🇩🇪 German translation</li>
-        <li>🇫🇷 French translation</li>
-        <li>🇧🇷 Portuguese translation</li>
-      </ul>
       <issues>
         <issue url="https://github.com/libredeb/lightpad/issues/8">Delay on startup</issue>
       </issues>

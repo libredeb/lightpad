@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: io.github.libredeb.lightpad\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-07-19 23:29-0300\n"
+"POT-Creation-Date: 2025-07-20 22:19-0300\n"
 "PO-Revision-Date: 2025-07-19 18:04-0300\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: none\n"
@@ -73,6 +73,30 @@ msgstr "Juan Pablo Lozano"
 #: data/io.github.libredeb.lightpad.metainfo.xml.in:67
 msgid "A new version that improves the user experience."
 msgstr "Une nouvelle version qui améliore l'expérience utilisateur."
+
+#: data/io.github.libredeb.lightpad.metainfo.xml.in:69
+msgid ""
+"🌟️ New intermediate icon cache that improves LightPad startup speed by more "
+"than 4 times."
+msgstr ""
+"🌟️ Nouveau cache d'icônes intermédiaire qui améliore la vitesse de démarrage "
+"de LightPad de plus de 4 fois."
+
+#: data/io.github.libredeb.lightpad.metainfo.xml.in:70
+msgid "🇦🇷 Spanish translation"
+msgstr "🇦🇷 Traduction espagnole"
+
+#: data/io.github.libredeb.lightpad.metainfo.xml.in:71
+msgid "🇩🇪 German translation"
+msgstr "🇩🇪 Traduction allemande"
+
+#: data/io.github.libredeb.lightpad.metainfo.xml.in:72
+msgid "🇫🇷 French translation"
+msgstr "🇫🇷 Traduction française"
+
+#: data/io.github.libredeb.lightpad.metainfo.xml.in:73
+msgid "🇧🇷 Portuguese translation"
+msgstr "🇧🇷 Traduction portugaise"
 
 #: data/io.github.libredeb.lightpad.metainfo.xml.in:82
 msgid ""
