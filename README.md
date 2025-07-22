@@ -12,37 +12,37 @@ LightPad is a lightweight, simple and powerful application launcher. It is also 
    1. Install dependencies:
    * For Ubuntu:
    ```sh
-      sudo apt-get install meson ninja-build libgee-0.8-dev libgnome-menu-3-dev cdbs valac libvala-*-dev libglib2.0-dev libgtk-3-dev libsdl2-dev python3 python3-wheel python3-setuptools gnome-menus
+   sudo apt-get install meson ninja-build libgee-0.8-dev libgnome-menu-3-dev cdbs valac libvala-*-dev libglib2.0-dev libgtk-3-dev libsdl2-dev python3 python3-wheel python3-setuptools gnome-menus
    ```
    * For Fedora:
    ```sh
-      sudo dnf install meson ninja-build libgee-devel gnome-menus-devel cdbs vala libvala-devel glib-devel gtk3-devel sdl2-compat-devel python3 python3-wheel python3-setuptools gnome-menus
+   sudo dnf install meson ninja-build libgee-devel gnome-menus-devel cdbs vala libvala-devel glib-devel gtk3-devel sdl2-compat-devel python3 python3-wheel python3-setuptools gnome-menus
    ```
    * For Arch Linux:
    ```sh
-      sudo pacman -Sy meson ninja libgee gnome-menus vala glib2 gdk-pixbuf2 gtk3 sdl2-compat python python-wheel python-setuptools
+   sudo pacman -Sy meson ninja libgee gnome-menus vala glib2 gdk-pixbuf2 gtk3 sdl2-compat python python-wheel python-setuptools
    ```
    2. Clone this repository into your machine
    ```sh
-     git clone https://github.com/libredeb/lightpad.git
-     cd lightpad/
+   git clone https://github.com/libredeb/lightpad.git
+   cd lightpad/
    ```
    3. Create a build folder:
    ```sh
-      meson setup build --prefix=/usr
+   meson setup build --prefix=/usr
    ```
    4. Compile LightPad:
    ```sh
-      cd build
-      ninja
+   cd build
+   ninja
    ```
    5. Install LightPad in the system:
    ```sh
-      sudo ninja install
+   sudo ninja install
    ```
    6. (OPTIONAL) Uninstall LightPad:
    ```sh
-      sudo ninja uninstall
+   sudo ninja uninstall
    ```
 
 ## Post Install
