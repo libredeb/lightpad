@@ -81,17 +81,21 @@ namespace LightPad.Backend {
                     the_apps.add (this_app);
                 }
             }
+            debug ("Amount of apps: %d", the_apps.size);
 
-            message ("Amount of apps: %d", the_apps.size);
             var icon_theme = Gtk.IconTheme.get_default ();
+            string icon_theme_name;
+            Gtk.Settings.get_default ().get ("gtk-icon-theme-name", out icon_theme_name);
+            icon_theme_name = icon_theme_name.replace (" ", "-");
+
             list = new Gee.ArrayList<Gee.HashMap<string, string>> ();
 
             // Create cache directory if it doesn't exist
             string cache_dir = user_home + Resources.CACHE_DIR;
             try {
-                var cache_file = GLib.File.new_for_path(cache_dir);
-                if (!cache_file.query_exists()) {
-                    cache_file.make_directory_with_parents();
+                var cache_file = GLib.File.new_for_path (cache_dir);
+                if (!cache_file.query_exists ()) {
+                    cache_file.make_directory_with_parents ();
                 }
             } catch (GLib.Error e) {
                 warning ("Cache directory could not be created: %s", e.message);
@@ -141,11 +145,12 @@ namespace LightPad.Backend {
                     if (!icons.has_key (app_to_add["command"])) {
                         var app_icon = app.get_icon ().to_string ();
                         var icon_prefix = Resources.PIXMAPS_DIR;
-                        string cache_path = cache_dir + "/" + app_icon.replace("/", "_") + "_" + icon_size.to_string() + ".png";
+                        string cache_path = cache_dir + "/" + icon_theme_name
+                                          + "_" + app_icon.replace ("/", "_") + ".png";
                         try {
                             // Trying to load from cache
-                            if (GLib.File.new_for_path(cache_path).query_exists()) {
-                                icons[app_to_add["command"]] = new Gdk.Pixbuf.from_file(cache_path);
+                            if (GLib.File.new_for_path (cache_path).query_exists ()) {
+                                icons[app_to_add["command"]] = new Gdk.Pixbuf.from_file (cache_path);
                             } else if (icon_theme.has_icon (app_icon)) {
                                 /*
                                  * Attention: the icons inside the icon_theme can tell lies about
@@ -154,37 +159,37 @@ namespace LightPad.Backend {
                                 var pixbuf = icon_theme.load_icon (app_icon, icon_size, 0)
                                                 .scale_simple (icon_size, icon_size, Gdk.InterpType.BILINEAR);
                                 icons[app_to_add["command"]] = pixbuf;
-                                pixbuf.savev(cache_path, "png", null, null);
+                                pixbuf.savev (cache_path, "png", null, null);
                             } else if (GLib.File.new_for_path (app_icon).query_exists ()) {
                                 var pixbuf = new Gdk.Pixbuf.from_file_at_scale (
                                     app_icon.to_string (), -1, icon_size, true
                                 );
                                 icons[app_to_add["command"]] = pixbuf;
-                                pixbuf.savev(cache_path, "png", null, null);
+                                pixbuf.savev (cache_path, "png", null, null);
                             } else if (GLib.File.new_for_path (icon_prefix + app_icon + ".png").query_exists ()) {
                                 var pixbuf = new Gdk.Pixbuf.from_file_at_scale (
                                     icon_prefix + app_icon + ".png", -1, icon_size, true
                                 );
                                 icons[app_to_add["command"]] = pixbuf;
-                                pixbuf.savev(cache_path, "png", null, null);
+                                pixbuf.savev (cache_path, "png", null, null);
                             } else if (GLib.File.new_for_path (icon_prefix + app_icon + ".svg").query_exists ()) {
                                 var pixbuf = new Gdk.Pixbuf.from_file_at_scale (
                                     icon_prefix + app_icon + ".svg", -1, icon_size, true
                                 );
                                 icons[app_to_add["command"]] = pixbuf;
-                                pixbuf.savev(cache_path, "png", null, null);
+                                pixbuf.savev (cache_path, "png", null, null);
                             } else if (GLib.File.new_for_path (icon_prefix + app_icon + ".xpm").query_exists ()) {
                                 var pixbuf = new Gdk.Pixbuf.from_file_at_scale (
                                     icon_prefix + app_icon + ".xpm", -1, icon_size, true
                                 );
                                 icons[app_to_add["command"]] = pixbuf;
-                                pixbuf.savev(cache_path, "png", null, null);
+                                pixbuf.savev (cache_path, "png", null, null);
                             } else {
                                 var pixbuf = icon_theme.load_icon (
                                     "application-default-icon", icon_size, 0
                                 );
                                 icons[app_to_add["command"]] = pixbuf;
-                                pixbuf.savev(cache_path, "png", null, null);
+                                pixbuf.savev (cache_path, "png", null, null);
                             }
                         } catch (GLib.Error e) {
                             warning ("No icon found for %s.\n", app_to_add["name"]);

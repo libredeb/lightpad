@@ -169,7 +169,7 @@ public class LightPadWindow : Widgets.CompositedWindow {
                 while (SDL.Event.poll (out event) != 0) {
                     switch (event.type) {
                         case SDL.EventType.JOYBUTTONDOWN:
-                            if (event.jbutton.button == 1) {
+                            if ((event.jbutton.button == 10) || (event.jbutton.button == 18)) {
                                 if (this.filtered.size >= 1) {
                                     this.get_focus ().button_release_event (
                                         (Gdk.EventButton) new Gdk.Event (Gdk.EventType.BUTTON_PRESS)
@@ -177,27 +177,19 @@ public class LightPadWindow : Widgets.CompositedWindow {
                                 }
                                 SDL.quit ();
                             }
-                            break;
-                        case SDL.EventType.JOYAXISMOTION:
-                            /* 
-                             * A “dead zone” is defined to filter out minor movements.
-                             * A good starting value is around 8000 (out of a maximum of 32767).
-                             */
-                            int dead_zone = 8000;
-                            // The X-axis of the stick is checked (most controllers use 0).
-                            if (event.jaxis.axis == 0) {
-                                if (event.jaxis.value > dead_zone) {
-                                    this.do_right ();
-                                } else if (event.jaxis.value < -dead_zone) {
-                                    this.do_left ();
-                                }
-                            // The Y-axis of the stick is checked (most controllers use 1).
-                            } else if (event.jaxis.axis == 1) {
-                                if (event.jaxis.value > dead_zone) {
-                                    this.do_down ();
-                                } else if (event.jaxis.value < -dead_zone) {
-                                    this.do_up ();
-                                }
+
+                            if (event.jbutton.button == 6) {
+                                this.do_up ();
+                            }
+                            if (event.jbutton.button == 7) {
+                                this.do_down ();
+                            }
+
+                            if (event.jbutton.button == 8) {
+                                this.do_left ();
+                            }
+                            if (event.jbutton.button == 9) {
+                                this.do_right ();
                             }
                             break;
                         default:
@@ -433,7 +425,6 @@ public class LightPadWindow : Widgets.CompositedWindow {
 
     // Keyboard shortcuts
     public override bool key_press_event (Gdk.EventKey event) {
-        message ("[EVENT] Key pressed: %s", Gdk.keyval_name (event.keyval));
         switch (Gdk.keyval_name (event.keyval)) {
             case "Escape":
                 this.destroy ();
@@ -522,7 +513,7 @@ static int main (string[] args) {
     }
 
     Gtk.init (ref args);
-    Gtk.Application app = new Gtk.Application ("org.libredeb.lightpad", GLib.ApplicationFlags.FLAGS_NONE);
+    Gtk.Application app = new Gtk.Application ("com.github.libredeb.lightpad", GLib.ApplicationFlags.FLAGS_NONE);
 
     // CSS Style Provider
     // Path where takes the CSS file
