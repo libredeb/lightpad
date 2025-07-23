@@ -573,7 +573,7 @@ static int main (string[] args) {
     }
 
     Gtk.init (ref args);
-    Gtk.Application app = new Gtk.Application ("org.libredeb.lightpad", GLib.ApplicationFlags.FLAGS_NONE);
+    Gtk.Application app = new Gtk.Application ("io.github.libredeb.lightpad", GLib.ApplicationFlags.FLAGS_NONE);
     app.add_main_option_entries (Resources.LIGHTPAD_OPTIONS);
 
     // CSS Style Provider
