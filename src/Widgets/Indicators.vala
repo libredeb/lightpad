@@ -8,7 +8,7 @@ namespace LightPad.Frontend {
     public class Indicators : Gtk.HBox {
 
         // Animation constants
-        const int FPS = 60;
+        const int FPS = 25;
         private int animation_duration;
         private int animation_frames; // total number of frames
         private int current_frame = 1;
@@ -86,8 +86,7 @@ namespace LightPad.Frontend {
             this.animation_duration = 240;
             int difference = (this.old_active - this.active).abs ();
             this.animation_duration += (int) (Math.pow (difference, 0.5) * 80);
-            //this.animation_frames = (int)((double) animation_duration / 1000 * FPS);
-            this.animation_frames = 2;
+            this.animation_frames = (int)((double) animation_duration / 1000 * FPS);
 
             // initial conditions for animation.
             this.current_frame = 0;
