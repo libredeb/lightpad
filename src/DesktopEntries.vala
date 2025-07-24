@@ -179,7 +179,7 @@ namespace LightPad.Backend {
                 ) {
                     var app_to_add = new Gee.HashMap<string, string> ();
                     app_to_add["name"] = app.get_display_name ();
-                    app_to_add["id"] = app_to_add["name"].down();
+                    app_to_add["id"] = app_to_add["name"].down ();
                     app_to_add["description"] = app.get_description ();
 
                     // Needed to check further later if terminal is open in terminal (like VIM, HTop, etc.)
