@@ -86,6 +86,8 @@ public class LightPadWindow : Widgets.CompositedWindow {
 
         // Get all apps
         LightPad.Backend.DesktopEntries.enumerate_apps (this.icons, this.icon_size, user_home, out this.apps);
+        // First order the apps alphabetically
+        this.apps.sort ((a, b) => GLib.strcmp (a["id"], b["id"]));
 
         // Add container wrapper
         var wrapper = new Gtk.EventBox (); // Used for the scrolling and button press events
@@ -147,8 +149,6 @@ public class LightPadWindow : Widgets.CompositedWindow {
         container.pack_end (pages_wrapper, false, true, 15);
 
         // Find number of pages and populate
-        // First order the apps alphabetically
-        this.apps.sort ((a, b) => GLib.strcmp (a["name"].down (), b["name"].down ()));
         this.update_pages (this.apps);
         if (this.total_pages > 1) {
             pages_wrapper.pack_start (this.pages, true, false, 0);
