@@ -22,15 +22,15 @@ sudo apt-get install io.github.libredeb.lightpad
    1. Install dependencies:
    * For Ubuntu:
       ```sh
-      sudo apt-get install meson ninja-build libgee-0.8-dev libgnome-menu-3-dev cdbs valac libvala-*-dev libglib2.0-dev libgtk-3-dev python3 python3-wheel python3-setuptools gnome-menus
+      sudo apt-get install meson ninja-build libgee-0.8-dev libgnome-menu-3-dev cdbs gettext valac libvala-*-dev libglib2.0-dev libgtk-3-dev python3 python3-wheel python3-setuptools gnome-menus
       ```
    * For Fedora:
       ```sh
-      sudo dnf install meson ninja-build libgee-devel gnome-menus-devel cdbs vala libvala-devel glib-devel gtk3-devel python3 python3-wheel python3-setuptools gnome-menus
+      sudo dnf install meson ninja-build libgee-devel gnome-menus-devel cdbs gettext vala libvala-devel glib-devel gtk3-devel python3 python3-wheel python3-setuptools gnome-menus
       ```
    * For Arch Linux:
       ```sh
-      sudo pacman -Sy meson ninja libgee gnome-menus vala glib2 gdk-pixbuf2 gtk3 python python-wheel python-setuptools
+      sudo pacman -Sy meson ninja libgee gnome-menus gettext vala glib2 gdk-pixbuf2 gtk3 python python-wheel python-setuptools
       ```
    2. Clone this repository into your machine
       ```sh
@@ -124,6 +124,22 @@ htop
 
 These lines appear in the **.desktop** files located in `/usr/share/applications` as the value of the **Exec=** tag.
 
+## Icon Cache
+
+To improve startup performance, LightPad now implements a persistent icon cache.
+
+- **Location:**  
+  The cache is located in `$HOME/.lightpad/cache/`.
+
+- **How it works:**  
+  On first launch, LightPad loads and scales each application icon, saving a PNG version in the cache directory. On subsequent launches, icons are loaded directly from the cache, significantly reducing startup time.
+
+- **Cache invalidation:**  
+  If an application icon changes on the system, the cached version will not be updated automatically. To refresh the cache, simply delete the contents of `$HOME/.lightpad/cache/` and restart LightPad.
+
+- **Troubleshooting:**  
+  If you experience missing or outdated icons, try clearing the cache directory and relaunching LightPad.
+
 ## Debug LightPad
 
 To show debug messages to see what's happening when LightPad run, you can execute next command:
@@ -150,7 +166,8 @@ ninja io.github.libredeb.lightpad-update-po
 * New intermediate icon cache that improves LightPad startup speed by more than 4 times.
 * Translations into Spanish, German, French and Portuguese.
 * Fixed [issue #8](https://github.com/libredeb/lightpad/issues/8), Delay on startup
-* Changed application id in order to publish it in [flathub](https://flathub.org/).
+* Updated application id to match with binary name.
+* Some small performance improvements.
 
 **Version 0.0.10**
 * Added more information required in [metainfo.xml](data/io.github.libredeb.lightpad.metainfo.xml.in) file needed by software stores
