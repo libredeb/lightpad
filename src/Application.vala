@@ -32,7 +32,7 @@ public class LightPadWindow : Widgets.CompositedWindow {
 
     public LightPadWindow () {
         const int ICON_SIZE = 182;
-        const int GRID_SPACING = 42;
+        const int GRID_SPACING = 34;
         const int GRID_X = 3;
         const int GRID_Y = 3;
 
@@ -41,8 +41,8 @@ public class LightPadWindow : Widgets.CompositedWindow {
 
         this.icon_size = ICON_SIZE;
         this.font_size = 0;
-        this.item_box_width = ICON_SIZE;
-        this.item_box_height = ICON_SIZE;
+        this.item_box_width = ICON_SIZE + 8;
+        this.item_box_height = ICON_SIZE + 8;
         this.grid_y = GRID_Y;
         this.grid_x = GRID_X;
 

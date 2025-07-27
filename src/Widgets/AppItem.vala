@@ -46,9 +46,9 @@
             // Icon
             this.icon = new_icon;
             if (this.icon != null) {
-                this.prominent = LightPad.Frontend.Utilities.average_color (this.icon);
+                this.prominent = LightPad.Frontend.Color(1.0, 1.0, 1.0, 1.0);
             } else {
-                this.prominent = LightPad.Frontend.Color(0.0, 0.0, 0.0, 1.0); // Default color
+                this.prominent = LightPad.Frontend.Color(0.0, 0.0, 0.0, 1.0);
             }
 
             // Label
@@ -95,7 +95,7 @@
             // If there is no icon, don't draw anything
             if (this.icon != null) {
                 double icon_x = (size.width - this.icon.width) / 2.0;
-                double icon_y = 0.0;
+                double icon_y = 4.0;
                 Gdk.cairo_set_source_pixbuf (context, this.icon, icon_x, icon_y);
                 context.paint ();
             }
@@ -135,9 +135,9 @@
             }
 
             if (this.has_focus) {
-                double dark = 0.32;
+                double dark = 0.45;
                 var gradient = new Cairo.Pattern.rgba (
-                    this.prominent.r * dark, this.prominent.g * dark, this.prominent.b * dark, 0.8
+                    this.prominent.r * dark, this.prominent.g * dark, this.prominent.b * dark, 1.0
                 );
                 context.set_source (gradient);
                 LightPad.Frontend.Utilities.draw_rounded_rectangle (context, 10, 0.5, size);

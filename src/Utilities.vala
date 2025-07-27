@@ -66,39 +66,6 @@ namespace LightPad.Frontend {
             context.close_path ();
         }
 
-        public static LightPad.Frontend.Color average_color (Gdk.Pixbuf source) {
-            double r_total = 0;
-            double g_total = 0;
-            double b_total = 0;
-
-            uchar* data_ptr = source.get_pixels ();
-            double pixels = source.height * source.rowstride / source.n_channels;
-
-            for (int i = 0; i < pixels; i++) {
-                uchar r = data_ptr [0];
-                uchar g = data_ptr [1];
-                uchar b = data_ptr [2];
-
-                uchar max = (uchar) Math.fmax (r, Math.fmax (g, b));
-                uchar min = (uchar) Math.fmin (r, Math.fmin (g, b));
-                double delta = max - min;
-
-                double sat = delta == 0 ? 0 : delta / max;
-                double score = 0.2 + 0.8 * sat;
-
-                r_total += r * score;
-                g_total += g * score;
-                b_total += b * score;
-
-                data_ptr += source.n_channels;
-            }
-
-            return LightPad.Frontend.Color (r_total / uint8.MAX / pixels,
-                        g_total / uint8.MAX / pixels,
-                        b_total / uint8.MAX / pixels,
-                        1).set_val (0.8).multiply_sat (1.15);
-        }
-
         public static void truncate_text (
             Cairo.Context context, Gtk.Allocation size, uint padding, string input,
             out string truncated, out Cairo.TextExtents truncated_extents
