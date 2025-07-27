@@ -287,18 +287,29 @@ public class LightPadWindow : Widgets.CompositedWindow {
                 if (item_iter < apps.size) {
                     var current_item = apps.get (item_iter);
 
-                    // Update app
-                    if (current_item["description"] == null || current_item["description"] == "") {
+                    // Get the icon, use a default one if it doesn't exist
+                    Gdk.Pixbuf? icon = null;
+                    if (icons.has_key(current_item["command"])) {
+                        icon = icons[current_item["command"]];
+                    } else if (icons.has_key("application-default-icon")) {
+                        icon = icons["application-default-icon"];
+                    }
+
+                    // Ensure that texts are not null
+                    string name = current_item["name"] ?? "";
+                    string description = current_item["description"] ?? "";
+
+                    if (description == "") {
                         item.change_app (
-                            icons[current_item["command"]],
-                            current_item["name"],
-                            current_item["name"]
+                            icon,
+                            name,
+                            name
                         );
                     } else {
                         item.change_app (
-                            icons[current_item["command"]],
-                            current_item["name"],
-                            current_item["name"] + ":\n" + current_item["description"]
+                            icon,
+                            name,
+                            name + ":\n" + description
                         );
                     }
                     item.visible = true;

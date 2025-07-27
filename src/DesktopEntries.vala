@@ -17,15 +17,26 @@ namespace LightPad.Backend {
             }
             var root = tree.get_root_directory ();
             var main_directory_entries = new Gee.ArrayList<GMenu.TreeDirectory> ();
+            string? included_categories = GLib.Environment.get_variable ("LIGHTPAD_CATEGORIES");
+            Gee.HashSet<string>? allowed = null;
+            if (included_categories != null) {
+                allowed = new Gee.HashSet<string> ();
+                foreach (var cat in included_categories.split(",")) {
+                    allowed.add(cat.strip().down());
+                }
+            }
             var iter = root.iter ();
             var item = iter.next ();
             while (item != GMenu.TreeItemType.INVALID) {
                 if (item == GMenu.TreeItemType.DIRECTORY) {
-                    main_directory_entries.add ((GMenu.TreeDirectory) iter.get_directory ());
+                    var category = (GMenu.TreeDirectory) iter.get_directory ();
+                    var name = category.get_name().down();
+                    if (allowed == null || allowed.contains(name)) {
+                        main_directory_entries.add (category);
+                    }
                 }
                 item = iter.next ();
             }
-
             return main_directory_entries;
         }
 
@@ -128,7 +139,8 @@ namespace LightPad.Backend {
                     !(
                         (app.get_commandline ().split (" ")[0] in apps_hidden) ||
                         (app.get_commandline () in apps_hidden)
-                    )
+                    ) &&
+                    !app.get_commandline ().contains (Config.PROJECT_NAME)
                 ) {
                     var app_to_add = new Gee.HashMap<string, string> ();
                     app_to_add["name"] = app.get_display_name ();

@@ -64,6 +64,21 @@ htop
 
 These lines appear in the **.desktop** files located in `/usr/share/applications` as the value of the **Exec=** tag.
 
+## Environment Variable: `LIGHTPAD_CATEGORIES`
+
+You can control which application categories are displayed in LightPad by setting the `LIGHTPAD_CATEGORIES` environment variable.  
+This variable should contain a comma-separated list of category names. The comparison is case-insensitive and ignores extra spaces.
+
+**Example:**
+```sh
+export LIGHTPAD_CATEGORIES="Games, System Tools,Internet"
+```
+
+If `LIGHTPAD_CATEGORIES` is not set, all available categories will be shown by default.
+
+- Category names must match those defined in your system menu (e.g., "Games", "Internet", "System Tools"). For more information see: [freedesktop.org/menu-spec/categories](https://specifications.freedesktop.org/menu-spec/latest/category-registry.html).
+- Unrecognized category names will be silently ignored.
+
 ## Icon Cache
 
 To improve startup performance, LightPad now implements a persistent icon cache.
