@@ -1,0 +1,114 @@
+# Portuguese translations for io.github.libredeb.lightpad package.
+# Copyright (C) 2025 THE io.github.libredeb.lightpad'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the io.github.libredeb.lightpad package.
+# Automatically generated, 2025.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: io.github.libredeb.lightpad\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-07-20 22:19-0300\n"
+"PO-Revision-Date: 2025-07-19 18:04-0300\n"
+"Last-Translator: Automatically generated\n"
+"Language-Team: none\n"
+"Language: pt\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: src/Widgets/Searchbar.vala:45
+msgid "Search"
+msgstr "Pesquisa"
+
+#: data/io.github.libredeb.lightpad.desktop.in:2
+#: data/io.github.libredeb.lightpad.metainfo.xml.in:13
+msgid "LightPad"
+msgstr "LightPad"
+
+#: data/io.github.libredeb.lightpad.desktop.in:3
+msgid "Application Launcher"
+msgstr "Lançador de aplicativos"
+
+#: data/io.github.libredeb.lightpad.desktop.in:4
+msgid "Lightweight, look nice and powerful application launcher"
+msgstr "Lançador de aplicativos leve, bonito e poderoso"
+
+#: data/io.github.libredeb.lightpad.metainfo.xml.in:14
+msgid "Lightweight Application Launcher"
+msgstr "Lançador de Aplicativos Leve"
+
+#: data/io.github.libredeb.lightpad.metainfo.xml.in:16
+msgid ""
+"A lightweight, simple, look nice and powerful application launcher for GNU/"
+"Linux."
+msgstr ""
+"Um lançador de aplicativos leve, simples, bonito e poderoso para GNU/Linux."
+
+#: data/io.github.libredeb.lightpad.metainfo.xml.in:17
+msgid "Additional features include:"
+msgstr "Recursos adicionais incluem:"
+
+#: data/io.github.libredeb.lightpad.metainfo.xml.in:19
+msgid "Wayland compatible"
+msgstr "Compatível com Wayland"
+
+#: data/io.github.libredeb.lightpad.metainfo.xml.in:20
+msgid "Dynamic Background"
+msgstr "Plano de fundo dinâmico"
+
+#: data/io.github.libredeb.lightpad.metainfo.xml.in:21
+msgid "Blocklist File"
+msgstr "Arquivo de lista de bloqueio"
+
+#: data/io.github.libredeb.lightpad.metainfo.xml.in:28
+msgid "LightPad in action"
+msgstr "LightPad em ação"
+
+#: data/io.github.libredeb.lightpad.metainfo.xml.in:53
+msgid "Juan Pablo Lozano"
+msgstr "Juan Pablo Lozano"
+
+#: data/io.github.libredeb.lightpad.metainfo.xml.in:67
+msgid "A new version that improves the user experience."
+msgstr "Uma nova versão que melhora a experiência do usuário."
+
+#: data/io.github.libredeb.lightpad.metainfo.xml.in:69
+msgid ""
+"🌟️ New intermediate icon cache that improves LightPad startup speed by more "
+"than 4 times."
+msgstr ""
+"🌟️ Novo cache intermediário de ícones que melhora a velocidade de "
+"inicialização do LightPad em mais de 4 vezes."
+
+#: data/io.github.libredeb.lightpad.metainfo.xml.in:70
+msgid "🇦🇷 Spanish translation"
+msgstr "🇦🇷 Tradução para o espanhol"
+
+#: data/io.github.libredeb.lightpad.metainfo.xml.in:71
+msgid "🇩🇪 German translation"
+msgstr "🇩🇪 Tradução para o alemão"
+
+#: data/io.github.libredeb.lightpad.metainfo.xml.in:72
+msgid "🇫🇷 French translation"
+msgstr "🇫🇷 Tradução para o francês"
+
+#: data/io.github.libredeb.lightpad.metainfo.xml.in:73
+msgid "🇧🇷 Portuguese translation"
+msgstr "🇧🇷 Tradução para o português"
+
+#: data/io.github.libredeb.lightpad.metainfo.xml.in:82
+msgid ""
+"This release brings significant improvements including convenient command-"
+"line flags for optional features, a man page for the binary, refined app "
+"sorting and removal of unused dependencies."
+msgstr ""
+"Esta versão traz melhorias significativas, incluindo sinalizadores de linha "
+"de comando convenientes para recursos opcionais, uma página de manual para o "
+"binário, organização refinada de aplicativos e remoção de dependências não "
+"utilizadas."
+
+#: data/io.github.libredeb.lightpad.metainfo.xml.in:92
+msgid "A bunch of resolved issues (#5, #9, #16, #21, #23, #26, #28, #29)"
+msgstr ""
+"Uma série de problemas resolvidos (#5, #9, #16, #21, #23, #26, #28, #29)"

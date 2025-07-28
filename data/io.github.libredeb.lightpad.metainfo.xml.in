@@ -5,8 +5,8 @@
     <color type="primary">#415d6b</color>
   </branding>
 
-  <id>com.github.libredeb.lightpad</id>
-  <launchable type="desktop-id">com.github.libredeb.lightpad.desktop</launchable>
+  <id>io.github.libredeb.lightpad</id>
+  <launchable type="desktop-id">io.github.libredeb.lightpad.desktop</launchable>
   <metadata_license>CC-BY-4.0</metadata_license>
   <project_license>GPL-3.0-or-later</project_license>
 
@@ -41,7 +41,7 @@
   </supports>
 
   <provides>
-    <binary>com.github.libredeb.lightpad</binary>
+    <binary>io.github.libredeb.lightpad</binary>
   </provides>
 
   <url type="bugtracker">https://github.com/libredeb/lightpad/issues</url>
@@ -49,7 +49,7 @@
   <url type="help">https://github.com/libredeb/lightpad/discussions</url>
   <url type="homepage">https://lightpad.sourceforge.io/</url>
 
-  <developer id="org.elementaryos">
+  <developer id="io.github.libredeb">
     <name>Juan Pablo Lozano</name>
   </developer>
   <project_group>lightpad</project_group>
@@ -62,6 +62,21 @@
   </custom>
 
   <releases>
+    <release version="0.1.0" date="2025-07-20" urgency="medium">
+      <description>
+        <p>A new version that improves the user experience.</p>
+        <ul>
+          <li>🌟️ New intermediate icon cache that improves LightPad startup speed by more than 4 times.</li>
+          <li>🇦🇷 Spanish translation</li>
+          <li>🇩🇪 German translation</li>
+          <li>🇫🇷 French translation</li>
+          <li>🇧🇷 Portuguese translation</li>
+        </ul>
+      </description>
+      <issues>
+        <issue url="https://github.com/libredeb/lightpad/issues/8">Delay on startup</issue>
+      </issues>
+    </release>
     <release version="0.0.10" date="2025-05-24" urgency="high">
       <description>
         <p>This release brings significant improvements including convenient command-line flags for optional features, a man page for the binary, refined app sorting and removal of unused dependencies.</p>

@@ -1,10 +1,15 @@
 # Project name and programming language
 project(
-    'com.github.libredeb.lightpad',
+    'io.github.libredeb.lightpad',
     'vala', 'c',
-    version: '0.0.10',
+    version: '0.1.0',
     meson_version: '>=0.56.0'
 )
+
+# Include the translations module
+i18n = import('i18n')
+# Set our translation domain
+add_global_arguments('-DGETTEXT_PACKAGE="@0@"'.format (meson.project_name()), language:'c')
 
 PROJECT_NAME = 'lightpad'
 prefix = get_option('prefix')
@@ -94,16 +99,23 @@ install_data(
     install_dir: join_paths(datadir, 'icons', 'hicolor', 'scalable', 'apps')
 )
 
-# Install our .desktop file so the Applications Menu will see it
-install_data(
-    join_paths('data', meson.project_name() + '.desktop'),
-    install_dir: join_paths(datadir, 'applications')
+#Translate and install our .desktop file
+i18n.merge_file(
+    input: 'data' / meson.project_name() + '.desktop.in',
+    output: meson.project_name() + '.desktop',
+    po_dir: meson.project_source_root() / 'po',
+    type: 'desktop',
+    install: true,
+    install_dir: get_option('datadir') / 'applications'
 )
 
-# Install our .appdata.xml file so AppCenter will see it
-install_data(
-    join_paths('data', meson.project_name() + '.appdata.xml'),
-    install_dir: join_paths(datadir, 'metainfo')
+#Translate and install our .metainfo file
+i18n.merge_file(
+    input: 'data' / meson.project_name() + '.metainfo.xml.in',
+    output: meson.project_name() + '.metainfo.xml',
+    po_dir: meson.project_source_root() / 'po',
+    install: true,
+    install_dir: get_option('datadir') / 'metainfo'
 )
 
 # Install manual page
@@ -115,3 +127,5 @@ install_data(
 )
 
 meson.add_install_script('post_install.py')
+
+subdir('po')

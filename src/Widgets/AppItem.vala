@@ -40,18 +40,22 @@ namespace LightPad.Frontend {
             this.focus_out_event.connect ( () => { this.focus_out (); return true; } );
         }
 
-        public void change_app (Gdk.Pixbuf new_icon, string new_name, string new_tooltip) {
+        public void change_app (Gdk.Pixbuf? new_icon, string? new_name, string? new_tooltip) {
             this.current_frame = 1;
 
             // Icon
             this.icon = new_icon;
-            this.prominent = LightPad.Frontend.Utilities.average_color (this.icon);
+            if (this.icon != null) {
+                this.prominent = LightPad.Frontend.Utilities.average_color (this.icon);
+            } else {
+                this.prominent = LightPad.Frontend.Color (0.0, 0.0, 0.0, 1.0);
+            }
 
             // Label
-            this.label = new_name;
+            this.label = new_name ?? "";
 
             // Tooltip
-            this.set_tooltip_text (new_tooltip);
+            this.set_tooltip_text (new_tooltip ?? "");
 
             // Redraw
             this.wrapper.queue_draw ();
@@ -94,7 +98,7 @@ namespace LightPad.Frontend {
              * The Y position of the icon is 0 (above the widget).
              */
             double icon_x = (size.width - this.icon.width) / 2.0;
-            double icon_y = 0.0;
+            double icon_y = 10.0;
 
             // Draw the icon
             // The coordinates are relative to the widget origin (0,0).

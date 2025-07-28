@@ -1,10 +1,10 @@
-.TH "LightPad" "1" "" "Version 0.0.10" "LightPad Manual Page Documentation"
+.TH "LightPad" "1" "" "Version 0.1.0" "LightPad Manual Page Documentation"
 .SH NAME
-com.github.libredeb.lightpad \- lightweight, simple and powerful
+io.github.libredeb.lightpad \- lightweight, simple and powerful
 application launcher
 .SH SYNOPSIS
 .PP
-\f[B]com.github.libredeb.lightpad\f[R] [ OPTION ] \&...
+\f[B]io.github.libredeb.lightpad\f[R] [ OPTION ] \&...
 .SH DESCRIPTION
 LightPad is a lightweight, simple and powerful application launcher.
 It is also Wayland compatible.
@@ -25,6 +25,13 @@ Get the default values of the configuration and stores them in \[ti]/.lightpad/c
 \-c, \[en]-clear\-config
 Clear the stored configuration, especially if you want to restore the default state.
 .SH FILES
+.TP
+\f[I]\[ti]/.lightpad\f[R]
+This folder contains all the configuration files and workspace of LightPad.
+.TP
+\f[I]\[ti]/.lightpad/cache\f[R]
+This folder keep pre-rendered icons to improve the startup speed of Lightpad.
+It is safe to delete it to clear the cache in case of any issues.
 .TP
 \f[I]\[ti]/.lightpad/config\f[R]
 Adjust visual aspects such as font size, icon size, and the application

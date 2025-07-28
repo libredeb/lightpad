@@ -71,7 +71,7 @@ public class LightPadWindow : Widgets.CompositedWindow {
         this.set_skip_pager_hint (true);
         this.set_skip_taskbar_hint (true);
         this.set_type_hint (Gdk.WindowTypeHint.NORMAL);
-        //this.fullscreen (); <-- old method used
+
         var display = Gdk.Display.get_default ();
         debug ("Amount of Monitors: %d", display.get_n_monitors ());
         int primary_monitor_number = 0;
@@ -86,6 +86,8 @@ public class LightPadWindow : Widgets.CompositedWindow {
 
         // Get all apps
         LightPad.Backend.DesktopEntries.enumerate_apps (this.icons, this.icon_size, user_home, out this.apps);
+        // First order the apps alphabetically
+        this.apps.sort ((a, b) => GLib.strcmp (a["id"], b["id"]));
 
         // Add container wrapper
         var wrapper = new Gtk.EventBox (); // Used for the scrolling and button press events
@@ -100,17 +102,19 @@ public class LightPadWindow : Widgets.CompositedWindow {
         var bottom = new Gtk.Box (Gtk.Orientation.HORIZONTAL, 0);
 
         // Searchbar
-        this.searchbar = new LightPad.Frontend.Searchbar ("Search");
+        this.searchbar = new LightPad.Frontend.Searchbar ();
         debug ("Searchbar created!");
         this.searchbar.changed.connect (this.search);
         this.searchbar.button_release_event.connect ((sbar_widget, sbar_event) => {
-            // This event handler is for clicks directly on the searchbar itself.
-            // We want to consume this event so the parent window's handler doesn't see it.
-            // This will prevent the Lightpad from closing when clicked on the searchbar.
-            // You might want to add specific logic for the searchbar here (e.g., focus it).
-
-            // For now, just consume the event.
-            return true; // Return true to stop event propagation (consume the event)
+            /*
+             * This event handler is for clicks directly on the searchbar itself.
+             * We want to consume this event so the parent window's handler doesn't see it.
+             * This will prevent the Lightpad from closing when clicked on the searchbar.
+             * You might want to add specific logic for the searchbar here (e.g., focus it).
+             * For now, just consume the event.
+             */
+            // Return true to stop event propagation (consume the event)
+            return true;
         });
 
         // Lateral distance (120 are the pixels of the searchbar width)
@@ -129,13 +133,10 @@ public class LightPadWindow : Widgets.CompositedWindow {
         for (int c = 0; c < this.grid_y; c++) {
             this.grid.insert_column (c);
         }
-
         for (int r = 0; r < this.grid_x; r++) {
             this.grid.insert_row (r);
         }
-
         container.pack_start (this.grid, true, true, 0);
-
         this.populate_grid ();
 
         // Add pages
@@ -147,14 +148,11 @@ public class LightPadWindow : Widgets.CompositedWindow {
         container.pack_end (pages_wrapper, false, true, 15);
 
         // Find number of pages and populate
-        // First order the apps alphabetically
-        this.apps.sort ((a, b) => GLib.strcmp (a["name"].down (), b["name"].down ()));
         this.update_pages (this.apps);
         if (this.total_pages > 1) {
             pages_wrapper.pack_start (this.pages, true, false, 0);
             for (int p = 1; p <= this.total_pages; p++) {
                 // Add the number of pages as text
-                //this.pages.append (p.to_string ());
                 this.pages.append ("⬤");
             }
         }
@@ -162,7 +160,6 @@ public class LightPadWindow : Widgets.CompositedWindow {
 
         // Signals and callbacks
         this.add_events (Gdk.EventMask.SCROLL_MASK);
-        //this.button_release_event.connect ( () => { this.destroy(); return false; });
         // Dynamic Background
         if (GLib.File.new_for_path (file_jpg).query_exists ()) {
             this.dynamic_background = true;
@@ -210,11 +207,13 @@ public class LightPadWindow : Widgets.CompositedWindow {
                 (y_relative_to_searchbar >= 0 && y_relative_to_searchbar <= searchbar_height);
 
             if (clicked_inside_searchbar) {
-                // If click was inside searchbar, do nothing here. The searchbar's own handler
-                // should have already consumed the event by returning 'true'.
-                // This 'false' here allows other potential parent handlers (unlikely in this case)
-                // to still see the event, but the searchbar itself already consumed it.
-                return false;
+                /*
+                 * If click was inside searchbar, do nothing here. The searchbar's own handler
+                 * should have already consumed the event by returning 'true'.
+                 * This 'false' here allows other potential parent handlers (unlikely in this case)
+                 * to still see the event, but the searchbar itself already consumed it.
+                 */
+                 return false;
             } else {
                 // If click was outside searchbar, hide Lightpad
                 this.hide ();
@@ -241,7 +240,6 @@ public class LightPadWindow : Widgets.CompositedWindow {
         }
 
         this.pages.set_active (0);
-
         this.queue_draw ();
     }
 
@@ -260,9 +258,10 @@ public class LightPadWindow : Widgets.CompositedWindow {
                     try {
                         int child_index = this.children.index (item);
                         int page_active = this.pages.active;
-                        /* Prevent indicators pages to get a negative one (-1)
-                           and fix with this the bug 003 where a negative result
-                           is obtained and that index does not exist */
+                        /* 
+                         * Prevent indicators pages to get a negative one (-1) and fix with this the bug 003
+                         * where a negative result is obtained and that index does not exist
+                         */
                         if (page_active < 0) {
                             page_active = 0;
                         }
@@ -306,8 +305,10 @@ public class LightPadWindow : Widgets.CompositedWindow {
 
     private void update_grid (Gee.ArrayList<Gee.HashMap<string, string>> apps) {
         int item_iter = (int)(this.pages.active * this.grid_y * this.grid_x);
-        /* Fix for bug 001 with message:
-        arraylist.c:1181:gee_array_list_real_get: assertion failed: (index >= 0) */
+        /* 
+         * Fix for bug 001 with message:
+         * arraylist.c:1181:gee_array_list_real_get: assertion failed: (index >= 0) 
+         */
         if (item_iter < 0) {
             item_iter = 0;
         }
@@ -320,18 +321,30 @@ public class LightPadWindow : Widgets.CompositedWindow {
                 if (item_iter < apps.size) {
                     var current_item = apps.get (item_iter);
 
+                    // Get the icon, use a default one if it doesn't exist
+                    Gdk.Pixbuf? icon = null;
+                    if (icons.has_key(current_item["command"])) {
+                        icon = icons[current_item["command"]];
+                    } else if (icons.has_key("application-default-icon")) {
+                        icon = icons["application-default-icon"];
+                    }
+
+                    // Ensure that texts are not null
+                    string name = current_item["name"] ?? "";
+                    string description = current_item["description"] ?? "";
+
                     // Update app
                     if (current_item["description"] == null || current_item["description"] == "") {
                         item.change_app (
-                            icons[current_item["command"]],
-                            current_item["name"],
-                            current_item["name"]
+                            icon,
+                            name,
+                            name
                         );
                     } else {
                         item.change_app (
-                            icons[current_item["command"]],
-                            current_item["name"],
-                            current_item["name"] + ":\n" + current_item["description"]
+                            icon,
+                            name,
+                            name + ":\n" + description
                         );
                     }
                     item.visible = true;
@@ -459,7 +472,10 @@ public class LightPadWindow : Widgets.CompositedWindow {
                 this.destroy ();
                 return true;
             case "space":
-                if (event.state == Gdk.ModifierType.CONTROL_MASK) {
+                if (
+                    (event.state == Gdk.ModifierType.CONTROL_MASK) ||
+                    (event.state == Gdk.ModifierType.SUPER_MASK)
+                ) {
                     this.destroy ();
                     return true;
                 }
@@ -527,7 +543,6 @@ public class LightPadWindow : Widgets.CompositedWindow {
             this.page_right ();
         }
         // If the direction is GDK_SCROLL_SMOOTH skip it
-
         return false;
     }
 
@@ -555,7 +570,6 @@ private bool setup_config_dir (string home) {
 }
 
 static int main (string[] args) {
-
     /*
      * This is a workaround for libgnome-menu-3.0, for now doesn't have support to include .desktop entries
      * with the property OnlyShowIn set up. If the value of your XDG_CURRENT_DESKTOP environment variable 
@@ -571,11 +585,10 @@ static int main (string[] args) {
     }
 
     Gtk.init (ref args);
-    Gtk.Application app = new Gtk.Application ("org.libredeb.lightpad", GLib.ApplicationFlags.FLAGS_NONE);
+    Gtk.Application app = new Gtk.Application ("io.github.libredeb.lightpad", GLib.ApplicationFlags.FLAGS_NONE);
     app.add_main_option_entries (Resources.LIGHTPAD_OPTIONS);
 
-    // CSS Style Provider
-    // Path where takes the CSS file
+    // CSS Styles, path where takes the CSS file
     string css_file = Config.PACKAGE_SHAREDIR +
         "/" + Config.PROJECT_NAME +
         "/" + "application.css";
