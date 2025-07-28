@@ -324,13 +324,13 @@ public class LightPadWindow : Widgets.CompositedWindow {
                     // Update app
                     if (current_item["description"] == null || current_item["description"] == "") {
                         item.change_app (
-                            icons[current_item["command"]],
+                            icons.has_key (current_item["command"]) ? icons[current_item["command"]] : null,
                             current_item["name"],
                             current_item["name"]
                         );
                     } else {
                         item.change_app (
-                            icons[current_item["command"]],
+                            icons.has_key (current_item["command"]) ? icons[current_item["command"]] : null,
                             current_item["name"],
                             current_item["name"] + ":\n" + current_item["description"]
                         );

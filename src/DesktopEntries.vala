@@ -194,7 +194,7 @@ namespace LightPad.Backend {
                         var app_icon = app.get_icon ().to_string ();
                         var icon_prefix = Resources.PIXMAPS_DIR;
                         string icon_cached_path = cache_path + "/" + icon_theme_name + "_"
-                                                + app_icon.replace ("/", "_") + ".png";
+                                                + app_icon.replace ("/", "_") + "_" + icon_size.to_string () + ".png";
 
                         try {
                             // Trying to load from cache
