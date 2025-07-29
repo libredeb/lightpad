@@ -98,7 +98,7 @@ namespace LightPad.Frontend {
             // Connect focus-in and focus-out signals to manage hint state
             this.entry.focus_in_event.connect ((event) => {
                 if (this.is_hinted) {
-                    this.entry.set_text(""); // Clear the hint text when focused
+                    this.entry.set_text (""); // Clear the hint text when focused
                     this.is_hinted = false;
                 }
                 return false;
