@@ -26,7 +26,7 @@ sudo apt-get install io.github.libredeb.lightpad
       ```
    * For Fedora:
       ```sh
-      sudo dnf install meson ninja-build libgee-devel gnome-menus-devel cdbs gettext vala libvala-devel glib-devel gtk3-devel python3 python3-wheel python3-setuptools gnome-menus
+      sudo dnf install meson ninja-build libgee-devel gnome-menus-devel cdbs gettext vala libvala-devel glib2-devel gtk3-devel python3 python3-wheel python3-setuptools gnome-menus
       ```
    * For Arch Linux:
       ```sh
@@ -166,6 +166,7 @@ ninja io.github.libredeb.lightpad-update-po
 * New intermediate icon cache that improves LightPad startup speed by more than 4 times.
 * Translations into Spanish, German, French and Portuguese.
 * Fixed [issue #8](https://github.com/libredeb/lightpad/issues/8), Delay on startup
+* Fixed [issue #68](https://github.com/libredeb/lightpad/issues/68), Keyboard shortcuts to not work in search bar
 * Updated application id to match with binary name.
 * Some small performance improvements.
 
