@@ -1,3 +1,12 @@
+com.github.libredeb.lightpad (0.1.0-1) noble; urgency=high
+ 
+  * New intermediate icon cache that improves LightPad startup speed by more than 4 times.
+  * Translations into Spanish, German, French and Portuguese.
+  * Some resolved issues (#8, #68)
+  * Some small performance improvements.
+ 
+ -- Juan Pablo Lozano <libredeb@gmail.com>  Sun, 20 Jul 2025 23:57:03 -0300
+
 com.github.libredeb.lightpad (0.0.10-1) noble; urgency=high
  
   * This release brings significant improvements

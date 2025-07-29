@@ -45,12 +45,12 @@ Written in GTK+ 3.0. It is also Wayland compatible.
 %{meson_install}
 
 %check
-file %{_bindir}/com.github.libredeb.lightpad
+file %{_bindir}/io.github.libredeb.lightpad
 
 %files
 %defattr(-,root,root)
-%{_bindir}/com.github.libredeb.lightpad
-%{_datadir}/applications/com.github.libredeb.lightpad.desktop
+%{_bindir}/io.github.libredeb.lightpad
+%{_datadir}/applications/io.github.libredeb.lightpad.desktop
 %{_datadir}/icons/hicolor/128x128/apps/lightpad.svg
 %{_datadir}/icons/hicolor/24x24/apps/lightpad.svg
 %{_datadir}/icons/hicolor/32x32/apps/lightpad.svg
@@ -58,10 +58,19 @@ file %{_bindir}/com.github.libredeb.lightpad
 %{_datadir}/icons/hicolor/64x64/apps/lightpad.svg
 %{_datadir}/icons/hicolor/scalable/apps/application-default-icon.svg
 %{_datadir}/lightpad/application.css
-%{_datadir}/metainfo/com.github.libredeb.lightpad.appdata.xml
-%{_datadir}/man/man1/com.github.libredeb.lightpad.1.gz
+%{_datadir}/metainfo/io.github.libredeb.lightpad.metainfo.xml
+%{_datadir}/man/man1/io.github.libredeb.lightpad.1.gz
+%{_datadir}/locale/es/LC_MESSAGES/io.github.libredeb.lightpad.mo
+%{_datadir}/locale/de/LC_MESSAGES/io.github.libredeb.lightpad.mo
+%{_datadir}/locale/fr/LC_MESSAGES/io.github.libredeb.lightpad.mo
+%{_datadir}/locale/pt/LC_MESSAGES/io.github.libredeb.lightpad.mo
 
 %changelog
+* Sun Jul  20 2025 Juan Pablo Lozano <libredeb@gmail.com> - 0.1.0
+- New intermediate icon cache that improves LightPad startup speed by more than 4 times.
+- Translations into Spanish, German, French and Portuguese.
+- Some resolved issues (#8, #68)
+- Some small performance improvements.
 * Sat May  24 2025 Juan Pablo Lozano <libredeb@gmail.com> - 0.0.10
 - This release brings significant improvements
 - Some resolved issues (#51, #55, #57)

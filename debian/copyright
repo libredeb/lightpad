@@ -2,7 +2,7 @@ Format: https://dep.debian.net/deps/dep5
 Upstream-Name: lightpad
 Source: https://github.com/libredeb/lightpad
 
-Files: src/* data/* debian/*
+Files: src/* data/* po/* debian/*
 Copyright: 2020 Juan Lozano <libredeb@gmail.com>
 License: GPL-3.0+
 
