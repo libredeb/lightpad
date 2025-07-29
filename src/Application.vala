@@ -323,9 +323,9 @@ public class LightPadWindow : Widgets.CompositedWindow {
 
                     // Get the icon, use a default one if it doesn't exist
                     Gdk.Pixbuf? icon = null;
-                    if (icons.has_key(current_item["command"])) {
+                    if (icons.has_key (current_item["command"])) {
                         icon = icons[current_item["command"]];
-                    } else if (icons.has_key("application-default-icon")) {
+                    } else if (icons.has_key ("application-default-icon")) {
                         icon = icons["application-default-icon"];
                     }
 
@@ -501,8 +501,12 @@ public class LightPadWindow : Widgets.CompositedWindow {
                 }
                 return true;
             case "BackSpace":
-                if (this.searchbar.text.length > 0) {
-                    this.searchbar.text = this.searchbar.text.slice (0, (int) this.searchbar.text.length - 1);
+                if (this.searchbar.entry.has_focus) {
+                    this.searchbar.text = "";
+                } else {
+                    if (this.searchbar.text.length > 0) {
+                        this.searchbar.text = this.searchbar.text.slice (0, (int) this.searchbar.text.length - 1);
+                    }
                 }
                 return true;
             case "Left":
@@ -523,7 +527,14 @@ public class LightPadWindow : Widgets.CompositedWindow {
             case "Up":
                 break; // used to stop refreshing the grid on arrow key press
             default:
-                this.searchbar.text = this.searchbar.text + event.str;
+                if (event.str != null && event.str.length > 0 &&
+                    (event.state & (Gdk.ModifierType.CONTROL_MASK |
+                                    Gdk.ModifierType.MOD1_MASK |
+                                    Gdk.ModifierType.SUPER_MASK)
+                    ) == 0
+                ) {
+                    this.searchbar.text = this.searchbar.text + event.str;
+                }
                 break;
         }
 

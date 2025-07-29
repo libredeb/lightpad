@@ -70,6 +70,7 @@ namespace LightPad.Frontend {
             this.entry.set_text (this.buffer.text);
             this.entry.set_has_frame (false);
             this.entry.set_alignment (0.0f);
+            // We will manage the placeholder text through direct text manipulation and CSS
             this.entry.set_placeholder_text (this.hint_string);
             this.entry.set_hexpand (true);
             this.entry.set_halign (Gtk.Align.START);
@@ -93,11 +94,23 @@ namespace LightPad.Frontend {
             this.realize.connect (() => {
                 this.hint (); // hint it
             });
+
+            // Connect focus-in and focus-out signals to manage hint state
+            this.entry.focus_in_event.connect ((event) => {
+                if (this.is_hinted) {
+                    this.entry.set_text(""); // Clear the hint text when focused
+                    this.is_hinted = false;
+                }
+                return false;
+            });
         }
 
         public void hint () {
             this.buffer.text = "";
             this.entry.set_text (this.hint_string);
+            this.entry.get_style_context ().remove_class ("search_normal");
+            this.entry.get_style_context ().add_class ("search_greyout");
+            this.is_hinted = true;
             this.clear_icon.visible = false;
         }
 
