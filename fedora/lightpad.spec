@@ -1,5 +1,5 @@
 Name:        	lightpad   
-Version:        0.0.10
+Version:        0.1.0
 Release:        1%{?dist}
 Summary:        LightPad Launcher
 License:        GPL
@@ -12,6 +12,7 @@ BuildRoot:	    %{_tmppath}/%{name}-%{version}-build
 BuildRequires:  meson
 BuildRequires:  ninja-build
 BuildRequires:  cdbs
+BuildRequires:  gettext
 BuildRequires:  vala >= 0.56.0
 BuildRequires:  libvala-devel >= 0.56.0
 BuildRequires:  libgee-devel >= 0.18.0
