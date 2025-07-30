@@ -1,7 +1,7 @@
 [Desktop Entry]
 Name=LightPad
 GenericName=Application Launcher
-Comment=Lightweight, look nice and powerful application launcher
+Comment=Lightweight, beautiful, and powerful application launcher
 Categories=GNOME;GTK;Utility;
 Exec=io.github.libredeb.lightpad
 Icon=lightpad
