@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: io.github.libredeb.lightpad\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-07-28 23:29-0300\n"
+"POT-Creation-Date: 2025-07-30 23:19-0300\n"
 "PO-Revision-Date: 2025-07-19 18:04-0300\n"
 "Last-Translator: Juan Pablo Lozano\n"
 "Language-Team: none\n"
@@ -31,8 +31,8 @@ msgid "Application Launcher"
 msgstr "Lanzador de Aplicaciones"
 
 #: data/io.github.libredeb.lightpad.desktop.in:4
-msgid "Lightweight, look nice and powerful application launcher"
-msgstr "Lanzador de aplicaciones ligero, atractivo y potente"
+msgid "Lightweight, beautiful, and powerful application launcher"
+msgstr "Lanzador de aplicaciones ligero, bonito y potente"
 
 #: data/io.github.libredeb.lightpad.metainfo.xml.in:14
 msgid "Lightweight Application Launcher"
@@ -40,10 +40,10 @@ msgstr "Lanzador de Aplicaciones Ligero"
 
 #: data/io.github.libredeb.lightpad.metainfo.xml.in:16
 msgid ""
-"A lightweight, simple, look nice and powerful application launcher for GNU/"
+"A lightweight, simple, beautiful and powerful application launcher for GNU/"
 "Linux."
 msgstr ""
-"Un lanzador de aplicaciones para GNU/Linux ligero, sencillo, atractivo y "
+"Un lanzador de aplicaciones para GNU/Linux ligero, sencillo, bonito y "
 "potente."
 
 #: data/io.github.libredeb.lightpad.metainfo.xml.in:17

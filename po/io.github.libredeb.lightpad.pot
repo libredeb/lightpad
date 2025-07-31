@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: io.github.libredeb.lightpad\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-07-28 23:29-0300\n"
+"POT-Creation-Date: 2025-07-30 23:19-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -31,7 +31,7 @@ msgid "Application Launcher"
 msgstr ""
 
 #: data/io.github.libredeb.lightpad.desktop.in:4
-msgid "Lightweight, look nice and powerful application launcher"
+msgid "Lightweight, beautiful, and powerful application launcher"
 msgstr ""
 
 #: data/io.github.libredeb.lightpad.metainfo.xml.in:14
@@ -40,7 +40,7 @@ msgstr ""
 
 #: data/io.github.libredeb.lightpad.metainfo.xml.in:16
 msgid ""
-"A lightweight, simple, look nice and powerful application launcher for GNU/"
+"A lightweight, simple, beautiful and powerful application launcher for GNU/"
 "Linux."
 msgstr ""
 
