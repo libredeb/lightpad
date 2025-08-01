@@ -30,7 +30,7 @@ public class LightPadWindow : Widgets.CompositedWindow {
 
     private GLib.Thread<int> thread;
     
-    // Variables para monitorear el proceso lanzado
+    // Variables to monitor the launched process
     private uint child_watch_id = 0;
     private bool is_monitoring_process = false;
 
@@ -248,16 +248,17 @@ public class LightPadWindow : Widgets.CompositedWindow {
                             app_info.launch (null, context);
                         }
                         
-                        // Ocultar la ventana en lugar de cerrarla
+                        // Hide the window instead of closing it
                         this.hide ();
                         
-                        // Intentar obtener el PID del proceso lanzado
-                        // Usar un enfoque más robusto para detectar cuando la aplicación se cierra
+                        /*
+                         * Attempt to obtain the PID of the launched process
+                         * Use a more robust approach to detect when the application closes
+                         */
                         string command = this.filtered.get (app_index)["command"];
-                        string app_name = this.filtered.get (app_index)["name"];
                         
-                        // Iniciar monitoreo de la aplicación
-                        this.start_application_monitoring (command, app_name);
+                        // Start application monitoring
+                        this.start_application_monitoring (command);
                         
                     } catch (GLib.Error e) {
                         warning ("Error! Load application: " + e.message);
@@ -515,10 +516,10 @@ public class LightPadWindow : Widgets.CompositedWindow {
         Gtk.main_quit ();
     }
 
-    // Método más robusto para monitorear aplicaciones
-    private void start_application_monitoring (string command, string app_name) {
+    // Method for monitoring applications
+    private void start_application_monitoring (string command) {
         if (this.is_monitoring_process) {
-            // Si ya estamos monitoreando un proceso, detener el monitoreo anterior
+            // If we are already monitoring a process, stop the previous monitoring.
             if (this.child_watch_id != 0) {
                 GLib.Source.remove (this.child_watch_id);
                 this.child_watch_id = 0;
@@ -527,14 +528,14 @@ public class LightPadWindow : Widgets.CompositedWindow {
         
         this.is_monitoring_process = true;
         
-        // Iniciar un hilo que monitoree periódicamente si la aplicación sigue ejecutándose
+        // Start a thread that periodically monitors whether the application is still running.
         this.child_watch_id = GLib.Timeout.add_seconds (2, () => {
             if (!this.is_monitoring_process) {
                 return false;
             }
             
             try {
-                // Buscar procesos que coincidan con el comando o nombre de la aplicación
+                // Search for processes that match the command
                 string[] spawn_args = {"pgrep", "-f", command};
                 string output;
                 int exit_status;
@@ -542,24 +543,24 @@ public class LightPadWindow : Widgets.CompositedWindow {
                 GLib.Process.spawn_sync (null, spawn_args, null, 
                     GLib.SpawnFlags.SEARCH_PATH, null, out output, null, out exit_status);
                 
-                // Si no encontramos el proceso, la aplicación se ha cerrado
+                // If we cannot find the process, the application has been closed.
                 if (exit_status != 0 || output == null || output.strip() == "") {
                     this.is_monitoring_process = false;
                     this.child_watch_id = 0;
                     
-                    // Mostrar la ventana nuevamente
+                    // Show the window again
                     GLib.Idle.add (() => {
                         this.show_all ();
                         return false;
                     });
                     
-                    return false; // Detener el monitoreo
+                    return false; // Stop monitoring
                 }
                 
-                return true; // Continuar monitoreando
+                return true; // Continue monitoring
             } catch (GLib.Error e) {
-                warning ("Error monitoreando aplicación: " + e.message);
-                return true; // Continuar intentando
+                warning ("Error while monitoring application: " + e.message);
+                return true; // Continue monitoring
             }
         });
     }
