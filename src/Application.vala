@@ -501,7 +501,7 @@ public class LightPadWindow : Widgets.CompositedWindow {
 
     // Override destroy for fade out and stuff
     public new void destroy () {
-        // Detener el monitoreo de procesos si está activo
+        // Stop process monitoring if it is active
         if (this.is_monitoring_process) {
             this.is_monitoring_process = false;
             if (this.child_watch_id != 0) {
