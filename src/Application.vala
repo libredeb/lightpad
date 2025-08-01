@@ -29,6 +29,10 @@ public class LightPadWindow : Widgets.CompositedWindow {
     private int grid_y;
 
     private GLib.Thread<int> thread;
+    
+    // Variables para monitorear el proceso lanzado
+    private uint child_watch_id = 0;
+    private bool is_monitoring_process = false;
 
     public LightPadWindow () {
         const int ICON_SIZE = 182;
@@ -230,23 +234,31 @@ public class LightPadWindow : Widgets.CompositedWindow {
                          * The way to open apps in terminal is with the following code:
                          */
                         if (this.filtered.get (app_index)["terminal"] == "true") {
-                            GLib.AppInfo.create_from_commandline (
+                            var app_info = GLib.AppInfo.create_from_commandline (
                                 this.filtered.get (app_index)["command"],
                                 null,
                                 GLib.AppInfoCreateFlags.NEEDS_TERMINAL
-                            ).launch (null, null);
+                            );
+                            app_info.launch (null, null);
                         } else {
                             var context = new AppLaunchContext ();
-                            new GLib.DesktopAppInfo.from_filename (
+                            var app_info = new GLib.DesktopAppInfo.from_filename (
                                 this.filtered.get (app_index)["desktop_file"]
-                            ).launch (null, context);
+                            );
+                            app_info.launch (null, context);
                         }
+                        
+                        // Ocultar la ventana en lugar de cerrarla
                         this.hide ();
-                        GLib.Timeout.add_seconds (1, () => {
-                            // allow some time before quitting to allow dbusactivatable apps to be launched
-                            this.destroy ();
-                            return GLib.Source.REMOVE;
-                        });
+                        
+                        // Intentar obtener el PID del proceso lanzado
+                        // Usar un enfoque más robusto para detectar cuando la aplicación se cierra
+                        string command = this.filtered.get (app_index)["command"];
+                        string app_name = this.filtered.get (app_index)["name"];
+                        
+                        // Iniciar monitoreo de la aplicación
+                        this.start_application_monitoring (command, app_name);
+                        
                     } catch (GLib.Error e) {
                         warning ("Error! Load application: " + e.message);
                     }
@@ -490,10 +502,67 @@ public class LightPadWindow : Widgets.CompositedWindow {
 
     // Override destroy for fade out and stuff
     public new void destroy () {
+        // Detener el monitoreo de procesos si está activo
+        if (this.is_monitoring_process) {
+            this.is_monitoring_process = false;
+            if (this.child_watch_id != 0) {
+                GLib.Source.remove (this.child_watch_id);
+                this.child_watch_id = 0;
+            }
+        }
+        
         base.destroy ();
         Gtk.main_quit ();
     }
 
+    // Método más robusto para monitorear aplicaciones
+    private void start_application_monitoring (string command, string app_name) {
+        if (this.is_monitoring_process) {
+            // Si ya estamos monitoreando un proceso, detener el monitoreo anterior
+            if (this.child_watch_id != 0) {
+                GLib.Source.remove (this.child_watch_id);
+                this.child_watch_id = 0;
+            }
+        }
+        
+        this.is_monitoring_process = true;
+        
+        // Iniciar un hilo que monitoree periódicamente si la aplicación sigue ejecutándose
+        this.child_watch_id = GLib.Timeout.add_seconds (2, () => {
+            if (!this.is_monitoring_process) {
+                return false;
+            }
+            
+            try {
+                // Buscar procesos que coincidan con el comando o nombre de la aplicación
+                string[] spawn_args = {"pgrep", "-f", command};
+                string output;
+                int exit_status;
+                
+                GLib.Process.spawn_sync (null, spawn_args, null, 
+                    GLib.SpawnFlags.SEARCH_PATH, null, out output, null, out exit_status);
+                
+                // Si no encontramos el proceso, la aplicación se ha cerrado
+                if (exit_status != 0 || output == null || output.strip() == "") {
+                    this.is_monitoring_process = false;
+                    this.child_watch_id = 0;
+                    
+                    // Mostrar la ventana nuevamente
+                    GLib.Idle.add (() => {
+                        this.show_all ();
+                        return false;
+                    });
+                    
+                    return false; // Detener el monitoreo
+                }
+                
+                return true; // Continuar monitoreando
+            } catch (GLib.Error e) {
+                warning ("Error monitoreando aplicación: " + e.message);
+                return true; // Continuar intentando
+            }
+        });
+    }
 }
 
 static int main (string[] args) {
