@@ -52,7 +52,8 @@ public class LightPadWindow : Widgets.CompositedWindow {
             monitor_dimensions.height,
             user_home + Resources.CONFIG_FILE
         );
-        // For compatibility, maybe add FileConfig to LightPadWindow someday
+
+        // For compatibility
         this.icon_size = config.item_icon_size;
         this.font_size = config.item_font_size;
         this.item_box_width = config.item_box_width;
