@@ -117,7 +117,7 @@ public class LightPadWindow : Widgets.CompositedWindow {
 
         // Find number of pages and populate
         // First order the apps alphabetically
-        this.apps.sort ((a, b) => GLib.strcmp (a["name"].down (), b["name"].down ()));
+        this.apps.sort ((a, b) => GLib.strcmp (a["id"], b["id"]));
         this.update_pages (this.apps);
         if (this.total_pages > 1) {
             pages_wrapper.pack_start (this.pages, true, false, 0);
