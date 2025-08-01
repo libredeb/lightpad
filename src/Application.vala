@@ -123,7 +123,6 @@ public class LightPadWindow : Widgets.CompositedWindow {
             pages_wrapper.pack_start (this.pages, true, false, 0);
             for (int p = 1; p <= this.total_pages; p++) {
                 // Add the number of pages as text
-                //this.pages.append (p.to_string ());
                 this.pages.append ("⬤");
             }
         }
@@ -133,17 +132,6 @@ public class LightPadWindow : Widgets.CompositedWindow {
         this.add_events (Gdk.EventMask.SCROLL_MASK);
 
         this.draw.connect (this.draw_background);
-        // close Lightpad when the window loses focus
-        this.focus_out_event.connect ( () => {
-            this.hide ();
-            GLib.Timeout.add_seconds (1, () => {
-                this.destroy ();
-                return GLib.Source.REMOVE;
-            });
-            return true;
-        } );
-        // close Lightpad when we clic on empty area
-        this.button_release_event.connect ( () => { this.destroy (); return false; });
 
         thread = new GLib.Thread<int> ("JoystickThread", () => {
             if (SDL.init (SDL.InitFlag.JOYSTICK) != 0) {

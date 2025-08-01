@@ -46,7 +46,7 @@
             // Icon
             this.icon = new_icon;
             if (this.icon != null) {
-                this.prominent = LightPad.Frontend.Color(1.0, 1.0, 1.0, 1.0);
+                this.prominent = LightPad.Frontend.Color(137.0/255.0, 118.0/255.0, 75.0/255.0, 1.0);
             } else {
                 this.prominent = LightPad.Frontend.Color(0.0, 0.0, 0.0, 1.0);
             }
@@ -135,7 +135,7 @@
             }
 
             if (this.has_focus) {
-                double dark = 0.45;
+                double dark = 0.50;
                 var gradient = new Cairo.Pattern.rgba (
                     this.prominent.r * dark, this.prominent.g * dark, this.prominent.b * dark, 1.0
                 );
