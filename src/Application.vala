@@ -29,7 +29,7 @@ public class LightPadWindow : Widgets.CompositedWindow {
     private int grid_y;
 
     private GLib.Thread<int> thread;
-    
+
     // Variables to monitor the launched process
     private uint child_watch_id = 0;
     private bool is_monitoring_process = false;
@@ -234,32 +234,30 @@ public class LightPadWindow : Widgets.CompositedWindow {
                          * The way to open apps in terminal is with the following code:
                          */
                         if (this.filtered.get (app_index)["terminal"] == "true") {
-                            var app_info = GLib.AppInfo.create_from_commandline (
+                            GLib.AppInfo.create_from_commandline (
                                 this.filtered.get (app_index)["command"],
                                 null,
                                 GLib.AppInfoCreateFlags.NEEDS_TERMINAL
-                            );
-                            app_info.launch (null, null);
+                            ).launch (null, null);
                         } else {
                             var context = new AppLaunchContext ();
-                            var app_info = new GLib.DesktopAppInfo.from_filename (
+                            new GLib.DesktopAppInfo.from_filename (
                                 this.filtered.get (app_index)["desktop_file"]
-                            );
-                            app_info.launch (null, context);
+                            ).launch (null, context);
                         }
-                        
+
                         // Hide the window instead of closing it
                         this.hide ();
-                        
+
                         /*
                          * Attempt to obtain the PID of the launched process
                          * Use a more robust approach to detect when the application closes
                          */
                         string command = this.filtered.get (app_index)["command"];
-                        
+
                         // Start application monitoring
                         this.start_application_monitoring (command);
-                        
+
                     } catch (GLib.Error e) {
                         warning ("Error! Load application: " + e.message);
                     }
@@ -290,9 +288,9 @@ public class LightPadWindow : Widgets.CompositedWindow {
 
                     // Get the icon, use a default one if it doesn't exist
                     Gdk.Pixbuf? icon = null;
-                    if (icons.has_key(current_item["command"])) {
+                    if (icons.has_key (current_item["command"])) {
                         icon = icons[current_item["command"]];
-                    } else if (icons.has_key("application-default-icon")) {
+                    } else if (icons.has_key ("application-default-icon")) {
                         icon = icons["application-default-icon"];
                     }
 
@@ -511,7 +509,7 @@ public class LightPadWindow : Widgets.CompositedWindow {
                 this.child_watch_id = 0;
             }
         }
-        
+
         base.destroy ();
         Gtk.main_quit ();
     }
@@ -525,38 +523,38 @@ public class LightPadWindow : Widgets.CompositedWindow {
                 this.child_watch_id = 0;
             }
         }
-        
+
         this.is_monitoring_process = true;
-        
+
         // Start a thread that periodically monitors whether the application is still running.
         this.child_watch_id = GLib.Timeout.add_seconds (2, () => {
             if (!this.is_monitoring_process) {
                 return false;
             }
-            
+
             try {
                 // Search for processes that match the command
                 string[] spawn_args = {"pgrep", "-f", command};
                 string output;
                 int exit_status;
-                
-                GLib.Process.spawn_sync (null, spawn_args, null, 
+
+                GLib.Process.spawn_sync (null, spawn_args, null,
                     GLib.SpawnFlags.SEARCH_PATH, null, out output, null, out exit_status);
-                
+
                 // If we cannot find the process, the application has been closed.
-                if (exit_status != 0 || output == null || output.strip() == "") {
+                if (exit_status != 0 || output == null || output.strip () == "") {
                     this.is_monitoring_process = false;
                     this.child_watch_id = 0;
-                    
+
                     // Show the window again
                     GLib.Idle.add (() => {
                         this.show_all ();
                         return false;
                     });
-                    
+
                     return false; // Stop monitoring
                 }
-                
+
                 return true; // Continue monitoring
             } catch (GLib.Error e) {
                 warning ("Error while monitoring application: " + e.message);

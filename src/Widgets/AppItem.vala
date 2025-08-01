@@ -46,9 +46,9 @@
             // Icon
             this.icon = new_icon;
             if (this.icon != null) {
-                this.prominent = LightPad.Frontend.Color(137.0/255.0, 118.0/255.0, 75.0/255.0, 1.0);
+                this.prominent = LightPad.Frontend.Color (137.0 / 255.0, 118.0 / 255.0, 75.0 / 255.0, 1.0);
             } else {
-                this.prominent = LightPad.Frontend.Color(0.0, 0.0, 0.0, 1.0);
+                this.prominent = LightPad.Frontend.Color (0.0, 0.0, 0.0, 1.0);
             }
 
             // Label
@@ -103,7 +103,9 @@
             Cairo.TextExtents extents;
             context.select_font_face ("Sans", Cairo.FontSlant.NORMAL, Cairo.FontWeight.NORMAL);
             context.set_font_size (this.font_size);
-            LightPad.Frontend.Utilities.truncate_text (context, size, 10, this.label ?? "", out this.label, out extents);
+            LightPad.Frontend.Utilities.truncate_text (
+                context, size, 10, this.label ?? "", out this.label, out extents
+            );
 
             double text_x_center = size.width / 2 - extents.width / 2;
             double text_y_base = size.height - 10; // 10px desde el borde inferior

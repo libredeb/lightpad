@@ -21,8 +21,8 @@ namespace LightPad.Backend {
             Gee.HashSet<string>? allowed = null;
             if (included_categories != null) {
                 allowed = new Gee.HashSet<string> ();
-                foreach (var cat in included_categories.split(",")) {
-                    allowed.add(cat.strip().down());
+                foreach (var cat in included_categories.split (",")) {
+                    allowed.add (cat.strip ().down ());
                 }
             }
             var iter = root.iter ();
@@ -30,8 +30,8 @@ namespace LightPad.Backend {
             while (item != GMenu.TreeItemType.INVALID) {
                 if (item == GMenu.TreeItemType.DIRECTORY) {
                     var category = (GMenu.TreeDirectory) iter.get_directory ();
-                    var name = category.get_name().down();
-                    if (allowed == null || allowed.contains(name)) {
+                    var name = category.get_name ().down ();
+                    if (allowed == null || allowed.contains (name)) {
                         main_directory_entries.add (category);
                     }
                 }
