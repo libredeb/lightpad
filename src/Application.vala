@@ -30,6 +30,10 @@ public class LightPadWindow : Widgets.CompositedWindow {
 
     private GLib.Thread<int> thread;
 
+    // Variables to monitor the launched process
+    private uint child_watch_id = 0;
+    private bool is_monitoring_process = false;
+
     public LightPadWindow () {
         const int ICON_SIZE = 182;
         const int GRID_SPACING = 34;
@@ -117,13 +121,12 @@ public class LightPadWindow : Widgets.CompositedWindow {
 
         // Find number of pages and populate
         // First order the apps alphabetically
-        this.apps.sort ((a, b) => GLib.strcmp (a["name"].down (), b["name"].down ()));
+        this.apps.sort ((a, b) => GLib.strcmp (a["id"], b["id"]));
         this.update_pages (this.apps);
         if (this.total_pages > 1) {
             pages_wrapper.pack_start (this.pages, true, false, 0);
             for (int p = 1; p <= this.total_pages; p++) {
                 // Add the number of pages as text
-                //this.pages.append (p.to_string ());
                 this.pages.append ("⬤");
             }
         }
@@ -133,17 +136,6 @@ public class LightPadWindow : Widgets.CompositedWindow {
         this.add_events (Gdk.EventMask.SCROLL_MASK);
 
         this.draw.connect (this.draw_background);
-        // close Lightpad when the window loses focus
-        this.focus_out_event.connect ( () => {
-            this.hide ();
-            GLib.Timeout.add_seconds (1, () => {
-                this.destroy ();
-                return GLib.Source.REMOVE;
-            });
-            return true;
-        } );
-        // close Lightpad when we clic on empty area
-        this.button_release_event.connect ( () => { this.destroy (); return false; });
 
         thread = new GLib.Thread<int> ("JoystickThread", () => {
             if (SDL.init (SDL.InitFlag.JOYSTICK) != 0) {
@@ -253,12 +245,19 @@ public class LightPadWindow : Widgets.CompositedWindow {
                                 this.filtered.get (app_index)["desktop_file"]
                             ).launch (null, context);
                         }
+
+                        // Hide the window instead of closing it
                         this.hide ();
-                        GLib.Timeout.add_seconds (1, () => {
-                            // allow some time before quitting to allow dbusactivatable apps to be launched
-                            this.destroy ();
-                            return GLib.Source.REMOVE;
-                        });
+
+                        /*
+                         * Attempt to obtain the PID of the launched process
+                         * Use a more robust approach to detect when the application closes
+                         */
+                        string command = this.filtered.get (app_index)["command"];
+
+                        // Start application monitoring
+                        this.start_application_monitoring (command);
+
                     } catch (GLib.Error e) {
                         warning ("Error! Load application: " + e.message);
                     }
@@ -289,9 +288,9 @@ public class LightPadWindow : Widgets.CompositedWindow {
 
                     // Get the icon, use a default one if it doesn't exist
                     Gdk.Pixbuf? icon = null;
-                    if (icons.has_key(current_item["command"])) {
+                    if (icons.has_key (current_item["command"])) {
                         icon = icons[current_item["command"]];
-                    } else if (icons.has_key("application-default-icon")) {
+                    } else if (icons.has_key ("application-default-icon")) {
                         icon = icons["application-default-icon"];
                     }
 
@@ -502,10 +501,67 @@ public class LightPadWindow : Widgets.CompositedWindow {
 
     // Override destroy for fade out and stuff
     public new void destroy () {
+        // Stop process monitoring if it is active
+        if (this.is_monitoring_process) {
+            this.is_monitoring_process = false;
+            if (this.child_watch_id != 0) {
+                GLib.Source.remove (this.child_watch_id);
+                this.child_watch_id = 0;
+            }
+        }
+
         base.destroy ();
         Gtk.main_quit ();
     }
 
+    // Method for monitoring applications
+    private void start_application_monitoring (string command) {
+        if (this.is_monitoring_process) {
+            // If we are already monitoring a process, stop the previous monitoring.
+            if (this.child_watch_id != 0) {
+                GLib.Source.remove (this.child_watch_id);
+                this.child_watch_id = 0;
+            }
+        }
+
+        this.is_monitoring_process = true;
+
+        // Start a thread that periodically monitors whether the application is still running.
+        this.child_watch_id = GLib.Timeout.add_seconds (2, () => {
+            if (!this.is_monitoring_process) {
+                return false;
+            }
+
+            try {
+                // Search for processes that match the command
+                string[] spawn_args = {"pgrep", "-f", command};
+                string output;
+                int exit_status;
+
+                GLib.Process.spawn_sync (null, spawn_args, null,
+                    GLib.SpawnFlags.SEARCH_PATH, null, out output, null, out exit_status);
+
+                // If we cannot find the process, the application has been closed.
+                if (exit_status != 0 || output == null || output.strip () == "") {
+                    this.is_monitoring_process = false;
+                    this.child_watch_id = 0;
+
+                    // Show the window again
+                    GLib.Idle.add (() => {
+                        this.show_all ();
+                        return false;
+                    });
+
+                    return false; // Stop monitoring
+                }
+
+                return true; // Continue monitoring
+            } catch (GLib.Error e) {
+                warning ("Error while monitoring application: " + e.message);
+                return true; // Continue monitoring
+            }
+        });
+    }
 }
 
 static int main (string[] args) {
