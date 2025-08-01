@@ -140,14 +140,14 @@
                     this.prominent.r * dark, this.prominent.g * dark, this.prominent.b * dark, 1.0
                 );
                 context.set_source (gradient);
-                LightPad.Frontend.Utilities.draw_rounded_rectangle (context, 10, 0.5, size);
+                LightPad.Frontend.Utilities.draw_rounded_rectangle (context, 20, 0.5, size);
                 context.fill ();
             } else {
                 if (this.current_frame > 1) {
                     var gradient = new Cairo.Pattern.rgba (0.0, 0.0, 0.0, 0.0);
 
                     context.set_source (gradient);
-                    LightPad.Frontend.Utilities.draw_rounded_rectangle (context, 10, 0.5, size);
+                    LightPad.Frontend.Utilities.draw_rounded_rectangle (context, 20, 0.5, size);
                     context.fill ();
                 }
             }
