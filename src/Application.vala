@@ -6,6 +6,7 @@
 public class LightPadWindow : Widgets.CompositedWindow {
 
     public static string user_home = GLib.Environment.get_variable ("HOME");
+    public static string[] terminal_emulator = LightPadWindow.resolve_terminal_emulator ();
     public Gee.ArrayList<Gee.HashMap<string, string>> apps = new Gee.ArrayList<Gee.HashMap<string, string>> ();
     public Gee.HashMap<string, Gdk.Pixbuf> icons = new Gee.HashMap<string, Gdk.Pixbuf> ();
     public Gee.ArrayList<Gee.HashMap<string, string>> filtered = new Gee.ArrayList<Gee.HashMap<string, string>> ();
@@ -31,7 +32,7 @@ public class LightPadWindow : Widgets.CompositedWindow {
     private GLib.Thread<int> thread;
 
     // Variables to monitor the launched process
-    private uint child_watch_id = 0;
+    private GLib.Subprocess? monitored_subprocess = null;
     private bool is_monitoring_process = false;
 
     public LightPadWindow () {
@@ -216,51 +217,21 @@ public class LightPadWindow : Widgets.CompositedWindow {
                 item.button_press_event.connect ( () => { item.grab_focus (); return true; } );
                 item.enter_notify_event.connect ( () => { item.grab_focus (); return true; } );
                 item.button_release_event.connect ( () => {
-                    try {
-                        int child_index = this.children.index (item);
-                        int page_active = this.pages.active;
-                        /* Prevent indicators pages to get a negative one (-1)
-                           and fix with this the bug 003 where a negative result
-                           is obtained and that index does not exist */
-                        if (page_active < 0) {
-                            page_active = 0;
-                        }
-                        int app_index = (int) (child_index + (page_active * this.grid_y * this.grid_x));
-
-                        /* GLib implements open apps in terminal in this way:
-                         * https://github.com/GNOME/glib/blob/2.76.0/gio/gdesktopappinfo.c#L2685
-                         * There's a major change in last versions of glib (from version 2.76.0 upwards)
-                         * So, xterm dependency it's no longer needed.
-                         * The way to open apps in terminal is with the following code:
-                         */
-                        if (this.filtered.get (app_index)["terminal"] == "true") {
-                            GLib.AppInfo.create_from_commandline (
-                                this.filtered.get (app_index)["command"],
-                                null,
-                                GLib.AppInfoCreateFlags.NEEDS_TERMINAL
-                            ).launch (null, null);
-                        } else {
-                            var context = new AppLaunchContext ();
-                            new GLib.DesktopAppInfo.from_filename (
-                                this.filtered.get (app_index)["desktop_file"]
-                            ).launch (null, context);
-                        }
-
-                        // Hide the window instead of closing it
-                        this.hide ();
-
-                        /*
-                         * Attempt to obtain the PID of the launched process
-                         * Use a more robust approach to detect when the application closes
-                         */
-                        string command = this.filtered.get (app_index)["command"];
-
-                        // Start application monitoring
-                        this.start_application_monitoring (command);
-
-                    } catch (GLib.Error e) {
-                        warning ("Error! Load application: " + e.message);
+                    int child_index = this.children.index (item);
+                    int page_active = this.pages.active;
+                    /* Prevent indicators pages to get a negative one (-1)
+                        and fix with this the bug 003 where a negative result
+                        is obtained and that index does not exist */
+                    if (page_active < 0) {
+                        page_active = 0;
                     }
+                    int app_index = (int) (child_index + (page_active * this.grid_y * this.grid_x));
+
+                    // Hide the window instead of closing it
+                    this.hide ();
+
+                    // Launch application and start monitoring
+                    this.launch_and_monitor_application (app_index);
 
                     return true;
                 });
@@ -502,65 +473,126 @@ public class LightPadWindow : Widgets.CompositedWindow {
     // Override destroy for fade out and stuff
     public new void destroy () {
         // Stop process monitoring if it is active
-        if (this.is_monitoring_process) {
+        if (this.is_monitoring_process && this.monitored_subprocess != null) {
             this.is_monitoring_process = false;
-            if (this.child_watch_id != 0) {
-                GLib.Source.remove (this.child_watch_id);
-                this.child_watch_id = 0;
-            }
+            this.monitored_subprocess = null;
         }
 
         base.destroy ();
         Gtk.main_quit ();
     }
 
-    // Method for monitoring applications
-    private void start_application_monitoring (string command) {
-        if (this.is_monitoring_process) {
-            // If we are already monitoring a process, stop the previous monitoring.
-            if (this.child_watch_id != 0) {
-                GLib.Source.remove (this.child_watch_id);
-                this.child_watch_id = 0;
-            }
+    // Method to launch and monitor applications using GLib.Subprocess
+    private void launch_and_monitor_application (int app_index) {
+        if (this.is_monitoring_process && this.monitored_subprocess != null) {
+            // If we are already monitoring a process, stop the previous monitoring
+            this.is_monitoring_process = false;
+            this.monitored_subprocess = null;
         }
 
         this.is_monitoring_process = true;
 
-        // Start a thread that periodically monitors whether the application is still running.
-        this.child_watch_id = GLib.Timeout.add_seconds (2, () => {
-            if (!this.is_monitoring_process) {
-                return false;
+        try {
+            string command = this.filtered.get (app_index)["command"];
+            string[] args = {};
+
+            // Parse the command into arguments
+            GLib.Shell.parse_argv (command, out args);
+
+            // Create subprocess flags
+            GLib.SubprocessFlags flags = GLib.SubprocessFlags.STDIN_INHERIT |
+                                       GLib.SubprocessFlags.STDOUT_PIPE |
+                                       GLib.SubprocessFlags.STDERR_PIPE;
+
+            // Handle terminal applications
+            if (this.filtered.get (app_index)["terminal"] == "true") {
+                // For terminal applications, we need to use a terminal emulator
+                string[] terminal_args = {terminal_emulator[0], terminal_emulator[1], command};
+                this.monitored_subprocess = new GLib.Subprocess.newv (terminal_args, flags);
+            } else {
+                // For regular applications, launch directly
+                this.monitored_subprocess = new GLib.Subprocess.newv (args, flags);
             }
 
-            try {
-                // Search for processes that match the command
-                string[] spawn_args = {"pgrep", "-f", command};
-                string output;
-                int exit_status;
+            // Set up the callback for when the subprocess exits
+            this.monitored_subprocess.wait_async.begin (null, (obj, res) => {
+                try {
+                    this.monitored_subprocess.wait_async.end (res);
 
-                GLib.Process.spawn_sync (null, spawn_args, null,
-                    GLib.SpawnFlags.SEARCH_PATH, null, out output, null, out exit_status);
-
-                // If we cannot find the process, the application has been closed.
-                if (exit_status != 0 || output == null || output.strip () == "") {
+                    // Process has finished, show lightpad again
                     this.is_monitoring_process = false;
-                    this.child_watch_id = 0;
+                    this.monitored_subprocess = null;
 
-                    // Show the window again
                     GLib.Idle.add (() => {
                         this.show_all ();
                         return false;
                     });
+                } catch (GLib.Error e) {
+                    warning ("Error waiting for subprocess: " + e.message);
+                    // Show lightpad anyway in case of error
+                    this.is_monitoring_process = false;
+                    this.monitored_subprocess = null;
 
-                    return false; // Stop monitoring
+                    GLib.Idle.add (() => {
+                        this.show_all ();
+                        return false;
+                    });
                 }
+            });
 
-                return true; // Continue monitoring
-            } catch (GLib.Error e) {
-                warning ("Error while monitoring application: " + e.message);
-                return true; // Continue monitoring
+        } catch (GLib.Error e) {
+            warning ("Error launching application: " + e.message);
+            // Show lightpad if we couldn't launch the application
+            this.is_monitoring_process = false;
+            this.monitored_subprocess = null;
+
+            GLib.Idle.add (() => {
+                this.show_all ();
+                return false;
+            });
+        }
+    }
+
+    /*
+     * Resolves the terminal emulator available on the system.
+     * Runs once when the class is loaded.
+     * @return the name of the available terminal emulator and its flag to run terminal applications
+     */
+    private static string[] resolve_terminal_emulator () {
+        // Dictionary of emulators and their flags
+        var terminal_emulators = new GLib.HashTable<string, string> (GLib.str_hash, GLib.str_equal);
+        terminal_emulators["xdg-terminal-exec"] = "";
+        terminal_emulators["lxterminal"] = "-e";
+        terminal_emulators["kgx"] = "-e";
+        terminal_emulators["gnome-terminal"] = "--";
+        terminal_emulators["ptyxis"] = "-x";
+        terminal_emulators["mate-terminal"] = "-x";
+        terminal_emulators["xfce4-terminal"] = "-x";
+        terminal_emulators["tilix"] = "-e";
+        terminal_emulators["konsole"] = "-e";
+        terminal_emulators["nxterm"] = "-e";
+        terminal_emulators["color-xterm"] = "-e";
+        terminal_emulators["rxvt"] = "-e";
+        terminal_emulators["dtterm"] = "-e";
+
+        string? terminal_emulator_command = null;
+        string? terminal_flag = null;
+
+        // Search for the first available terminal emulator
+        foreach (var terminal_name in terminal_emulators.get_keys ()) {
+            if (GLib.Environment.find_program_in_path (terminal_name) != null) {
+                terminal_emulator_command = terminal_name;
+                terminal_flag = terminal_emulators[terminal_name];
+                break;
             }
-        });
+        }
+
+        if (terminal_emulator_command == null) {
+            warning ("No terminal emulator found, trying xterm instead");
+            return new string[] { "xterm", "-e" };
+        }
+
+        return new string[] { terminal_emulator_command, terminal_flag };
     }
 }
 
