@@ -16,5 +16,5 @@ namespace Resources {
      public const string LIGHTPAD_EXIT_ID = ".lightpad-exit";
      public const string LIGHTPAD_EXIT_NAME = "Exit LightPad";
      public const string LIGHTPAD_EXIT_DESC = "Exit LightPad and return to the desktop";
-     public const string LIGHTPAD_EXIT_CMD = "bash -c 'sleep 5; pkill -f com.github.libredeb.lightpad'";
+     public const string LIGHTPAD_EXIT_CMD = "bash -c 'sleep 5 && pkill -f com.github.libredeb.lightpad'";
 }
