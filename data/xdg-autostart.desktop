@@ -1,0 +1,7 @@
+[Desktop Entry]
+Type=Application
+Name=LightPad
+Comment=Auto boot LightPad at Startup
+Exec=com.github.libredeb.lightpad
+Terminal=false
+NoDisplay=true

@@ -106,6 +106,12 @@ install_data(
     install_dir: join_paths(datadir, 'applications')
 )
 
+# Install the autostart .desktop file so LightPad can boot at startup
+install_data(
+    join_paths('data', 'xdg-autostart.desktop'),
+    install_dir: '/etc/xdg/autostart'
+)
+
 # Install our .appdata.xml file so AppCenter will see it
 install_data(
     join_paths('data', meson.project_name() + '.appdata.xml'),
