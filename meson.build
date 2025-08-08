@@ -94,6 +94,12 @@ install_data(
     install_dir: join_paths(datadir, 'icons', 'hicolor', 'scalable', 'apps')
 )
 
+# Install lightpad-exit icon for custom exit app entry
+install_data(
+    join_paths('data', 'icons', 'lightpad-exit.png'),
+    install_dir: join_paths(datadir, 'icons', 'hicolor', 'scalable', 'apps')
+)
+
 # Install our .desktop file so the Applications Menu will see it
 install_data(
     join_paths('data', meson.project_name() + '.desktop'),

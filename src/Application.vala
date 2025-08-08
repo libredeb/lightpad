@@ -493,7 +493,7 @@ public class LightPadWindow : Widgets.CompositedWindow {
         this.is_monitoring_process = true;
 
         try {
-            string command = this.filtered.get (app_index)["command"];
+            string command = sanitize_command (this.filtered.get (app_index)["command"]);
             string[] args = {};
 
             // Parse the command into arguments
@@ -551,6 +551,31 @@ public class LightPadWindow : Widgets.CompositedWindow {
                 return false;
             });
         }
+    }
+
+    /*
+     * @param command_line The command string to sanitize.
+     * @return The cleaned command string without any placeholders.
+     */
+    public static string sanitize_command(string command_line) {
+        string cleaned_command = command_line;
+
+        try {
+            // Pattern for flatpak placeholders (e.g., "@@u %U @@" or "@@ %f @@").
+            // This regex is optimized to capture any content between the "@@" delimiters,
+            // ensuring it works for various flatpak placeholder formats.
+            Regex flatpak_regex = new Regex("(\\s@@.*@@)", RegexCompileFlags.OPTIMIZE);
+            cleaned_command = flatpak_regex.replace(cleaned_command, -1, 0, "", 0);
+
+            // Pattern for standard placeholders (e.g., "%u", "%f").
+            // This regex efficiently handles one or more placeholders at the end of the string.
+            Regex normal_regex = new Regex("(\\s%[a-zA-Z])+|(\\s%[a-zA-Z]+)", RegexCompileFlags.OPTIMIZE);
+            cleaned_command = normal_regex.replace(cleaned_command, -1, 0, "", 0);
+        } catch (GLib.RegexError e) {
+            warning ("Regex Error: %s", e.message);
+        }
+
+        return cleaned_command.strip();
     }
 
     /*
