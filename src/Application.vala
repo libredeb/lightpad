@@ -11,6 +11,8 @@ public class LightPadWindow : Widgets.CompositedWindow {
     public Gee.HashMap<string, Gdk.Pixbuf> icons = new Gee.HashMap<string, Gdk.Pixbuf> ();
     public Gee.ArrayList<Gee.HashMap<string, string>> filtered = new Gee.ArrayList<Gee.HashMap<string, string>> ();
     public LightPad.Frontend.Indicators pages;
+    public Gtk.Box container;
+    public Gtk.Label loading_label;
 
     public double font_size;
     public int icon_size;
@@ -82,8 +84,8 @@ public class LightPadWindow : Widgets.CompositedWindow {
         this.add (wrapper);
 
         // Add container
-        var container = new Gtk.Box (Gtk.Orientation.VERTICAL, 0);
-        wrapper.add (container);
+        this.container = new Gtk.Box (Gtk.Orientation.VERTICAL, 0);
+        wrapper.add (this.container);
 
         // Add pagess_wrapper container
         var bottom = new Gtk.Box (Gtk.Orientation.HORIZONTAL, 0);
@@ -92,7 +94,7 @@ public class LightPadWindow : Widgets.CompositedWindow {
         });
 
         // Upstairs (padding is the space between search bar and the grid)
-        container.pack_start (bottom, true, true, 14);
+        this.container.pack_start (bottom, true, true, 14);
 
         this.grid = new Gtk.Grid ();
         this.grid.set_row_spacing (GRID_SPACING);
@@ -108,7 +110,7 @@ public class LightPadWindow : Widgets.CompositedWindow {
             this.grid.insert_row (r);
         }
 
-        container.pack_start (this.grid, true, true, 0);
+        this.container.pack_start (this.grid, true, true, 0);
 
         this.populate_grid ();
 
@@ -132,6 +134,14 @@ public class LightPadWindow : Widgets.CompositedWindow {
             }
         }
         this.pages.set_active (0);
+
+        this.loading_label = new Gtk.Label ("");
+        this.loading_label.set_markup ("<span size='xx-large'><b>Loading…</b></span>");
+        this.loading_label.visible = false;
+        this.loading_label.no_show_all = true;
+        this.loading_label.set_halign (Gtk.Align.CENTER);
+        this.loading_label.set_valign (Gtk.Align.CENTER);
+        this.container.pack_start (this.loading_label, true, true, 0);
 
         // Signals and callbacks
         this.add_events (Gdk.EventMask.SCROLL_MASK);
@@ -227,8 +237,11 @@ public class LightPadWindow : Widgets.CompositedWindow {
                     }
                     int app_index = (int) (child_index + (page_active * this.grid_y * this.grid_x));
 
-                    // Hide the window instead of closing it
-                    this.hide ();
+                    // Hide the apps grid and show loading label
+                    this.pages.visible = false;
+                    this.grid.visible = false;
+                    this.loading_label.no_show_all = false;
+                    this.loading_label.visible = true;
 
                     // Launch application and start monitoring
                     this.launch_and_monitor_application (app_index);
@@ -524,6 +537,11 @@ public class LightPadWindow : Widgets.CompositedWindow {
                     this.monitored_subprocess = null;
 
                     GLib.Idle.add (() => {
+                        // Restore the interface
+                        this.pages.visible = true;
+                        this.grid.visible = true;
+                        this.loading_label.visible = false;
+                        this.loading_label.no_show_all = true;
                         this.show_all ();
                         return false;
                     });
@@ -534,6 +552,11 @@ public class LightPadWindow : Widgets.CompositedWindow {
                     this.monitored_subprocess = null;
 
                     GLib.Idle.add (() => {
+                        // Restore the interface
+                        this.pages.visible = true;
+                        this.grid.visible = true;
+                        this.loading_label.visible = false;
+                        this.loading_label.no_show_all = true;
                         this.show_all ();
                         return false;
                     });
@@ -547,6 +570,11 @@ public class LightPadWindow : Widgets.CompositedWindow {
             this.monitored_subprocess = null;
 
             GLib.Idle.add (() => {
+                // Restore the interface
+                this.pages.visible = true;
+                this.grid.visible = true;
+                this.loading_label.visible = false;
+                this.loading_label.no_show_all = true;
                 this.show_all ();
                 return false;
             });
@@ -557,25 +585,25 @@ public class LightPadWindow : Widgets.CompositedWindow {
      * @param command_line The command string to sanitize.
      * @return The cleaned command string without any placeholders.
      */
-    public static string sanitize_command(string command_line) {
+    public static string sanitize_command (string command_line) {
         string cleaned_command = command_line;
 
         try {
             // Pattern for flatpak placeholders (e.g., "@@u %U @@" or "@@ %f @@").
             // This regex is optimized to capture any content between the "@@" delimiters,
             // ensuring it works for various flatpak placeholder formats.
-            Regex flatpak_regex = new Regex("(\\s@@.*@@)", RegexCompileFlags.OPTIMIZE);
-            cleaned_command = flatpak_regex.replace(cleaned_command, -1, 0, "", 0);
+            Regex flatpak_regex = new Regex ("(\\s@@.*@@)", RegexCompileFlags.OPTIMIZE);
+            cleaned_command = flatpak_regex.replace (cleaned_command, -1, 0, "", 0);
 
             // Pattern for standard placeholders (e.g., "%u", "%f").
             // This regex efficiently handles one or more placeholders at the end of the string.
-            Regex normal_regex = new Regex("(\\s%[a-zA-Z])+|(\\s%[a-zA-Z]+)", RegexCompileFlags.OPTIMIZE);
-            cleaned_command = normal_regex.replace(cleaned_command, -1, 0, "", 0);
+            Regex normal_regex = new Regex ("(\\s%[a-zA-Z])+|(\\s%[a-zA-Z]+)", RegexCompileFlags.OPTIMIZE);
+            cleaned_command = normal_regex.replace (cleaned_command, -1, 0, "", 0);
         } catch (GLib.RegexError e) {
             warning ("Regex Error: %s", e.message);
         }
 
-        return cleaned_command.strip();
+        return cleaned_command.strip ();
     }
 
     /*
