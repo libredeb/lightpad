@@ -136,7 +136,7 @@ public class LightPadWindow : Widgets.CompositedWindow {
         this.pages.set_active (0);
 
         this.loading_label = new Gtk.Label ("");
-        this.loading_label.set_markup ("<span size='xx-large'><b>Loading…</b></span>");
+        this.loading_label.set_markup ("<span size='xx-large' foreground='white'><b>Loading…</b></span>");
         this.loading_label.visible = false;
         this.loading_label.no_show_all = true;
         this.loading_label.set_halign (Gtk.Align.CENTER);
@@ -239,12 +239,21 @@ public class LightPadWindow : Widgets.CompositedWindow {
 
                     // Hide the apps grid and show loading label
                     this.pages.visible = false;
+                    this.pages.no_show_all = true;
                     this.grid.visible = false;
+                    this.grid.no_show_all = true;
                     this.loading_label.no_show_all = false;
                     this.loading_label.visible = true;
+                    
+                    // Force a redraw to ensure the label is visible
+                    this.queue_draw ();
+                    this.show_all ();
 
-                    // Launch application and start monitoring
-                    this.launch_and_monitor_application (app_index);
+                    // Add a small delay to ensure the label is visible on slower devices
+                    GLib.Timeout.add (300, () => {
+                        this.launch_and_monitor_application (app_index);
+                        return false; // Don't repeat
+                    });
 
                     return true;
                 });
@@ -539,7 +548,9 @@ public class LightPadWindow : Widgets.CompositedWindow {
                     GLib.Idle.add (() => {
                         // Restore the interface
                         this.pages.visible = true;
+                        this.pages.no_show_all = false;
                         this.grid.visible = true;
+                        this.grid.no_show_all = false;
                         this.loading_label.visible = false;
                         this.loading_label.no_show_all = true;
                         this.show_all ();
@@ -554,7 +565,9 @@ public class LightPadWindow : Widgets.CompositedWindow {
                     GLib.Idle.add (() => {
                         // Restore the interface
                         this.pages.visible = true;
+                        this.pages.no_show_all = false;
                         this.grid.visible = true;
+                        this.grid.no_show_all = false;
                         this.loading_label.visible = false;
                         this.loading_label.no_show_all = true;
                         this.show_all ();
@@ -572,7 +585,9 @@ public class LightPadWindow : Widgets.CompositedWindow {
             GLib.Idle.add (() => {
                 // Restore the interface
                 this.pages.visible = true;
+                this.pages.no_show_all = false;
                 this.grid.visible = true;
+                this.grid.no_show_all = false;
                 this.loading_label.visible = false;
                 this.loading_label.no_show_all = true;
                 this.show_all ();
