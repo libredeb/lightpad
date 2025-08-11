@@ -15,6 +15,17 @@ Show help options.
 .TP
 \-v, \[en]-version
 Output the version number and exit.
+.SH ENVIRONMENT VARIABLES
+.TP
+LightPad supports the following environment variables:
+.PP
+\-
+\f[B]LIGHTPAD_CATEGORIES\f[R]: This variable controls which application categories
+are displayed. Its value is a comma-separated list of category names (e.g., `Games,
+System Tools, Internet`). The comparison is case-insensitive and ignores extra
+spaces. If unspecified, all available categories are shown. Unrecognized category
+names are silently ignored. Category names must conform to the freedesktop.org
+menu specification.
 .SH FILES
 .TP
 \f[I]\[ti]/.lightpad/blocklist\f[R]

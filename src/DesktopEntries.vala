@@ -21,8 +21,8 @@ namespace LightPad.Backend {
             Gee.HashSet<string>? allowed = null;
             if (included_categories != null) {
                 allowed = new Gee.HashSet<string> ();
-                foreach (var cat in included_categories.split(",")) {
-                    allowed.add(cat.strip().down());
+                foreach (var cat in included_categories.split (",")) {
+                    allowed.add (cat.strip ().down ());
                 }
             }
             var iter = root.iter ();
@@ -30,8 +30,8 @@ namespace LightPad.Backend {
             while (item != GMenu.TreeItemType.INVALID) {
                 if (item == GMenu.TreeItemType.DIRECTORY) {
                     var category = (GMenu.TreeDirectory) iter.get_directory ();
-                    var name = category.get_name().down();
-                    if (allowed == null || allowed.contains(name)) {
+                    var name = category.get_name ().down ();
+                    if (allowed == null || allowed.contains (name)) {
                         main_directory_entries.add (category);
                     }
                 }
@@ -130,6 +130,24 @@ namespace LightPad.Backend {
                 apps_hidden.add ("");
             }
 
+            // We add a custom app to exit Lightpad
+            var exit_app = new Gee.HashMap<string, string> ();
+            exit_app["name"] = Resources.LIGHTPAD_EXIT_NAME;
+            exit_app["id"] = Resources.LIGHTPAD_EXIT_ID;
+            exit_app["description"] = Resources.LIGHTPAD_EXIT_DESC;
+            exit_app["command"] = Resources.LIGHTPAD_EXIT_CMD;
+
+            Gdk.Pixbuf? exit_pixbuf = null;
+            try {
+                exit_pixbuf = icon_theme.load_icon ("lightpad-exit", icon_size, 0)
+                    .scale_simple (icon_size, icon_size, Gdk.InterpType.BILINEAR);
+            } catch (GLib.Error e) {
+                warning ("No LightPad exit icon found %s", e.message);
+            }
+
+            icons[exit_app["command"]] = exit_pixbuf;
+            list.add (exit_app);
+
             foreach (GMenu.TreeEntry entry in the_apps) {
                 var app = entry.get_app_info ();
                 if (
@@ -144,6 +162,7 @@ namespace LightPad.Backend {
                 ) {
                     var app_to_add = new Gee.HashMap<string, string> ();
                     app_to_add["name"] = app.get_display_name ();
+                    app_to_add["id"] = app_to_add["name"].down ();
                     app_to_add["description"] = app.get_description ();
 
                     // Needed to check further later if terminal is open in terminal (like VIM, HTop, etc.)
@@ -204,7 +223,7 @@ namespace LightPad.Backend {
                                 pixbuf.savev (cache_path, "png", null, null);
                             }
                         } catch (GLib.Error e) {
-                            warning ("No icon found for %s.\n", app_to_add["name"]);
+                            warning ("No icon found for %s.", app_to_add["name"]);
                             continue;
                         }
                     }

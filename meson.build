@@ -94,10 +94,23 @@ install_data(
     install_dir: join_paths(datadir, 'icons', 'hicolor', 'scalable', 'apps')
 )
 
+# Install lightpad-exit icon for custom exit app entry
+install_data(
+    join_paths('data', 'icons', 'lightpad-exit.png'),
+    install_dir: join_paths(datadir, 'icons', 'hicolor', 'scalable', 'apps')
+)
+
 # Install our .desktop file so the Applications Menu will see it
 install_data(
     join_paths('data', meson.project_name() + '.desktop'),
     install_dir: join_paths(datadir, 'applications')
+)
+
+# Install the autostart .desktop file so LightPad can boot at startup
+install_data(
+    join_paths('data', 'xdg-autostart.desktop'),
+    install_dir: '/etc/xdg/autostart',
+    rename: meson.project_name() + '.desktop'
 )
 
 # Install our .appdata.xml file so AppCenter will see it
