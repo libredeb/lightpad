@@ -1,4 +1,4 @@
-com.github.libredeb.lightpad (0.0.12) "bookworm"; urgency=high
+com.github.libredeb.lightpad (0.0.12) bookworm; urgency=high
  
   * New independent development version for handheld devices
   * Deleted searchbar

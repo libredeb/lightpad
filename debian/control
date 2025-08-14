@@ -29,4 +29,5 @@ Depends: ${misc:Depends}, ${shlibs:Depends},
          libgnome-menu-3-0 (>= 3.13.0),
          gnome-menus (>= 3.13.0)
 Description: Lightweight Application Launcher
-A lightweight, simple, look nice and powerful application launcher for GNU/Linux.
+ A lightweight, simple, look nice and powerful application launcher
+ for GNU/Linux.

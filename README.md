@@ -7,8 +7,6 @@ LightPad is a lightweight, simple and powerful application launcher. It is also 
 
 ## Compilation
 
-  > **NOTE**: packaging files are now tracked in a separated [packaging](https://github.com/libredeb/lightpad/tree/packaging) branch.
-
   1. Install dependencies:
   * For Ubuntu:
   ```sh
