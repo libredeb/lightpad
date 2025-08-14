@@ -7,7 +7,7 @@
 
   <id>com.github.libredeb.lightpad</id>
   <launchable type="desktop-id">com.github.libredeb.lightpad.desktop</launchable>
-  <metadata_license>CC-BY-4.0</metadata_license>
+  <metadata_license>CC-BY-3.0</metadata_license>
   <project_license>GPL-3.0-or-later</project_license>
 
   <name>LightPad</name>
@@ -61,6 +61,20 @@
   </custom>
 
   <releases>
+    <release version="0.0.12" date="2025-08-13" urgency="medium">
+      <description>
+        <p>New independent development version for handheld devices.</p>
+        <ul>
+          <li>Deleted searchbar</li>
+          <li>Deleted dinamic background feature</li>
+          <li>Adapted to squared screens</li>
+          <li>3x3 application grid</li>
+          <li>Mapped W, A, S, D keys to move the selected item</li>
+          <li>Added support for generic USB Joysticks using SDL2 library</li>
+          <li>Now LightPad never exit, remains in background while the launched application is opened</li>
+        </ul>
+      </description>
+    </release>
     <release version="0.0.10" date="2025-05-24" urgency="high">
       <description>
         <p>This release brings significant improvements, a man page for the binary, refined app sorting and removal of unused dependencies.</p>

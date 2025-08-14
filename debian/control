@@ -1,0 +1,32 @@
+Source: com.github.libredeb.lightpad
+Section: x11
+Priority: optional
+Maintainer: Juan Pablo Lozano <libredeb@gmail.com>
+Build-Depends: meson (>= 0.56.0),
+               ninja-build (>= 1.8.0),
+               debhelper (>= 10.5.1),
+               cdbs (>= 0.4.159),
+               procps (>= 3.3.17),
+               coreutils (>= 8.30),
+               gettext (>= 0.19.0),
+               valac (>= 0.28.0),
+               libgee-0.8-dev (>= 0.18.0),
+               libgnome-menu-3-dev (>= 3.13.0),
+               libglib2.0-dev (>= 2.74.0),
+               libgtk-3-dev (>= 3.22.0),
+               python3,
+               python3-wheel,
+               python3-setuptools
+Standards-Version: 4.1.1
+
+Package: lightpad
+Architecture: any
+Depends: ${misc:Depends}, ${shlibs:Depends},
+         procps (>= 3.3.17),
+         coreutils (>= 8.30),
+         libglib2.0-0 (>= 2.74.0),
+         libgtk-3-0 (>= 3.22.0), 
+         libgnome-menu-3-0 (>= 3.13.0),
+         gnome-menus (>= 3.13.0)
+Description: Lightweight Application Launcher
+A lightweight, simple, look nice and powerful application launcher for GNU/Linux.

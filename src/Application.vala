@@ -244,7 +244,7 @@ public class LightPadWindow : Widgets.CompositedWindow {
                     this.grid.no_show_all = true;
                     this.loading_label.no_show_all = false;
                     this.loading_label.visible = true;
-                    
+
                     // Force a redraw to ensure the label is visible
                     this.queue_draw ();
                     this.show_all ();

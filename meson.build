@@ -2,7 +2,7 @@
 project(
     'com.github.libredeb.lightpad',
     'vala', 'c',
-    version: '0.0.10',
+    version: '0.0.12',
     meson_version: '>=0.56.0'
 )
 
@@ -37,7 +37,7 @@ config_inc_dir = include_directories('.')
 LightpadValaArgs = [
     '--pkg=config',
     '--vapidir=' + VAPI_DIR,
-    '--target-glib=2.72',
+    '--target-glib=2.74',
 ]
 
 # Create a new executable, list the files we want to compile, list the dependencies we need, and install
@@ -54,7 +54,7 @@ executable(
     dependencies: [
         dependency('gio-unix-2.0', version: '>=2.56.0'),
         dependency('sdl2', version: '>=2.26.0'),
-        dependency('glib-2.0', version: '>=2.72.0'),
+        dependency('glib-2.0', version: '>=2.74.0'),
         dependency('gtk+-3.0', version: '>=3.22'),
         dependency('gdk-3.0', version: '>=3.22.0'),
         dependency('cairo', version: '>=1.15.0'),
