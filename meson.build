@@ -113,6 +113,12 @@ install_data(
     rename: meson.project_name() + '.desktop'
 )
 
+# Install the gamecontrollerdb.txt file
+install_data(
+    join_paths('data', 'gamecontrollerdb.txt'),
+    install_dir: join_paths(datadir, PROJECT_NAME)
+)
+
 # Install our .appdata.xml file so AppCenter will see it
 install_data(
     join_paths('data', meson.project_name() + '.appdata.xml'),

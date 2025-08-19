@@ -149,50 +149,96 @@ public class LightPadWindow : Widgets.CompositedWindow {
         this.draw.connect (this.draw_background);
 
         thread = new GLib.Thread<int> ("JoystickThread", () => {
-            if (SDL.init (SDL.InitFlag.JOYSTICK) != 0) {
+            if (SDL.init (SDL.InitFlag.GAMECONTROLLER) != 0) {
                 warning ("SDL init Error: %s", SDL.get_error ());
                 return 0;
             }
 
-            if (SDL.Input.Joystick.count () < 1) {
-                warning ("No joysticks detected");
+            if (SDL.Input.GameController.load_mapping_file ("/usr/share/lightpad/gamecontrollerdb.txt") == -1) {
+                warning ("Unable to load game controller database file");
+            }
+            int num_controllers = SDL.Input.GameController.count ();
+
+            if (
+                (num_controllers < 1) ||
+                (!SDL.Input.GameController.is_game_controller (0))
+            ) {
+                warning (num_controllers < 1
+                    ? "No game controller detected"
+                    : "Game controller is not compatible"
+                );
                 SDL.quit ();
                 return 0;
             }
 
-            var joystick = new SDL.Input.Joystick (0); // Index 0
-            if (joystick == null) {
-                warning ("Unable to open joystick: %s", SDL.get_error ());
+            var controller = new SDL.Input.GameController (0);
+            if (controller == null) {
+                warning ("Unable to open game controller: %s", SDL.get_error ());
                 SDL.quit ();
                 return 0;
             }
+
+            // For performance control on axis
+            const int AXIS_DEAD_ZONE = 8000; // Threshold for ignoring stick noise
+            const uint AXIS_THROTTLE_MS = 150; // Milliseconds of delay between focus movements
+            uint64 last_axis_h_move = 0;
+            uint64 last_axis_v_move = 0;
 
             SDL.Event event;
             while (true) {
                 while (SDL.Event.poll (out event) != 0) {
                     switch (event.type) {
-                        case SDL.EventType.JOYBUTTONDOWN:
-                            if ((event.jbutton.button == 10) || (event.jbutton.button == 18)) {
-                                if (this.filtered.size >= 1) {
-                                    this.get_focus ().button_release_event (
-                                        (Gdk.EventButton) new Gdk.Event (Gdk.EventType.BUTTON_PRESS)
-                                    );
+                        case SDL.EventType.CONTROLLERBUTTONDOWN:
+                            var button = (SDL.Input.GameController.Button) event.cbutton.button;
+                            switch (button) {
+                                case SDL.Input.GameController.Button.A:
+                                case SDL.Input.GameController.Button.B:
+                                    if (this.filtered.size >= 1) {
+                                        this.get_focus ().button_release_event (
+                                            (Gdk.EventButton) new Gdk.Event (Gdk.EventType.BUTTON_PRESS)
+                                        );
+                                    }
+                                    break;
+                                case SDL.Input.GameController.Button.DPAD_UP:
+                                    this.do_up ();
+                                    break;
+                                case SDL.Input.GameController.Button.DPAD_DOWN:
+                                    this.do_down ();
+                                    break;
+                                case SDL.Input.GameController.Button.DPAD_LEFT:
+                                    this.do_left ();
+                                    break;
+                                case SDL.Input.GameController.Button.DPAD_RIGHT:
+                                    this.do_right ();
+                                    break;
+                                default:
+                                    break;
+                            }
+                            break;
+                        case SDL.EventType.CONTROLLERAXISMOTION:
+                            var axis = (SDL.Input.GameController.Axis) event.caxis.axis;
+                            var value = event.caxis.value;
+                            var now = GLib.get_monotonic_time () / 1000; // to milliseconds
+
+                            // Horizontal axis (left stick)
+                            if (axis == SDL.Input.GameController.Axis.LEFTX) {
+                                if (value < -AXIS_DEAD_ZONE && (now - last_axis_h_move > AXIS_THROTTLE_MS)) {
+                                    this.do_left ();
+                                    last_axis_h_move = now;
+                                } else if (value > AXIS_DEAD_ZONE && (now - last_axis_h_move > AXIS_THROTTLE_MS)) {
+                                    this.do_right ();
+                                    last_axis_h_move = now;
                                 }
-                                SDL.quit ();
                             }
-
-                            if (event.jbutton.button == 6) {
-                                this.do_up ();
-                            }
-                            if (event.jbutton.button == 7) {
-                                this.do_down ();
-                            }
-
-                            if (event.jbutton.button == 8) {
-                                this.do_left ();
-                            }
-                            if (event.jbutton.button == 9) {
-                                this.do_right ();
+                            // Vertical axis (left stick)
+                            if (axis == SDL.Input.GameController.Axis.LEFTY) {
+                                 if (value < -AXIS_DEAD_ZONE && (now - last_axis_v_move > AXIS_THROTTLE_MS)) {
+                                    this.do_up ();
+                                    last_axis_v_move = now;
+                                } else if (value > AXIS_DEAD_ZONE && (now - last_axis_v_move > AXIS_THROTTLE_MS)) {
+                                    this.do_down ();
+                                    last_axis_v_move = now;
+                                }
                             }
                             break;
                         default:
