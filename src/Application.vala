@@ -31,7 +31,8 @@ public class LightPadWindow : Widgets.CompositedWindow {
     private int grid_x;
     private int grid_y;
 
-    private GLib.Thread<int> thread;
+    private GLib.Thread<int> joystick_thread;
+    private bool is_joystick_thread_active = true;
 
     // Variables to monitor the launched process
     private GLib.Subprocess? monitored_subprocess = null;
@@ -148,7 +149,7 @@ public class LightPadWindow : Widgets.CompositedWindow {
 
         this.draw.connect (this.draw_background);
 
-        thread = new GLib.Thread<int> ("JoystickThread", () => {
+        joystick_thread = new GLib.Thread<int> ("JoystickThread", () => {
             if (SDL.init (SDL.InitFlag.GAMECONTROLLER) != 0) {
                 warning ("SDL init Error: %s", SDL.get_error ());
                 return 0;
@@ -187,62 +188,64 @@ public class LightPadWindow : Widgets.CompositedWindow {
             SDL.Event event;
             while (true) {
                 while (SDL.Event.poll (out event) != 0) {
-                    switch (event.type) {
-                        case SDL.EventType.CONTROLLERBUTTONDOWN:
-                            var button = (SDL.Input.GameController.Button) event.cbutton.button;
-                            switch (button) {
-                                case SDL.Input.GameController.Button.A:
-                                case SDL.Input.GameController.Button.B:
-                                    if (this.filtered.size >= 1) {
-                                        this.get_focus ().button_release_event (
-                                            (Gdk.EventButton) new Gdk.Event (Gdk.EventType.BUTTON_PRESS)
-                                        );
-                                    }
-                                    break;
-                                case SDL.Input.GameController.Button.DPAD_UP:
-                                    this.do_up ();
-                                    break;
-                                case SDL.Input.GameController.Button.DPAD_DOWN:
-                                    this.do_down ();
-                                    break;
-                                case SDL.Input.GameController.Button.DPAD_LEFT:
-                                    this.do_left ();
-                                    break;
-                                case SDL.Input.GameController.Button.DPAD_RIGHT:
-                                    this.do_right ();
-                                    break;
-                                default:
-                                    break;
-                            }
-                            break;
-                        case SDL.EventType.CONTROLLERAXISMOTION:
-                            var axis = (SDL.Input.GameController.Axis) event.caxis.axis;
-                            var value = event.caxis.value;
-                            var now = GLib.get_monotonic_time () / 1000; // to milliseconds
+                    if (this.is_joystick_thread_active) {
+                        switch (event.type) {
+                            case SDL.EventType.CONTROLLERBUTTONDOWN:
+                                var button = (SDL.Input.GameController.Button) event.cbutton.button;
+                                switch (button) {
+                                    case SDL.Input.GameController.Button.A:
+                                    case SDL.Input.GameController.Button.B:
+                                        if (this.filtered.size >= 1) {
+                                            this.get_focus ().button_release_event (
+                                                (Gdk.EventButton) new Gdk.Event (Gdk.EventType.BUTTON_PRESS)
+                                            );
+                                        }
+                                        break;
+                                    case SDL.Input.GameController.Button.DPAD_UP:
+                                        this.do_up ();
+                                        break;
+                                    case SDL.Input.GameController.Button.DPAD_DOWN:
+                                        this.do_down ();
+                                        break;
+                                    case SDL.Input.GameController.Button.DPAD_LEFT:
+                                        this.do_left ();
+                                        break;
+                                    case SDL.Input.GameController.Button.DPAD_RIGHT:
+                                        this.do_right ();
+                                        break;
+                                    default:
+                                        break;
+                                }
+                                break;
+                            case SDL.EventType.CONTROLLERAXISMOTION:
+                                var axis = (SDL.Input.GameController.Axis) event.caxis.axis;
+                                var value = event.caxis.value;
+                                var now = GLib.get_monotonic_time () / 1000; // to milliseconds
 
-                            // Horizontal axis (left stick)
-                            if (axis == SDL.Input.GameController.Axis.LEFTX) {
-                                if (value < -AXIS_DEAD_ZONE && (now - last_axis_h_move > AXIS_THROTTLE_MS)) {
-                                    this.do_left ();
-                                    last_axis_h_move = now;
-                                } else if (value > AXIS_DEAD_ZONE && (now - last_axis_h_move > AXIS_THROTTLE_MS)) {
-                                    this.do_right ();
-                                    last_axis_h_move = now;
+                                // Horizontal axis (left stick)
+                                if (axis == SDL.Input.GameController.Axis.LEFTX) {
+                                    if (value < -AXIS_DEAD_ZONE && (now - last_axis_h_move > AXIS_THROTTLE_MS)) {
+                                        this.do_left ();
+                                        last_axis_h_move = now;
+                                    } else if (value > AXIS_DEAD_ZONE && (now - last_axis_h_move > AXIS_THROTTLE_MS)) {
+                                        this.do_right ();
+                                        last_axis_h_move = now;
+                                    }
                                 }
-                            }
-                            // Vertical axis (left stick)
-                            if (axis == SDL.Input.GameController.Axis.LEFTY) {
-                                 if (value < -AXIS_DEAD_ZONE && (now - last_axis_v_move > AXIS_THROTTLE_MS)) {
-                                    this.do_up ();
-                                    last_axis_v_move = now;
-                                } else if (value > AXIS_DEAD_ZONE && (now - last_axis_v_move > AXIS_THROTTLE_MS)) {
-                                    this.do_down ();
-                                    last_axis_v_move = now;
+                                // Vertical axis (left stick)
+                                if (axis == SDL.Input.GameController.Axis.LEFTY) {
+                                    if (value < -AXIS_DEAD_ZONE && (now - last_axis_v_move > AXIS_THROTTLE_MS)) {
+                                        this.do_up ();
+                                        last_axis_v_move = now;
+                                    } else if (value > AXIS_DEAD_ZONE && (now - last_axis_v_move > AXIS_THROTTLE_MS)) {
+                                        this.do_down ();
+                                        last_axis_v_move = now;
+                                    }
                                 }
-                            }
-                            break;
-                        default:
-                            break;
+                                break;
+                            default:
+                                break;
+                        }
                     }
                 }
                 SDL.Timer.delay (10); // Avoid 100% CPU usage
@@ -540,6 +543,12 @@ public class LightPadWindow : Widgets.CompositedWindow {
 
     // Override destroy for fade out and stuff
     public new void destroy () {
+        // Detiene el procesamiento de eventos del joystick
+        this.is_joystick_thread_active = false;
+
+        // Limpia los recursos de SDL
+        SDL.quit ();
+
         // Stop process monitoring if it is active
         if (this.is_monitoring_process && this.monitored_subprocess != null) {
             this.is_monitoring_process = false;
@@ -560,6 +569,7 @@ public class LightPadWindow : Widgets.CompositedWindow {
             return;
         }
 
+        this.is_joystick_thread_active = false;
         if (this.is_monitoring_process && this.monitored_subprocess != null) {
             // If we are already monitoring a process, stop the previous monitoring
             this.is_monitoring_process = false;
@@ -607,6 +617,7 @@ public class LightPadWindow : Widgets.CompositedWindow {
                         this.grid.no_show_all = false;
                         this.loading_label.visible = false;
                         this.loading_label.no_show_all = true;
+                        this.is_joystick_thread_active = true;
                         this.show_all ();
                         return false;
                     });
@@ -624,6 +635,7 @@ public class LightPadWindow : Widgets.CompositedWindow {
                         this.grid.no_show_all = false;
                         this.loading_label.visible = false;
                         this.loading_label.no_show_all = true;
+                        this.is_joystick_thread_active = true;
                         this.show_all ();
                         return false;
                     });
