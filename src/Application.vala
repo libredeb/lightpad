@@ -552,6 +552,14 @@ public class LightPadWindow : Widgets.CompositedWindow {
 
     // Method to launch and monitor applications using GLib.Subprocess
     private void launch_and_monitor_application (int app_index) {
+        // Check if this is the exit application
+        string app_id = this.filtered.get (app_index)["id"];
+        if (app_id == Resources.LIGHTPAD_EXIT_ID) {
+            // Close LightPad instead of launching an application
+            this.destroy ();
+            return;
+        }
+
         if (this.is_monitoring_process && this.monitored_subprocess != null) {
             // If we are already monitoring a process, stop the previous monitoring
             this.is_monitoring_process = false;
