@@ -135,7 +135,7 @@ namespace LightPad.Backend {
             exit_app["name"] = Resources.LIGHTPAD_EXIT_NAME;
             exit_app["id"] = Resources.LIGHTPAD_EXIT_ID;
             exit_app["description"] = Resources.LIGHTPAD_EXIT_DESC;
-            exit_app["command"] = Resources.LIGHTPAD_EXIT_CMD;
+            exit_app["command"] = Resources.LIGHTPAD_EXIT_ID;
 
             Gdk.Pixbuf? exit_pixbuf = null;
             try {
