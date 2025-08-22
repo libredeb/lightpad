@@ -62,6 +62,9 @@ public class LightPadWindow : Widgets.CompositedWindow {
         this.set_skip_taskbar_hint (true);
         this.set_type_hint (Gdk.WindowTypeHint.NORMAL);
 
+        // Disable mouse events completely
+        this.set_events (Gdk.EventMask.KEY_PRESS_MASK | Gdk.EventMask.SCROLL_MASK);
+
         // There isn't always a primary monitor.
         Gdk.Monitor monitor = get_display ().get_primary_monitor () ?? get_display ().get_monitor (0);
         var display = Gdk.Display.get_default ();
@@ -144,6 +147,15 @@ public class LightPadWindow : Widgets.CompositedWindow {
         this.loading_label.set_valign (Gtk.Align.CENTER);
         this.container.pack_start (this.loading_label, true, true, 0);
 
+        // Hide mouse cursor completely
+        this.show.connect (() => {
+            if (this.get_window () != null) {
+                this.get_window ().set_cursor (
+                    new Gdk.Cursor.for_display (display, Gdk.CursorType.BLANK_CURSOR)
+                );
+            }
+        });
+
         // Signals and callbacks
         this.add_events (Gdk.EventMask.SCROLL_MASK);
 
@@ -196,9 +208,12 @@ public class LightPadWindow : Widgets.CompositedWindow {
                                     case SDL.Input.GameController.Button.A:
                                     case SDL.Input.GameController.Button.B:
                                         if (this.filtered.size >= 1) {
-                                            this.get_focus ().button_release_event (
-                                                (Gdk.EventButton) new Gdk.Event (Gdk.EventType.BUTTON_PRESS)
-                                            );
+                                            var focused_widget = this.get_focus ();
+                                            if (focused_widget != null) {
+                                                focused_widget.button_release_event (
+                                                    (Gdk.EventButton) new Gdk.Event (Gdk.EventType.BUTTON_PRESS)
+                                                );
+                                            }
                                         }
                                         break;
                                     case SDL.Input.GameController.Button.DPAD_UP:
@@ -274,7 +289,6 @@ public class LightPadWindow : Widgets.CompositedWindow {
                 this.children.append (item);
 
                 item.button_press_event.connect ( () => { item.grab_focus (); return true; } );
-                item.enter_notify_event.connect ( () => { item.grab_focus (); return true; } );
                 item.button_release_event.connect ( () => {
                     int child_index = this.children.index (item);
                     int page_active = this.pages.active;
@@ -424,7 +438,10 @@ public class LightPadWindow : Widgets.CompositedWindow {
     }
 
     private void do_left () {
-        var current_item = this.grid.get_children ().index (this.get_focus ());
+        var focused_widget = this.get_focus ();
+        if (focused_widget == null) return;
+        
+        var current_item = this.grid.get_children ().index (focused_widget);
 
         int pos_x = - ((current_item % this.grid_y) - (this.grid_y - 1));
         int pos_y = - ((current_item / this.grid_y) - (this.grid_x - 1));
@@ -439,7 +456,10 @@ public class LightPadWindow : Widgets.CompositedWindow {
     }
 
     private void do_right () {
-        var current_item = this.grid.get_children ().index (this.get_focus ());
+        var focused_widget = this.get_focus ();
+        if (focused_widget == null) return;
+        
+        var current_item = this.grid.get_children ().index (focused_widget);
         int pos_x = - ((current_item % this.grid_y) - (this.grid_y - 1));
         int pos_y = - ((current_item / this.grid_y) - (this.grid_x - 1));
 
@@ -453,7 +473,10 @@ public class LightPadWindow : Widgets.CompositedWindow {
     }
 
     private bool do_up () {
-        var current_item = this.grid.get_children ().index (this.get_focus ());
+        var focused_widget = this.get_focus ();
+        if (focused_widget == null) return false;
+        
+        var current_item = this.grid.get_children ().index (focused_widget);
         int pos_x = - ((current_item % this.grid_y) - (this.grid_y - 1));
         int pos_y = - ((current_item / this.grid_y) - (this.grid_x - 1));
 
@@ -464,7 +487,10 @@ public class LightPadWindow : Widgets.CompositedWindow {
     }
 
     private bool do_down () {
-        var current_item = this.grid.get_children ().index (this.get_focus ());
+        var focused_widget = this.get_focus ();
+        if (focused_widget == null) return false;
+        
+        var current_item = this.grid.get_children ().index (focused_widget);
         int pos_x = - ((current_item % this.grid_y) - (this.grid_y - 1));
         int pos_y = - ((current_item / this.grid_y) - (this.grid_x - 1));
 
@@ -483,18 +509,24 @@ public class LightPadWindow : Widgets.CompositedWindow {
                 return true;
             case "a":
             case "Left":
-                var current_item = this.grid.get_children ().index (this.get_focus ());
-                if (current_item % this.grid_y == this.grid_y - 1) {
-                    this.page_left ();
-                    return true;
+                var focused_widget = this.get_focus ();
+                if (focused_widget != null) {
+                    var current_item = this.grid.get_children ().index (focused_widget);
+                    if (current_item % this.grid_y == this.grid_y - 1) {
+                        this.page_left ();
+                        return true;
+                    }
                 }
                 break;
             case "d":
             case "Right":
-                var current_item = this.grid.get_children ().index (this.get_focus ());
-                if (current_item % this.grid_y == 0) {
-                    this.page_right ();
-                    return true;
+                var focused_widget = this.get_focus ();
+                if (focused_widget != null) {
+                    var current_item = this.grid.get_children ().index (focused_widget);
+                    if (current_item % this.grid_y == 0) {
+                        this.page_right ();
+                        return true;
+                    }
                 }
                 break;
             case "s":
@@ -514,9 +546,12 @@ public class LightPadWindow : Widgets.CompositedWindow {
                 return true;
             case "Return":
                 if (this.filtered.size >= 1) {
-                    this.get_focus ().button_release_event (
-                        (Gdk.EventButton) new Gdk.Event (Gdk.EventType.BUTTON_PRESS)
-                    );
+                    var focused_widget = this.get_focus ();
+                    if (focused_widget != null) {
+                        focused_widget.button_release_event (
+                            (Gdk.EventButton) new Gdk.Event (Gdk.EventType.BUTTON_PRESS)
+                        );
+                    }
                 }
                 return true;
         }
