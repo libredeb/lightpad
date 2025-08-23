@@ -593,7 +593,6 @@ public class LightPadWindow : Widgets.CompositedWindow {
         }
 
         base.destroy ();
-        Gtk.main_quit ();
     }
 
     // Method to launch and monitor applications using GLib.Subprocess
@@ -796,7 +795,6 @@ static int main (string[] args) {
             var main_window = new LightPadWindow ();
             main_window.set_application (app);
             main_window.show_all ();
-            Gtk.main ();
         }
     });
 
