@@ -54,8 +54,8 @@
             // Label
             this.label = new_name ?? "";
 
-            // Tooltip
-            this.set_tooltip_text (new_tooltip ?? "");
+            // Tooltip - Disabled
+            // this.set_tooltip_text (new_tooltip ?? "");
 
             // Redraw
             this.wrapper.queue_draw ();

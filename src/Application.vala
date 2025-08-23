@@ -440,7 +440,7 @@ public class LightPadWindow : Widgets.CompositedWindow {
     private void do_left () {
         var focused_widget = this.get_focus ();
         if (focused_widget == null) return;
-        
+
         var current_item = this.grid.get_children ().index (focused_widget);
 
         int pos_x = - ((current_item % this.grid_y) - (this.grid_y - 1));
@@ -458,7 +458,7 @@ public class LightPadWindow : Widgets.CompositedWindow {
     private void do_right () {
         var focused_widget = this.get_focus ();
         if (focused_widget == null) return;
-        
+
         var current_item = this.grid.get_children ().index (focused_widget);
         int pos_x = - ((current_item % this.grid_y) - (this.grid_y - 1));
         int pos_y = - ((current_item / this.grid_y) - (this.grid_x - 1));
@@ -475,7 +475,7 @@ public class LightPadWindow : Widgets.CompositedWindow {
     private bool do_up () {
         var focused_widget = this.get_focus ();
         if (focused_widget == null) return false;
-        
+
         var current_item = this.grid.get_children ().index (focused_widget);
         int pos_x = - ((current_item % this.grid_y) - (this.grid_y - 1));
         int pos_y = - ((current_item / this.grid_y) - (this.grid_x - 1));
@@ -489,7 +489,7 @@ public class LightPadWindow : Widgets.CompositedWindow {
     private bool do_down () {
         var focused_widget = this.get_focus ();
         if (focused_widget == null) return false;
-        
+
         var current_item = this.grid.get_children ().index (focused_widget);
         int pos_x = - ((current_item % this.grid_y) - (this.grid_y - 1));
         int pos_y = - ((current_item / this.grid_y) - (this.grid_x - 1));
