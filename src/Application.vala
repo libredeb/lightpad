@@ -678,9 +678,13 @@ public class LightPadWindow : Widgets.CompositedWindow {
         this.is_joystick_thread_active = true;
         this.show_all ();
 
+        // Set the active page indicator to the current page
+        this.pages.set_active (this.pages.active);
+
         if (this.last_focused_widget != null) {
             this.last_focused_widget.grab_focus ();
         }
+
         return false;
     }
 
