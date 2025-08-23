@@ -54,8 +54,8 @@
             // Label
             this.label = new_name ?? "";
 
-            // Tooltip
-            this.set_tooltip_text (new_tooltip ?? "");
+            // Tooltip - Disabled
+            // this.set_tooltip_text (new_tooltip ?? "");
 
             // Redraw
             this.wrapper.queue_draw ();
@@ -108,7 +108,7 @@
             );
 
             double text_x_center = size.width / 2 - extents.width / 2;
-            double text_y_base = size.height - 10; // 10px desde el borde inferior
+            double text_y_base = size.height - 10; // 10px from the bottom edge
 
             // Draw the shadow of the text
             // Add 1 to X and Y for a slight shadow offset.

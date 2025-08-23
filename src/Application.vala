@@ -37,6 +37,7 @@ public class LightPadWindow : Widgets.CompositedWindow {
     // Variables to monitor the launched process
     private GLib.Subprocess? monitored_subprocess = null;
     private bool is_monitoring_process = false;
+    private Gtk.Widget? last_focused_widget = null;
 
     public LightPadWindow () {
         const int ICON_SIZE = 182;
@@ -61,6 +62,9 @@ public class LightPadWindow : Widgets.CompositedWindow {
         this.set_skip_pager_hint (true);
         this.set_skip_taskbar_hint (true);
         this.set_type_hint (Gdk.WindowTypeHint.NORMAL);
+
+        // Disable mouse events completely
+        this.set_events (Gdk.EventMask.KEY_PRESS_MASK | Gdk.EventMask.SCROLL_MASK);
 
         // There isn't always a primary monitor.
         Gdk.Monitor monitor = get_display ().get_primary_monitor () ?? get_display ().get_monitor (0);
@@ -144,6 +148,15 @@ public class LightPadWindow : Widgets.CompositedWindow {
         this.loading_label.set_valign (Gtk.Align.CENTER);
         this.container.pack_start (this.loading_label, true, true, 0);
 
+        // Hide mouse cursor completely
+        this.show.connect (() => {
+            if (this.get_window () != null) {
+                this.get_window ().set_cursor (
+                    new Gdk.Cursor.for_display (display, Gdk.CursorType.BLANK_CURSOR)
+                );
+            }
+        });
+
         // Signals and callbacks
         this.add_events (Gdk.EventMask.SCROLL_MASK);
 
@@ -196,9 +209,12 @@ public class LightPadWindow : Widgets.CompositedWindow {
                                     case SDL.Input.GameController.Button.A:
                                     case SDL.Input.GameController.Button.B:
                                         if (this.filtered.size >= 1) {
-                                            this.get_focus ().button_release_event (
-                                                (Gdk.EventButton) new Gdk.Event (Gdk.EventType.BUTTON_PRESS)
-                                            );
+                                            var focused_widget = this.get_focus ();
+                                            if (focused_widget != null) {
+                                                focused_widget.button_release_event (
+                                                    (Gdk.EventButton) new Gdk.Event (Gdk.EventType.BUTTON_PRESS)
+                                                );
+                                            }
                                         }
                                         break;
                                     case SDL.Input.GameController.Button.DPAD_UP:
@@ -274,8 +290,8 @@ public class LightPadWindow : Widgets.CompositedWindow {
                 this.children.append (item);
 
                 item.button_press_event.connect ( () => { item.grab_focus (); return true; } );
-                item.enter_notify_event.connect ( () => { item.grab_focus (); return true; } );
                 item.button_release_event.connect ( () => {
+                    this.last_focused_widget = item;
                     int child_index = this.children.index (item);
                     int page_active = this.pages.active;
                     /* Prevent indicators pages to get a negative one (-1)
@@ -424,7 +440,10 @@ public class LightPadWindow : Widgets.CompositedWindow {
     }
 
     private void do_left () {
-        var current_item = this.grid.get_children ().index (this.get_focus ());
+        var focused_widget = this.get_focus ();
+        if (focused_widget == null) return;
+
+        var current_item = this.grid.get_children ().index (focused_widget);
 
         int pos_x = - ((current_item % this.grid_y) - (this.grid_y - 1));
         int pos_y = - ((current_item / this.grid_y) - (this.grid_x - 1));
@@ -439,7 +458,10 @@ public class LightPadWindow : Widgets.CompositedWindow {
     }
 
     private void do_right () {
-        var current_item = this.grid.get_children ().index (this.get_focus ());
+        var focused_widget = this.get_focus ();
+        if (focused_widget == null) return;
+
+        var current_item = this.grid.get_children ().index (focused_widget);
         int pos_x = - ((current_item % this.grid_y) - (this.grid_y - 1));
         int pos_y = - ((current_item / this.grid_y) - (this.grid_x - 1));
 
@@ -453,7 +475,10 @@ public class LightPadWindow : Widgets.CompositedWindow {
     }
 
     private bool do_up () {
-        var current_item = this.grid.get_children ().index (this.get_focus ());
+        var focused_widget = this.get_focus ();
+        if (focused_widget == null) return false;
+
+        var current_item = this.grid.get_children ().index (focused_widget);
         int pos_x = - ((current_item % this.grid_y) - (this.grid_y - 1));
         int pos_y = - ((current_item / this.grid_y) - (this.grid_x - 1));
 
@@ -464,7 +489,10 @@ public class LightPadWindow : Widgets.CompositedWindow {
     }
 
     private bool do_down () {
-        var current_item = this.grid.get_children ().index (this.get_focus ());
+        var focused_widget = this.get_focus ();
+        if (focused_widget == null) return false;
+
+        var current_item = this.grid.get_children ().index (focused_widget);
         int pos_x = - ((current_item % this.grid_y) - (this.grid_y - 1));
         int pos_y = - ((current_item / this.grid_y) - (this.grid_x - 1));
 
@@ -483,18 +511,24 @@ public class LightPadWindow : Widgets.CompositedWindow {
                 return true;
             case "a":
             case "Left":
-                var current_item = this.grid.get_children ().index (this.get_focus ());
-                if (current_item % this.grid_y == this.grid_y - 1) {
-                    this.page_left ();
-                    return true;
+                var focused_widget = this.get_focus ();
+                if (focused_widget != null) {
+                    var current_item = this.grid.get_children ().index (focused_widget);
+                    if (current_item % this.grid_y == this.grid_y - 1) {
+                        this.page_left ();
+                        return true;
+                    }
                 }
                 break;
             case "d":
             case "Right":
-                var current_item = this.grid.get_children ().index (this.get_focus ());
-                if (current_item % this.grid_y == 0) {
-                    this.page_right ();
-                    return true;
+                var focused_widget = this.get_focus ();
+                if (focused_widget != null) {
+                    var current_item = this.grid.get_children ().index (focused_widget);
+                    if (current_item % this.grid_y == 0) {
+                        this.page_right ();
+                        return true;
+                    }
                 }
                 break;
             case "s":
@@ -514,9 +548,12 @@ public class LightPadWindow : Widgets.CompositedWindow {
                 return true;
             case "Return":
                 if (this.filtered.size >= 1) {
-                    this.get_focus ().button_release_event (
-                        (Gdk.EventButton) new Gdk.Event (Gdk.EventType.BUTTON_PRESS)
-                    );
+                    var focused_widget = this.get_focus ();
+                    if (focused_widget != null) {
+                        focused_widget.button_release_event (
+                            (Gdk.EventButton) new Gdk.Event (Gdk.EventType.BUTTON_PRESS)
+                        );
+                    }
                 }
                 return true;
         }
@@ -543,10 +580,10 @@ public class LightPadWindow : Widgets.CompositedWindow {
 
     // Override destroy for fade out and stuff
     public new void destroy () {
-        // Detiene el procesamiento de eventos del joystick
+        // Stops processing joystick events
         this.is_joystick_thread_active = false;
 
-        // Limpia los recursos de SDL
+        // Clean up SDL resources
         SDL.quit ();
 
         // Stop process monitoring if it is active
@@ -556,7 +593,6 @@ public class LightPadWindow : Widgets.CompositedWindow {
         }
 
         base.destroy ();
-        Gtk.main_quit ();
     }
 
     // Method to launch and monitor applications using GLib.Subprocess
@@ -609,36 +645,14 @@ public class LightPadWindow : Widgets.CompositedWindow {
                     this.is_monitoring_process = false;
                     this.monitored_subprocess = null;
 
-                    GLib.Idle.add (() => {
-                        // Restore the interface
-                        this.pages.visible = true;
-                        this.pages.no_show_all = false;
-                        this.grid.visible = true;
-                        this.grid.no_show_all = false;
-                        this.loading_label.visible = false;
-                        this.loading_label.no_show_all = true;
-                        this.is_joystick_thread_active = true;
-                        this.show_all ();
-                        return false;
-                    });
+                    GLib.Idle.add (this.restore_ui_and_focus);
                 } catch (GLib.Error e) {
                     warning ("Error waiting for subprocess: " + e.message);
                     // Show lightpad anyway in case of error
                     this.is_monitoring_process = false;
                     this.monitored_subprocess = null;
 
-                    GLib.Idle.add (() => {
-                        // Restore the interface
-                        this.pages.visible = true;
-                        this.pages.no_show_all = false;
-                        this.grid.visible = true;
-                        this.grid.no_show_all = false;
-                        this.loading_label.visible = false;
-                        this.loading_label.no_show_all = true;
-                        this.is_joystick_thread_active = true;
-                        this.show_all ();
-                        return false;
-                    });
+                    GLib.Idle.add (this.restore_ui_and_focus);
                 }
             });
 
@@ -648,18 +662,29 @@ public class LightPadWindow : Widgets.CompositedWindow {
             this.is_monitoring_process = false;
             this.monitored_subprocess = null;
 
-            GLib.Idle.add (() => {
-                // Restore the interface
-                this.pages.visible = true;
-                this.pages.no_show_all = false;
-                this.grid.visible = true;
-                this.grid.no_show_all = false;
-                this.loading_label.visible = false;
-                this.loading_label.no_show_all = true;
-                this.show_all ();
-                return false;
-            });
+            GLib.Idle.add (this.restore_ui_and_focus);
         }
+    }
+
+    private bool restore_ui_and_focus () {
+        // Restore the interface
+        this.pages.visible = true;
+        this.pages.no_show_all = false;
+        this.grid.visible = true;
+        this.grid.no_show_all = false;
+        this.loading_label.visible = false;
+        this.loading_label.no_show_all = true;
+        this.is_joystick_thread_active = true;
+        this.show_all ();
+
+        // Set the active page indicator to the current page
+        this.pages.set_active (this.pages.active);
+
+        if (this.last_focused_widget != null) {
+            this.last_focused_widget.grab_focus ();
+        }
+
+        return false;
     }
 
     /*
@@ -770,7 +795,6 @@ static int main (string[] args) {
             var main_window = new LightPadWindow ();
             main_window.set_application (app);
             main_window.show_all ();
-            Gtk.main ();
         }
     });
 
