@@ -580,10 +580,10 @@ public class LightPadWindow : Widgets.CompositedWindow {
 
     // Override destroy for fade out and stuff
     public new void destroy () {
-        // Detiene el procesamiento de eventos del joystick
+        // Stops processing joystick events
         this.is_joystick_thread_active = false;
 
-        // Limpia los recursos de SDL
+        // Clean up SDL resources
         SDL.quit ();
 
         // Stop process monitoring if it is active
