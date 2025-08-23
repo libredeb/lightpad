@@ -37,6 +37,7 @@ public class LightPadWindow : Widgets.CompositedWindow {
     // Variables to monitor the launched process
     private GLib.Subprocess? monitored_subprocess = null;
     private bool is_monitoring_process = false;
+    private Gtk.Widget? last_focused_widget = null;
 
     public LightPadWindow () {
         const int ICON_SIZE = 182;
@@ -290,6 +291,7 @@ public class LightPadWindow : Widgets.CompositedWindow {
 
                 item.button_press_event.connect ( () => { item.grab_focus (); return true; } );
                 item.button_release_event.connect ( () => {
+                    this.last_focused_widget = item;
                     int child_index = this.children.index (item);
                     int page_active = this.pages.active;
                     /* Prevent indicators pages to get a negative one (-1)
@@ -644,36 +646,14 @@ public class LightPadWindow : Widgets.CompositedWindow {
                     this.is_monitoring_process = false;
                     this.monitored_subprocess = null;
 
-                    GLib.Idle.add (() => {
-                        // Restore the interface
-                        this.pages.visible = true;
-                        this.pages.no_show_all = false;
-                        this.grid.visible = true;
-                        this.grid.no_show_all = false;
-                        this.loading_label.visible = false;
-                        this.loading_label.no_show_all = true;
-                        this.is_joystick_thread_active = true;
-                        this.show_all ();
-                        return false;
-                    });
+                    GLib.Idle.add (this.restore_ui_and_focus);
                 } catch (GLib.Error e) {
                     warning ("Error waiting for subprocess: " + e.message);
                     // Show lightpad anyway in case of error
                     this.is_monitoring_process = false;
                     this.monitored_subprocess = null;
 
-                    GLib.Idle.add (() => {
-                        // Restore the interface
-                        this.pages.visible = true;
-                        this.pages.no_show_all = false;
-                        this.grid.visible = true;
-                        this.grid.no_show_all = false;
-                        this.loading_label.visible = false;
-                        this.loading_label.no_show_all = true;
-                        this.is_joystick_thread_active = true;
-                        this.show_all ();
-                        return false;
-                    });
+                    GLib.Idle.add (this.restore_ui_and_focus);
                 }
             });
 
@@ -683,18 +663,25 @@ public class LightPadWindow : Widgets.CompositedWindow {
             this.is_monitoring_process = false;
             this.monitored_subprocess = null;
 
-            GLib.Idle.add (() => {
-                // Restore the interface
-                this.pages.visible = true;
-                this.pages.no_show_all = false;
-                this.grid.visible = true;
-                this.grid.no_show_all = false;
-                this.loading_label.visible = false;
-                this.loading_label.no_show_all = true;
-                this.show_all ();
-                return false;
-            });
+            GLib.Idle.add (this.restore_ui_and_focus);
         }
+    }
+
+    private bool restore_ui_and_focus () {
+        // Restore the interface
+        this.pages.visible = true;
+        this.pages.no_show_all = false;
+        this.grid.visible = true;
+        this.grid.no_show_all = false;
+        this.loading_label.visible = false;
+        this.loading_label.no_show_all = true;
+        this.is_joystick_thread_active = true;
+        this.show_all ();
+
+        if (this.last_focused_widget != null) {
+            this.last_focused_widget.grab_focus ();
+        }
+        return false;
     }
 
     /*
