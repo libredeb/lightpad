@@ -110,8 +110,12 @@ Please note that performance and appearance may vary slightly depending on the d
 
 **Handheld version release candidate 1:**
 * Deleted searchbar
-* Deleted dinamic background
+* Deleted dinamic background feature
+* Hided tooltips
+* Forced hide mouse pointer and to avoid listening to mouse events
 * Adapted to squared screens
 * 3x3 application grid
 * Mapped W, A, S, D keys to move the selected item
 * Added support for generic USB Joysticks using SDL2 library
+* Now LightPad never exit, remains in background while the launched application is opened
+* Some minor changes and performance improvements
