@@ -1,7 +1,4 @@
 ![LightPad](logo.png)
-# Handheld Version
-
-![handheld running LightPad](handheld.png)
 
 LightPad is a lightweight, simple and powerful application launcher. It is also Wayland compatible.
 
@@ -117,5 +114,6 @@ Please note that performance and appearance may vary slightly depending on the d
 * 3x3 application grid
 * Mapped W, A, S, D keys to move the selected item
 * Added support for generic USB Joysticks using SDL2 library
+* Loading screen while the app is opening
 * Now LightPad never exit, remains in background while the launched application is opened
 * Some minor changes and performance improvements
