@@ -454,6 +454,7 @@ public class LightPadWindow : Widgets.CompositedWindow {
 
         if (pos_x - 1 >= 0) {
             this.grid.get_child_at (pos_x - 1, pos_y).grab_focus ();
+            this.queue_draw ();
         }
 
         if (current_item % this.grid_y == this.grid_y - 1) {
@@ -471,6 +472,7 @@ public class LightPadWindow : Widgets.CompositedWindow {
 
         if (pos_x + 1 < this.grid_x) {
             this.grid.get_child_at (pos_x + 1, pos_y).grab_focus ();
+            this.queue_draw ();
         }
 
         if (current_item % this.grid_y == 0) {
@@ -488,6 +490,7 @@ public class LightPadWindow : Widgets.CompositedWindow {
 
         if (pos_y - 1 >= 0) {
             this.grid.get_child_at (pos_x, pos_y - 1).grab_focus ();
+            this.queue_draw ();
         }
         return true;
     }
@@ -502,6 +505,7 @@ public class LightPadWindow : Widgets.CompositedWindow {
 
         if (pos_y + 1 < this.grid_y) {
             this.grid.get_child_at (pos_x, pos_y + 1).grab_focus ();
+            this.queue_draw ();
         }
 
         return true;
