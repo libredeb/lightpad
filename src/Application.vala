@@ -155,6 +155,7 @@ public class LightPadWindow : Widgets.CompositedWindow {
                     new Gdk.Cursor.for_display (display, Gdk.CursorType.BLANK_CURSOR)
                 );
             }
+            this.children.nth_data (0).grab_focus ();
         });
 
         // Signals and callbacks
