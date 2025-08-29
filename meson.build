@@ -7,6 +7,20 @@ project(
 )
 
 PROJECT_NAME = 'lightpad'
+
+# Append short git commit hash to project version
+git = find_program('git', required: false)
+if git.found()
+  git_cmd = run_command(git, 'rev-parse', '--short', 'HEAD', check: false)
+  if git_cmd.returncode() == 0
+    project_version = meson.project_version() + '-' + git_cmd.stdout().strip()
+  else
+    project_version = meson.project_version()
+  endif
+else
+  project_version = meson.project_version()
+endif
+
 prefix = get_option('prefix')
 libdir = join_paths(prefix, get_option('libdir'))
 datadir = join_paths(prefix, get_option('datadir'))
@@ -20,7 +34,7 @@ conf = configuration_data()
 conf.set_quoted('PROJECT_NAME', PROJECT_NAME)
 conf.set_quoted('PACKAGE_LIBDIR', libdir)
 conf.set_quoted('PACKAGE_SHAREDIR', datadir)
-conf.set_quoted('PACKAGE_VERSION', meson.project_version())
+conf.set_quoted('PACKAGE_VERSION', project_version)
 
 config_h = configure_file(
 	output: 'config.h',

@@ -155,6 +155,16 @@ public class LightPadWindow : Widgets.CompositedWindow {
                     new Gdk.Cursor.for_display (display, Gdk.CursorType.BLANK_CURSOR)
                 );
             }
+            this.children.nth_data (0).grab_focus ();
+        });
+
+        this.focus_out_event.connect ( () => {
+            var current_item = this.grid.get_children ().index (this.get_focus ());
+            int pos_x = - ((current_item % this.grid_y) - (this.grid_y - 1));
+            int pos_y = - ((current_item / this.grid_y) - (this.grid_x - 1));
+            this.grid.get_child_at (pos_x, pos_y).grab_focus ();
+
+            return true;
         });
 
         // Signals and callbacks
@@ -209,25 +219,28 @@ public class LightPadWindow : Widgets.CompositedWindow {
                                     case SDL.Input.GameController.Button.A:
                                     case SDL.Input.GameController.Button.B:
                                         if (this.filtered.size >= 1) {
-                                            var focused_widget = this.get_focus ();
-                                            if (focused_widget != null) {
-                                                focused_widget.button_release_event (
-                                                    (Gdk.EventButton) new Gdk.Event (Gdk.EventType.BUTTON_PRESS)
-                                                );
-                                            }
+                                            GLib.Idle.add (() => {
+                                                var focused_widget = this.get_focus ();
+                                                if (focused_widget != null) {
+                                                    focused_widget.button_release_event (
+                                                        (Gdk.EventButton) new Gdk.Event (Gdk.EventType.BUTTON_PRESS)
+                                                    );
+                                                }
+                                                return false;
+                                            });
                                         }
                                         break;
                                     case SDL.Input.GameController.Button.DPAD_UP:
-                                        this.do_up ();
+                                        GLib.Idle.add (() => { this.do_up (); return false; });
                                         break;
                                     case SDL.Input.GameController.Button.DPAD_DOWN:
-                                        this.do_down ();
+                                        GLib.Idle.add (() => { this.do_down (); return false; });
                                         break;
                                     case SDL.Input.GameController.Button.DPAD_LEFT:
-                                        this.do_left ();
+                                        GLib.Idle.add (() => { this.do_left (); return false; });
                                         break;
                                     case SDL.Input.GameController.Button.DPAD_RIGHT:
-                                        this.do_right ();
+                                        GLib.Idle.add (() => { this.do_right (); return false; });
                                         break;
                                     default:
                                         break;
@@ -241,20 +254,20 @@ public class LightPadWindow : Widgets.CompositedWindow {
                                 // Horizontal axis (left stick)
                                 if (axis == SDL.Input.GameController.Axis.LEFTX) {
                                     if (value < -AXIS_DEAD_ZONE && (now - last_axis_h_move > AXIS_THROTTLE_MS)) {
-                                        this.do_left ();
+                                        GLib.Idle.add (() => { this.do_left (); return false; });
                                         last_axis_h_move = now;
                                     } else if (value > AXIS_DEAD_ZONE && (now - last_axis_h_move > AXIS_THROTTLE_MS)) {
-                                        this.do_right ();
+                                        GLib.Idle.add (() => { this.do_right (); return false; });
                                         last_axis_h_move = now;
                                     }
                                 }
                                 // Vertical axis (left stick)
                                 if (axis == SDL.Input.GameController.Axis.LEFTY) {
                                     if (value < -AXIS_DEAD_ZONE && (now - last_axis_v_move > AXIS_THROTTLE_MS)) {
-                                        this.do_up ();
+                                        GLib.Idle.add (() => { this.do_up (); return false; });
                                         last_axis_v_move = now;
                                     } else if (value > AXIS_DEAD_ZONE && (now - last_axis_v_move > AXIS_THROTTLE_MS)) {
-                                        this.do_down ();
+                                        GLib.Idle.add (() => { this.do_down (); return false; });
                                         last_axis_v_move = now;
                                     }
                                 }
