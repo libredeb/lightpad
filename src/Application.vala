@@ -155,14 +155,16 @@ public class LightPadWindow : Widgets.CompositedWindow {
                     new Gdk.Cursor.for_display (display, Gdk.CursorType.BLANK_CURSOR)
                 );
             }
+            this.children.nth_data (0).grab_focus ();
+        });
 
-            // A short delay before grabbing focus to ensure the window manager has processed the window.
-            // This helps in scenarios where the app starts at boot and might lose focus.
-            GLib.Timeout.add (500, () => {
-                this.present ();
-                this.children.nth_data (0).grab_focus ();
-                return false; // Do not repeat
-            });
+        this.focus_out_event.connect ( () => {
+            var current_item = this.grid.get_children ().index (this.get_focus ());
+            int pos_x = - ((current_item % this.grid_y) - (this.grid_y - 1));
+            int pos_y = - ((current_item / this.grid_y) - (this.grid_x - 1));
+            this.grid.get_child_at (pos_x, pos_y).grab_focus ();
+
+            return true;
         });
 
         // Signals and callbacks
