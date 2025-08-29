@@ -37,7 +37,11 @@
             // Focused signals
             this.draw.connect (this.draw_background);
             this.focus_in_event.connect ( () => { this.focus_in (); return true; } );
-            this.focus_out_event.connect ( () => { this.focus_out (); return true; } );
+            this.focus_out_event.connect ( () => { 
+                this.grab_focus ();
+                this.focus_out ();
+                return true; 
+            } );
         }
 
         public void change_app (Gdk.Pixbuf? new_icon, string? new_name, string? new_tooltip) {
