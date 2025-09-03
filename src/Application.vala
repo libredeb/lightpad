@@ -99,7 +99,7 @@ public class LightPadWindow : Widgets.CompositedWindow {
         });
 
         // Upstairs (padding is the space between search bar and the grid)
-        this.container.pack_start (bottom, true, true, 14);
+        this.container.pack_start (bottom, false, false, 14);
 
         this.grid = new Gtk.Grid ();
         this.grid.set_row_spacing (GRID_SPACING);
@@ -115,9 +115,13 @@ public class LightPadWindow : Widgets.CompositedWindow {
             this.grid.insert_row (r);
         }
 
-        this.container.pack_start (this.grid, true, true, 0);
+        this.container.pack_start (this.grid, false, false, 0);
 
         this.populate_grid ();
+
+        // Add a spacer to push the grid to the top
+        var spacer = new Gtk.Box (Gtk.Orientation.VERTICAL, 0);
+        this.container.pack_start (spacer, true, true, 0);
 
         // Add pages
         this.pages = new LightPad.Frontend.Indicators ();
