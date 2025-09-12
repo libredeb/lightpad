@@ -137,19 +137,13 @@
             }
 
             if (this.has_focus) {
-                double dark = 1.0;
-                var gradient = new Cairo.Pattern.rgba (
-                    this.prominent.r * dark, this.prominent.g * dark, this.prominent.b * dark, 1.0
-                );
-                context.set_source (gradient);
-                LightPad.Frontend.Utilities.draw_rounded_rectangle (context, 18, 0.5, size);
+                context.set_source_rgba (203.0 / 255.0, 178.0 / 255.0, 116.0 / 255.0, 1.0);
+                LightPad.Frontend.Utilities.draw_rounded_rectangle (context, 24, 0, size);
                 context.fill ();
             } else {
                 if (this.current_frame > 1) {
-                    var gradient = new Cairo.Pattern.rgba (0.0, 0.0, 0.0, 0.0);
-
-                    context.set_source (gradient);
-                    LightPad.Frontend.Utilities.draw_rounded_rectangle (context, 18, 0.5, size);
+                    context.set_source_rgba (0.0, 0.0, 0.0, 1.0);
+                    LightPad.Frontend.Utilities.draw_rounded_rectangle (context, 24, 0, size);
                     context.fill ();
                 }
             }
