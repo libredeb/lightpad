@@ -77,7 +77,7 @@ public class LightPadWindow : Widgets.CompositedWindow {
             }
         }
 
-        this.fullscreen_on_monitor (monitor.get_display ().get_default_screen (), primary_monitor_number);
+        //this.fullscreen_on_monitor (monitor.get_display ().get_default_screen (), primary_monitor_number);
         this.set_default_size (monitor_dimensions.width, monitor_dimensions.height);
 
         // Get all apps
@@ -105,6 +105,11 @@ public class LightPadWindow : Widgets.CompositedWindow {
         this.grid.set_row_spacing (GRID_SPACING);
         this.grid.set_column_spacing (GRID_SPACING);
         this.grid.set_halign (Gtk.Align.CENTER);
+
+        // Calculate and set a fixed size for the grid
+        int grid_width = (this.grid_x * this.item_box_width) + ((this.grid_x - 1) * GRID_SPACING);
+        int grid_height = (this.grid_y * this.item_box_height) + ((this.grid_y - 1) * GRID_SPACING);
+        this.grid.set_size_request(grid_width, grid_height);
 
         // Initialize the grid
         for (int c = 0; c < this.grid_y; c++) {
