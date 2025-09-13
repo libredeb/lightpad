@@ -95,7 +95,7 @@
             // If there is no icon, don't draw anything
             if (this.icon != null) {
                 double icon_x = (size.width - this.icon.width) / 2.0;
-                double icon_y = 4.0;
+                double icon_y = 9.0;
                 Gdk.cairo_set_source_pixbuf (context, this.icon, icon_x, icon_y);
                 context.paint ();
             }
@@ -137,8 +137,14 @@
             }
 
             if (this.has_focus) {
+                // Draw border
                 context.set_source_rgba (203.0 / 255.0, 178.0 / 255.0, 116.0 / 255.0, 1.0);
-                LightPad.Frontend.Utilities.draw_rounded_rectangle (context, 24, 0, size);
+                LightPad.Frontend.Utilities.draw_rounded_rectangle (context, 26, 0.5, size);
+                context.fill ();
+
+                // Draw background
+                context.set_source_rgba (0.0, 0.0, 0.0, 1.0);
+                LightPad.Frontend.Utilities.draw_rounded_rectangle (context, 21, 5.5, size);
                 context.fill ();
             } else {
                 if (this.current_frame > 1) {
