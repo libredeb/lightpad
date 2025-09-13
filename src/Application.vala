@@ -500,12 +500,19 @@ public class LightPadWindow : Widgets.CompositedWindow {
         var focused_widget = this.get_focus ();
         if (focused_widget == null) return false;
 
-        var current_item = this.grid.get_children ().index (focused_widget);
-        int pos_x = - ((current_item % this.grid_y) - (this.grid_y - 1));
-        int pos_y = - ((current_item / this.grid_y) - (this.grid_x - 1));
+        var focused_item = focused_widget as LightPad.Frontend.AppItem;
+        if (focused_item == null) return false;
 
-        if (pos_y - 1 >= 0) {
-            this.grid.get_child_at (pos_x, pos_y - 1).grab_focus ();
+        int current_item_idx = this.children.index (focused_item);
+        if (current_item_idx == -1) return false;
+
+        int next_item_idx = current_item_idx - this.grid_y;
+
+        if (next_item_idx >= 0) {
+            var next_item = this.children.nth_data(next_item_idx);
+            if (next_item.get_visible()){
+                next_item.grab_focus();
+            }
         }
         return true;
     }
@@ -514,12 +521,19 @@ public class LightPadWindow : Widgets.CompositedWindow {
         var focused_widget = this.get_focus ();
         if (focused_widget == null) return false;
 
-        var current_item = this.grid.get_children ().index (focused_widget);
-        int pos_x = - ((current_item % this.grid_y) - (this.grid_y - 1));
-        int pos_y = - ((current_item / this.grid_y) - (this.grid_x - 1));
+        var focused_item = focused_widget as LightPad.Frontend.AppItem;
+        if (focused_item == null) return false;
 
-        if (pos_y + 1 < this.grid_y) {
-            this.grid.get_child_at (pos_x, pos_y + 1).grab_focus ();
+        int current_item_idx = this.children.index (focused_item);
+        if (current_item_idx == -1) return false;
+
+        int next_item_idx = current_item_idx + this.grid_y;
+
+        if (next_item_idx < this.children.length()) {
+            var next_item = this.children.nth_data(next_item_idx);
+            if (next_item.get_visible()) {
+                next_item.grab_focus();
+            }
         }
 
         return true;
