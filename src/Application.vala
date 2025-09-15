@@ -628,6 +628,16 @@ public class LightPadWindow : Widgets.CompositedWindow {
             this.monitored_subprocess = null;
         }
 
+        // Run on-exit script if defined
+        string? on_exit_script = GLib.Environment.get_variable ("LIGHTPAD_ONEXIT");
+        if (on_exit_script != null) {
+            try {
+                GLib.Process.spawn_command_line_async (on_exit_script);
+            } catch (GLib.SpawnError e) {
+                warning ("Error executing LIGHTPAD_ONEXIT script: %s", e.message);
+            }
+        }
+
         base.destroy ();
     }
 
@@ -792,6 +802,19 @@ public class LightPadWindow : Widgets.CompositedWindow {
 }
 
 static int main (string[] args) {
+    // Run on-load script if defined
+    string? on_load_script = GLib.Environment.get_variable ("LIGHTPAD_ONLOAD");
+    if (on_load_script != null) {
+        try {
+            string? stdout;
+            string? stderr;
+            int status;
+            GLib.Process.spawn_command_line_sync (on_load_script, out stdout, out stderr, out status);
+        } catch (GLib.SpawnError e) {
+            warning ("Error executing LIGHTPAD_ONLOAD script: %s", e.message);
+        }
+    }
+
     /*
      * This is a workaround for libgnome-menu-3.0, for now doesn't have support to include .desktop entries
      * with the property OnlyShowIn set up. If the value of your XDG_CURRENT_DESKTOP environment variable 
