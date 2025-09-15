@@ -74,6 +74,28 @@ If `LIGHTPAD_CATEGORIES` is not set, all available categories will be shown by d
 - Category names must match those defined in your system menu (e.g., "Games", "Internet", "System Tools"). For more information see: [freedesktop.org/menu-spec/categories](https://specifications.freedesktop.org/menu-spec/latest/category-registry.html).
 - Unrecognized category names will be silently ignored.
 
+## Environment Variable: `LIGHTPAD_ONLOAD`
+
+You can execute a script or command when LightPad starts by setting the `LIGHTPAD_ONLOAD` environment variable. The command will be executed before any part of the application is initialized.
+
+LightPad will wait for the command to finish before continuing its own startup process.
+
+**Example:**
+```sh
+export LIGHTPAD_ONLOAD="/path/to/my/setup_script.sh"
+```
+
+## Environment Variable: `LIGHTPAD_ONEXIT`
+
+You can execute a script or command when LightPad exits by setting the `LIGHTPAD_ONEXIT` environment variable. The command is executed after closing internal components (like SDL) and just before the main application window is destroyed.
+
+This script is executed asynchronously, meaning LightPad will not wait for it to complete.
+
+**Example:**
+```sh
+export LIGHTPAD_ONEXIT="/path/to/my/cleanup_script.sh"
+```
+
 ## Icon Cache
 
 To improve startup performance, LightPad now implements a persistent icon cache.

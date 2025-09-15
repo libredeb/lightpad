@@ -26,6 +26,17 @@ System Tools, Internet`). The comparison is case-insensitive and ignores extra
 spaces. If unspecified, all available categories are shown. Unrecognized category
 names are silently ignored. Category names must conform to the freedesktop.org
 menu specification.
+.PP
+\-
+\f[B]LIGHTPAD_ONLOAD\f[R]: You can execute a script or command when LightPad starts
+by setting the `LIGHTPAD_ONLOAD` environment variable. The command will be executed
+before any part of the application is initialized.
+.PP
+\-
+\f[B]LIGHTPAD_ONEXIT\f[R]: You can execute a script or command when LightPad exits
+by setting the `LIGHTPAD_ONEXIT` environment variable. The command is executed after
+closing internal components (like SDL) and just before the main application window
+is destroyed.
 .SH FILES
 .TP
 \f[I]\[ti]/.lightpad/blocklist\f[R]
