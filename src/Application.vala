@@ -543,7 +543,7 @@ public class LightPadWindow : Widgets.CompositedWindow {
     public override bool key_press_event (Gdk.EventKey event) {
         switch (Gdk.keyval_name (event.keyval)) {
             case "Escape":
-                this.destroy ();
+                this.begin_shutdown_sequence (false);
                 return true;
             case "a":
             case "Left":
@@ -628,16 +628,6 @@ public class LightPadWindow : Widgets.CompositedWindow {
             this.monitored_subprocess = null;
         }
 
-        // Run on-exit script if defined
-        string? on_exit_script = GLib.Environment.get_variable ("LIGHTPAD_ONEXIT");
-        if (on_exit_script != null) {
-            try {
-                GLib.Process.spawn_command_line_async (on_exit_script);
-            } catch (GLib.SpawnError e) {
-                warning ("Error executing LIGHTPAD_ONEXIT script: %s", e.message);
-            }
-        }
-
         base.destroy ();
     }
 
@@ -646,8 +636,7 @@ public class LightPadWindow : Widgets.CompositedWindow {
         // Check if this is the exit application
         string app_id = this.filtered.get (app_index)["id"];
         if (app_id == Resources.LIGHTPAD_EXIT_ID) {
-            // Close LightPad instead of launching an application
-            this.destroy ();
+            this.begin_shutdown_sequence (true);
             return;
         }
 
@@ -710,6 +699,45 @@ public class LightPadWindow : Widgets.CompositedWindow {
 
             GLib.Idle.add (this.restore_ui_and_focus);
         }
+    }
+
+    private void begin_shutdown_sequence (bool loading_screen_visible) {
+        if (!loading_screen_visible) {
+            // Show loading screen
+            this.pages.visible = false;
+            this.pages.no_show_all = true;
+            this.grid.visible = false;
+            this.grid.no_show_all = true;
+            this.loading_label.no_show_all = false;
+            this.loading_label.visible = true;
+            this.show_all ();
+        }
+
+        // Run on-exit script if defined
+        string? on_exit_script = GLib.Environment.get_variable ("LIGHTPAD_ONEXIT");
+        if (on_exit_script != null) {
+            try {
+                GLib.Process.spawn_command_line_async (on_exit_script);
+            } catch (GLib.SpawnError e) {
+                warning ("Error executing LIGHTPAD_ONEXIT script: %s", e.message);
+            }
+        }
+
+        // Wait for signal file if defined
+        string? sigfile = GLib.Environment.get_variable ("LIGHTPAD_WAIT_SIGFILE");
+        if (sigfile == null) {
+            this.destroy ();
+            return;
+        }
+
+        // Use a timeout to wait for the file without blocking the UI
+        GLib.Timeout.add (100, () => {
+            if (GLib.File.new_for_path (sigfile).query_exists (null)) {
+                this.destroy ();
+                return false; // Stop the timeout
+            }
+            return true; // Keep checking
+        });
     }
 
     private bool restore_ui_and_focus () {
