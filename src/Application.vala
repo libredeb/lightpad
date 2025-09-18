@@ -109,7 +109,7 @@ public class LightPadWindow : Widgets.CompositedWindow {
         // Calculate and set a fixed size for the grid
         int grid_width = (this.grid_x * this.item_box_width) + ((this.grid_x - 1) * GRID_SPACING);
         int grid_height = (this.grid_y * this.item_box_height) + ((this.grid_y - 1) * GRID_SPACING);
-        this.grid.set_size_request(grid_width, grid_height);
+        this.grid.set_size_request (grid_width, grid_height);
 
         // Initialize the grid
         for (int c = 0; c < this.grid_y; c++) {
@@ -509,9 +509,9 @@ public class LightPadWindow : Widgets.CompositedWindow {
         int next_item_idx = current_item_idx - this.grid_y;
 
         if (next_item_idx >= 0) {
-            var next_item = this.children.nth_data(next_item_idx);
-            if (next_item.get_visible()){
-                next_item.grab_focus();
+            var next_item = this.children.nth_data (next_item_idx);
+            if (next_item.get_visible ()) {
+                next_item.grab_focus ();
             }
         }
         return true;
@@ -529,10 +529,10 @@ public class LightPadWindow : Widgets.CompositedWindow {
 
         int next_item_idx = current_item_idx + this.grid_y;
 
-        if (next_item_idx < this.children.length()) {
-            var next_item = this.children.nth_data(next_item_idx);
-            if (next_item.get_visible()) {
-                next_item.grab_focus();
+        if (next_item_idx < this.children.length ()) {
+            var next_item = this.children.nth_data (next_item_idx);
+            if (next_item.get_visible ()) {
+                next_item.grab_focus ();
             }
         }
 
@@ -616,12 +616,6 @@ public class LightPadWindow : Widgets.CompositedWindow {
 
     // Override destroy for fade out and stuff
     public new void destroy () {
-        // Stops processing joystick events
-        this.is_joystick_thread_active = false;
-
-        // Clean up SDL resources
-        SDL.quit ();
-
         // Stop process monitoring if it is active
         if (this.is_monitoring_process && this.monitored_subprocess != null) {
             this.is_monitoring_process = false;
@@ -712,6 +706,10 @@ public class LightPadWindow : Widgets.CompositedWindow {
             this.loading_label.visible = true;
             this.show_all ();
         }
+
+        // Stop joystick processing and release SDL resources so external apps can use the gamepad
+        this.is_joystick_thread_active = false;
+        SDL.quit ();
 
         // Run on-exit script if defined
         string? on_exit_script = GLib.Environment.get_variable ("LIGHTPAD_ONEXIT");
