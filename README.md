@@ -96,6 +96,19 @@ This script is executed asynchronously, meaning LightPad will not wait for it to
 export LIGHTPAD_ONEXIT="/path/to/my/cleanup_script.sh"
 ```
 
+## Environment Variable: `LIGHTPAD_WAIT_SIGFILE`
+
+To make LightPad wait for a background task to complete before closing, you can specify a "signal or pid file" using the `LIGHTPAD_WAIT_SIGFILE` environment variable.
+
+When the shutdown sequence is initiated (either via the exit button or the `Escape` key), LightPad will display its "Loading..." screen, execute the `LIGHTPAD_ONEXIT` script (if defined), and then pause. It will only proceed to shut down completely once the file specified by `LIGHTPAD_WAIT_SIGFILE` exists.
+
+This is useful for scripts that perform cleanup tasks and need to signal LightPad when they are finished.
+
+**Example:**
+```sh
+export LIGHTPAD_WAIT_SIGFILE="/dev/shm/lightpad_task.done"
+```
+
 ## Icon Cache
 
 To improve startup performance, LightPad now implements a persistent icon cache.

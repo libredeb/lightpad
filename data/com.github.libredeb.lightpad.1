@@ -37,6 +37,12 @@ before any part of the application is initialized.
 by setting the `LIGHTPAD_ONEXIT` environment variable. The command is executed after
 closing internal components (like SDL) and just before the main application window
 is destroyed.
+.PP
+\-
+\f[B]LIGHTPAD_WAIT_SIGFILE\f[R]: If set, specifies a path to a signal or pid file.
+LightPad will pause its shutdown sequence and wait for this file to exist before 
+exiting completely. This is useful to allow background tasks started by
+LIGHTPAD_ONEXIT to complete.
 .SH FILES
 .TP
 \f[I]\[ti]/.lightpad/blocklist\f[R]
