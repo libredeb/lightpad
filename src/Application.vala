@@ -259,6 +259,8 @@ public class LightPadWindow : Widgets.CompositedWindow {
                                     case SDL.Input.GameController.Button.DPAD_RIGHT:
                                         GLib.Idle.add (() => { this.do_right (); return false; });
                                         break;
+                                    default:
+                                        break;
                                 }
                             }
                             break;
