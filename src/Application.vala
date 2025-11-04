@@ -33,6 +33,8 @@ public class LightPadWindow : Widgets.CompositedWindow {
 
     private GLib.Thread<int> joystick_thread;
     private bool is_joystick_thread_active = true;
+    private bool is_start_pressed = false;
+    private bool is_back_pressed = false;
 
     // Variables to monitor the launched process
     private GLib.Subprocess? monitored_subprocess = null;
@@ -220,11 +222,17 @@ public class LightPadWindow : Widgets.CompositedWindow {
             SDL.Event event;
             while (true) {
                 while (SDL.Event.poll (out event) != 0) {
-                    if (this.is_joystick_thread_active) {
-                        switch (event.type) {
-                            case SDL.EventType.CONTROLLERBUTTONDOWN:
-                                var button = (SDL.Input.GameController.Button) event.cbutton.button;
-                                switch (button) {
+                    switch (event.type) {
+                        case SDL.EventType.CONTROLLERBUTTONDOWN:
+                            var button_down = (SDL.Input.GameController.Button) event.cbutton.button;
+                            if (button_down == SDL.Input.GameController.Button.START) {
+                                this.is_start_pressed = true;
+                            } else if (button_down == SDL.Input.GameController.Button.BACK) {
+                                this.is_back_pressed = true;
+                            }
+
+                            if (this.is_joystick_thread_active) {
+                                switch (button_down) {
                                     case SDL.Input.GameController.Button.A:
                                     case SDL.Input.GameController.Button.B:
                                         if (this.filtered.size >= 1) {
@@ -251,11 +259,19 @@ public class LightPadWindow : Widgets.CompositedWindow {
                                     case SDL.Input.GameController.Button.DPAD_RIGHT:
                                         GLib.Idle.add (() => { this.do_right (); return false; });
                                         break;
-                                    default:
-                                        break;
                                 }
-                                break;
-                            case SDL.EventType.CONTROLLERAXISMOTION:
+                            }
+                            break;
+                        case SDL.EventType.CONTROLLERBUTTONUP:
+                            var button_up = (SDL.Input.GameController.Button) event.cbutton.button;
+                            if (button_up == SDL.Input.GameController.Button.START) {
+                                this.is_start_pressed = false;
+                            } else if (button_up == SDL.Input.GameController.Button.BACK) {
+                                this.is_back_pressed = false;
+                            }
+                            break;
+                        case SDL.EventType.CONTROLLERAXISMOTION:
+                            if (this.is_joystick_thread_active) {
                                 var axis = (SDL.Input.GameController.Axis) event.caxis.axis;
                                 var value = event.caxis.value;
                                 var now = GLib.get_monotonic_time () / 1000; // to milliseconds
@@ -280,12 +296,24 @@ public class LightPadWindow : Widgets.CompositedWindow {
                                         last_axis_v_move = now;
                                     }
                                 }
-                                break;
-                            default:
-                                break;
-                        }
+                            }
+                            break;
+                        default:
+                            break;
                     }
                 }
+
+                // Check for button combination to close the running application
+                if (this.is_start_pressed && this.is_back_pressed) {
+                    var subprocess = this.monitored_subprocess;
+                    if (this.is_monitoring_process && subprocess != null) {
+                        subprocess.force_exit ();
+                        // Reset flags to avoid multiple triggers
+                        this.is_start_pressed = false;
+                        this.is_back_pressed = false;
+                    }
+                }
+
                 SDL.Timer.delay (10); // Avoid 100% CPU usage
             }
         });
