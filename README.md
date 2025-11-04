@@ -59,6 +59,10 @@ htop
 
 These lines appear in the **.desktop** files located in `/usr/share/applications` as the value of the **Exec=** tag.
 
+## Force Quit Application
+
+You can force quit the currently running application by pressing the `START + SELECT` buttons simultaneously on your gamepad. This is useful for closing applications that may have frozen or do not have an exit option.
+
 ## Environment Variable: `LIGHTPAD_CATEGORIES`
 
 You can control which application categories are displayed in LightPad by setting the `LIGHTPAD_CATEGORIES` environment variable.  
@@ -148,7 +152,10 @@ Please note that performance and appearance may vary slightly depending on the d
 * Adapted to squared screens
 * 3x3 application grid
 * Mapped W, A, S, D keys to move the selected item
-* Added support for generic USB Joysticks using SDL2 library
+* Added support for Joysticks/Gamepads using SDL2 library
 * Loading screen while the app is opening
 * Now LightPad never exit, remains in background while the launched application is opened
+* Added environment variables to run custom scripts on LightPad load and exit.
+* Added a environment variable to wait for a pid file to exist before LightPad completely exit.
+* Added combination of buttons to force the exit of executed application
 * Some minor changes and performance improvements
